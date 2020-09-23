@@ -30,8 +30,11 @@ export const edu = {
         getById({commit}, id){
             return EducationService.getEducation(id).then(
                 education => {
-                    commit("educationSuccess")
+                    commit("educationSuccess", education)
                     return Promise.resolve(education);
+                },
+                error => {
+                    return Promise.reject(error);
                 }
             )
 

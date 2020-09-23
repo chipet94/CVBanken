@@ -56,7 +56,8 @@ export default {
     };
   },
   async created() {
-    this.programme = await this.$store.dispatch("edu/getById", this.user.programmeId)
+    if (this.user.programmeId)
+      this.programme = await this.$store.dispatch("edu/getById", this.user.programmeId)
   }
 }
 </script>
