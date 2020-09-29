@@ -28,7 +28,7 @@
                 <b-input v-model="password" password-reveal required type="password" value=""></b-input>
               </b-field>
               <b-field>
-                <b-input type="button" value="Registrera" @click.native="signUp"></b-input>
+                <b-button class="button is-purple text is-black" @click.native="signUp">Registrera</b-button>
               </b-field>
             </div>
           </div>
@@ -83,7 +83,12 @@ export default {
 <style scoped>
 /*Exempel css*/
 #headline {
-  color: red;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  color: black;
   font-size: 20px;
+}
+.button{
+  background-color: #693250;
 }
 </style>

@@ -2,9 +2,8 @@
   <div id="app">
     <div id="nav">
       <div v-if="!isLoggedIn">
-        <router-link to="/login">Logga in</router-link>
-        |
-        <router-link to="/sign-up">Registrera</router-link>
+        <router-link to="/login">Logga in |</router-link>
+        <router-link to="/sign-up"> Registrera</router-link>
       </div>
       <div v-else>
         <router-link to="/profile">Profile</router-link>
@@ -22,9 +21,6 @@ export default {
     return {
       currentUser: ""
     }
-  },
-  created() {
-    // await this.checkLogin()
   },
   computed: {
     isLoggedIn() {
@@ -54,14 +50,15 @@ export default {
 
 #nav {
   padding: 30px;
+  background-color: #693250;
 }
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: white;
 }
 </style>

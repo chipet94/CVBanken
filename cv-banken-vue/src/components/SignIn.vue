@@ -14,7 +14,7 @@
               </b-field>
               <span class="has-text-danger">{{ message }}</span>
               <b-field>
-                <b-input type="button" value="Logga in" @click.native="signIn"></b-input>
+                <b-button class="button is-purple text is black" @click.native="signIn">Logga in</b-button>
               </b-field>
             </div>
           </div>
@@ -24,7 +24,6 @@
   </div>
 </template>
 <script>
-//import authAction from "@/components/Actions/handlers/Account"
 export default {
   name: "SignIn",
   data() {
