@@ -46,7 +46,6 @@ namespace CVBanken.Web.Controllers
                 return BadRequest();
             }
 
-
             try
             {
                 var user = await _userService.Create(request.ToUser(), request.Password);

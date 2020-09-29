@@ -7,19 +7,20 @@ namespace CVBanken.Data.Models
     {
         public class Register
         {
-            [Required]
+            [Required(ErrorMessage = "No Firstname was provided.")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "No Lastname was provided.")]
             public string LastName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "No email was provided.")]
+            //todo Lägg till @ITHS.SE som krav
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "No Password was provided")]
             public string Password { get; set; }
-        
+            [Required(ErrorMessage = "No programme Selected.")]
             public int ProgrammeId { get; set; }
         }
         public class Authenticate
