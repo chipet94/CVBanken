@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Database;
@@ -18,6 +19,10 @@ namespace CVBanken.Services.EducationServices
         public async Task<IEnumerable<Programme>> GetAllProgrammes()
         {
             return await _context.Programmes.ToListAsync();
+        }
+        public async Task<IEnumerable<Programme>> GetAllEducationsByCategory(int id)
+        {
+            return await _context.Programmes.Where(p => p.Category == (Programme.ProgrammeCategory) id).ToListAsync();
         }
         
 

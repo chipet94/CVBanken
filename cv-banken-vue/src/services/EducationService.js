@@ -20,6 +20,13 @@ class EducationService {
             return res.data
         });
     }
+    getEducationByCategory(id) {
+        return axios.get(API_URL + "programme/category/" + id, {
+            authHeader
+        }).then(res => {
+            return res.data
+        });
+    }
 }
 
 export default new EducationService();

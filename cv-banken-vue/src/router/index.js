@@ -46,6 +46,11 @@ let router = new Router({
             component: Profile
         },
         {
+            path: '/eductations',
+            name: 'eductations',
+            component: () => import('@/views/EducationsList.vue')
+        },
+        {
             path: '/admin_dashboard',
             name: 'AdminDashboard',
             meta: {

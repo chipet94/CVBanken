@@ -38,6 +38,18 @@ export const edu = {
                 }
             )
 
+        },
+        getByCategoryId({ commit }, id) {
+            return EducationService.getEducationByCategory(id).then(
+                education => {
+                    commit("educationSuccess", education)
+                    return Promise.resolve(education);
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            )
+
         }
     },
     mutations: {

@@ -50,6 +50,12 @@ namespace CVBanken.Web.Controllers
         {
             return await _context.GetProgrammeById(id);
         }
+
+        [HttpGet("category/{id}")]
+        public async Task<IEnumerable<Programme>> GetByCategory(int id)
+        {
+            return await _context.GetAllEducationsByCategory(id);
+        }
         
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
