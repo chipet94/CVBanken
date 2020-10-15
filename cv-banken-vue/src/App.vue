@@ -6,7 +6,8 @@
         <router-link to="/sign-up"> Registrera</router-link>
       </div>
       <div v-else>
-        <router-link to="/profile">Profile</router-link>
+        <router-link to="/profile">Profile |</router-link>
+        <router-link to="/eductations"> Utbildningar</router-link>
         <router-link v-if="thisUser.role === 'Admin'" to="/admin_dashboard"> | Admin Dashboard</router-link>
         <button class="button is-danger is-pulled-right" @click="logout">Logga ut</button>
       </div>

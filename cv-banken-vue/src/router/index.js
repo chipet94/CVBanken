@@ -48,6 +48,9 @@ let router = new Router({
         {
             path: '/eductations',
             name: 'eductations',
+            meta: {
+                requireAuth: true,
+            },
             component: () => import('@/views/EducationsList.vue')
         },
         {
