@@ -1,18 +1,20 @@
 <template>
   <div>
     <h1 id="headline">Skapa ett konto med din iths mail, för att ladda upp ditt cv</h1>
-    <span class="has-text-danger">{{ message }}</span>
     <div id="section" class="m-t-12">
       <div class="columns is-centered">
         <div class="column is-6">
           <div class="box">
             <div class="container">
+              <span class="has-text-danger">{{ errors.FirstName }}</span>
               <b-field label="Förnamn">
                 <b-input v-model="firstName" required type="text"></b-input>
               </b-field>
+              <span class="has-text-danger">{{ errors.LastName }}</span>
               <b-field label="Efternamn">
                 <b-input v-model="lastName" required type="text"></b-input>
               </b-field>
+              <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
               <b-field label="Utbildning">
                 <b-select v-model="selected" placeholder="Välj din utbildning">
                   <option v-for="education in educations" v-bind:key="`eductation-${education.id}`"
@@ -21,14 +23,16 @@
                   </option>
                 </b-select>
               </b-field>
+              <span class="has-text-danger">{{ errors.Email }}</span>
               <b-field label="E-post">
                 <b-input id="emailfield" v-model="input" required type="email"></b-input>
               </b-field>
+              <span class="has-text-danger">{{ errors.Password }}</span>
               <b-field label="Lösenord">
                 <b-input v-model="password" password-reveal required type="password" value=""></b-input>
               </b-field>
               <b-field>
-                <b-button class="button is-purple text is-black" @click.native="signUp">Registrera</b-button>
+                <b-button class="button is-purple text is-black" @click.native="signUp" :disabled="locked">Registrera</b-button>
               </b-field>
             </div>
           </div>
@@ -52,12 +56,13 @@ export default {
       firstName: "",
       lastName: "",
       password: "",
-
-      message: ""
+      locked: false,
+      errors: {}
     };
   },
   methods: {
     async signUp() {
+      this.locked = true;
       await this.$store.dispatch("auth/register",
           {
             "firstName": this.firstName,
@@ -71,7 +76,8 @@ export default {
             this.$router.push("/login")
           })
           .catch(err => {
-            this.message = err.response.data.error
+            this.errors = err.response.data.errors
+            this.locked = false;
           })
     },
     async getProgrammes() {

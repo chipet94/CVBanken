@@ -1,4 +1,5 @@
 import axios from "axios";
+import {authHeader} from "@/services/AuthHeader";
 
 const API_URL = process.env.VUE_APP_API_URL
 class AuthService {
@@ -30,6 +31,19 @@ class AuthService {
             programmeId: user.programmeId,
 
         });
+    }
+    getProfile(url = ""){
+        return axios.get(API_URL + "profile/" + url, {
+        })
+    }
+    getCurrentUserProfile(){
+        return axios.get(API_URL + "profile/", {
+            headers: authHeader(),
+            credentials: 'include'
+        })
+    }
+    getProfilePicture(url = ""){
+        return axios.get(API_URL + "profile/" + url + "/picture")
     }
 }
 

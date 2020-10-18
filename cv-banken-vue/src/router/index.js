@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../views/Login.vue'
 import Profile from '../views/Profile'
+import UserProfile from '../views/UserProfile'
 import AdminPage from "@/views/AdminPage";
 import Home from "@/views/Home";
 import {ValidatePathRules} from "@/router/ValidatePathRules";
@@ -44,6 +45,11 @@ let router = new Router({
                 requireAuth: true,
             },
             component: Profile
+        },
+        {
+            path: '/profile/:url',
+            name: 'Profile',
+            component: UserProfile
         },
         {
             path: '/admin_dashboard',

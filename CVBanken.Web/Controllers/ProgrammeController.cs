@@ -50,7 +50,7 @@ namespace CVBanken.Web.Controllers
         {
             return await _context.GetProgrammeById(id);
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

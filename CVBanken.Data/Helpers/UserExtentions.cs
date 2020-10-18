@@ -15,7 +15,7 @@ namespace CVBanken.Data.Helpers
 
         public static Models.Auth.User WithoutPassword(this Models.Auth.User user) 
         {
-            if (user == null) return null;
+            if (user == null) return null;    
 
             user.PasswordHash = null;
             user.PasswordSalt = null;
@@ -27,11 +27,12 @@ namespace CVBanken.Data.Helpers
         }
         public static object ToSafeResponse(this User user)
         {
-            return new { user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.ProgrammeId};
+            return new { user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.ProgrammeId, categoryName = user.Programme.Category.ToString(), class_name = user.Programme.Name};
         }
         public static object ToAuthResponse(this User user)
         {
             return new { user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.ProgrammeId, user.Token};
         }
+        
     }
 }

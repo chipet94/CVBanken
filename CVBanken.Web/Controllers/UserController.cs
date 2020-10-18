@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using API_CVPortalen.Models.Auth;
 using CVBanken.Data.Helpers;
@@ -39,8 +40,12 @@ namespace CVBanken.Web.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create(UserRequest.Register request)
+        public async Task<IActionResult> Create([FromBody]UserRequest.Register request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values.SelectMany(r => r.Errors));
+            }
             if (request == null)
             {
                 return BadRequest();
@@ -49,7 +54,7 @@ namespace CVBanken.Web.Controllers
 
             try
             {
-                var user = await _userService.Create(request.ToUser(), request.Password);
+                await _userService.Create(request.ToUser());
                 return Ok("Success!");
             }
             catch (Exception e)
@@ -67,6 +72,7 @@ namespace CVBanken.Web.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetById(id);
