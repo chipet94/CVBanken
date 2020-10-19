@@ -56,12 +56,12 @@ namespace CVBanken.Services.UserServices
                     profile.Description = newProfile.Description;
                 }
 
-                if (newProfile.Private != null && newProfile.Private != profile.Private)
+                if (newProfile.Private != profile.Private)
                 {
                     profile.Private = newProfile.Private;
                 }
 
-                if (newProfile.Searching != null && newProfile.Searching != profile.Searching)
+                if (newProfile.Searching != profile.Searching)
                 {
                     profile.Searching = newProfile.Searching;
                 }

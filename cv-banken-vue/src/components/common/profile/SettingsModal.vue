@@ -83,7 +83,7 @@ import User from "@/models/User";
 import {updateProfileModel} from "@/models/requests/UpdateProfileRequest";
 export default {
   name: "SettingsModal",
-  props: {profile : Profile, user: User},
+  props: {profile : Profile.prototype, user: User.prototype},
   data() {
     return {
       educations: [],
@@ -124,8 +124,9 @@ export default {
     }
 
   },
-  created() {
+  mounted() {
     this.getProgrammes();
+    this.reset();
 
   },
   methods:{

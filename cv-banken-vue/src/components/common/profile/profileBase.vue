@@ -7,7 +7,7 @@
           </template>
           <b-skeleton :active="loading" size="is-large"></b-skeleton>
         </p>
-        <SettingsModal v-if="canEdit" class="is-pulled-right" :profile="profile" :user="user"></SettingsModal>
+        <SettingsModal v-if="canEdit && user != null" class="is-pulled-right" :profile="thisProfile" :user="thisUser"></SettingsModal>
       </div>
       <div class="card-content">
         <template v-if="!loading && profile !== null">
@@ -19,7 +19,7 @@
               <article class="tile is-child notification is-centered">
                 <profile-picture-box v-model="profilePicture" :on-reload="onReloadPic"
                                      :profile-picture="profilePicture"></profile-picture-box>
-                <p class="title">Uppgifter</p>
+                <label>Uppgifter</label>
                 <b-field horizontal label="Förnamn:">
                   {{ user.firstName }}
                 </b-field>
@@ -42,10 +42,9 @@
                 <b-button v-if="canEdit" class="is-pulled-right" @click="editDescription = !editDescription">
                   <b-icon :icon="editDescription? 'close' : 'cog'" style="color:black"></b-icon>
                 </b-button>
-                <p class="title">Om</p>
-                <p class="subtitle"></p>
-                <pre v-if="!editDescription" class="text" style="white-space: pre-wrap;">{{ profile.description }}</pre>
-                <textarea v-if="editDescription" v-model="profile.description" class="textarea"></textarea>
+                <label>Om</label>
+                <pre v-if="!editDescription" class="text has-text-left" style="white-space: pre-wrap;">{{ profile.description }}</pre>
+                <textarea aria-label="Om" v-if="editDescription" v-model="profile.description" class="textarea"></textarea>
                 <b-button v-if="editDescription" class="is-success" @click="updateDescription">Spara</b-button>
               </article>
             </div>
@@ -87,6 +86,12 @@ export default {
     };
   },
   computed: {
+    thisProfile(){
+      return this.profile;
+    },
+    thisUser(){
+      return this.user;
+    },
     profilePicture() {
       return this.profile.profilePicture ?
           this.profile.profilePicture !== '' ?
@@ -105,7 +110,7 @@ export default {
       return this.editDescription ? "textarea" : "text"
     }
   },
-  async mounted() {
+  async created() {
     this.loading = true;
     //await this.$store.dispatch("profile/getUserProfile")
     await this.LoadProfile()
@@ -126,12 +131,12 @@ export default {
       this.loading = true;
       if (this.$route.params.url){
         await this.$store.dispatch("profile/getByUrl", this.$route.params.url).then(res => {
-          this.profile = res;
+          this.profile = new Profile(res);
         })
         console.log(this.profile)
       }else{
         await this.$store.dispatch("profile/getUserProfile").then(res =>{
-         this.profile = res;
+          this.profile = new Profile(res);
          this.canEdit = true
         })
       }
@@ -139,7 +144,7 @@ export default {
         await this.profile.getProfilePicture();
         await this.profile.getUser().then(
             res => {
-              this.user = res;
+              this.user = new User(res);
             });
       }
 

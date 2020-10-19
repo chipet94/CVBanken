@@ -1,6 +1,6 @@
 <template>
   <div>
-    <profile-base v-if="!loading" :user="thisUser"></profile-base>
+    <profile-base v-if="!loading"></profile-base>
   </div>
 </template>
 <script>

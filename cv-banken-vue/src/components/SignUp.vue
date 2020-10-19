@@ -18,7 +18,7 @@
               <b-field label="Utbildning">
                 <b-select v-model="selected" placeholder="Välj din utbildning">
                   <option v-for="education in educations" v-bind:key="`eductation-${education.id}`"
-                          v-bind:value="{ id: education.id, name: education.name }">
+                          v-bind:value="education.id">
                     {{ education.name }}
                   </option>
                 </b-select>
