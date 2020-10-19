@@ -12,7 +12,7 @@ namespace CVBanken.Data.Helpers
         }
         public static object ToResponse(this Programme programme)
         {
-            return new {programme.Id, programme.Category, categpryName= programme.Category.ToString(), programme.Start, programme.End };
+            return new {programme.Id, programme.Category, categoryName= programme.Category.ToString(), programme.Start, programme.End };
         }
     }
 }

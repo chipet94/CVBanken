@@ -22,7 +22,7 @@ export default {
     async getProgrammes() {
       await this.$store.dispatch("edu/getAll").then(res => {
         this.data = res
-       //console.log(this.data)
+       console.log("res " +this.data)
         /*for(let i = 0; i<res.length; i++){
           let eduId = res[i]
           console.log(eduId)

@@ -1,15 +1,16 @@
 <template> 
   <div>
-     <b-table v-for="item in data">
-       {{item}}
+     <b-table v-for="item in data" :key="item.category">
+       <div @click="handleClick">
+         {{item}}
+       </div>
      </b-table>                  
   </div>
 </template>
 
 <script>
-import Eductations from "@/components/Globals/Eductations";
+//import Eductations from "@/components/Globals/Eductations";
 export default {
-  components: {Eductations},
   props:{
      passedData:[]
   },
@@ -24,6 +25,7 @@ export default {
   },
   methods:{
      sortClasses(){
+       console.log("PassedData",this.passedData)
        for(let i=0; i<=this.passedData.length; i++){
           console.log(this.passedData[i].category)
          switch (this.passedData[i].category) {
@@ -42,7 +44,10 @@ export default {
          }    
        }
        console.log(this.data)
-     }
+     },
+    handleClick(){
+       console.log(this.data)
+    }
   }
 }
 </script>

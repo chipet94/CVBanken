@@ -35,6 +35,7 @@
           <article class="media">
             <div class="media-content">
               <div class="content">
+                <p>{{props}}</p>
                 <class-table :passedData="categoryList"></class-table>
                 <!--Här kan jag göra vadfan som, men det jag borde göra :
                 1. en ny component som skall visa det olika klasserna i kategorin
@@ -77,7 +78,7 @@ export default {
     handleselect(record){
       console.log(record)
       //classModal(record)
-      vue.component({classModal})
+      //vue.component({classTable})
       //this.$refs.classModal(record)
           //.toggleDetails(record)
       //this.classModal()
