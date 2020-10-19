@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
+using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,13 @@ namespace CVBanken.Services.UserServices
             await _context.SaveChangesAsync();
             return user.WithoutPassword();
         }
+
+        public async Task<bool> ConfirmPassword(int id, string password)
+        {
+            var user = await _context.Users.FindAsync(id);
+            CreatePasswordHash(password, out var hash, out var salt);
+            return user.PasswordHash == hash && user.PasswordSalt == salt;
+        }
     
     
         public async Task<IEnumerable<User>> GetAll()
@@ -72,24 +80,35 @@ namespace CVBanken.Services.UserServices
             return (await _context.Users.FindAsync(id)).WithoutPassword();
         }
         
-        public async Task<User> Create(User user, string password)
+        public async Task Create(User user)
+        {
+            // validation
+            if (await _context.Users.AnyAsync(x => x.Email == user.Email))
+                throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
+            try
+            {
+                await _context.AddAsync(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        public async Task CreateNew(UserRequest.Register user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new InvalidOperationException("Password is required");
+            if (user.ProgrammeId == 0 )
+            {
+                throw new InvalidOperationException("Programme is required");
+            }
 
             if (await _context.Users.AnyAsync(x => x.Email == user.Email))
                 throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
-
-            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            return user;
+            
         }
 
         public async Task<bool> Update(User userParam, string password = null)
@@ -172,7 +191,7 @@ namespace CVBanken.Services.UserServices
         {
             return Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
         }
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException(nameof(password));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));

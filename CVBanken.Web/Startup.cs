@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CVBanken.Data.Models.Database;
 using CVBanken.Services.EducationServices;
+using CVBanken.Services.FileServices;
 using CVBanken.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +70,8 @@ namespace CVBanken.Web
             });
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEducationService, EducationService>();
+            services.AddScoped<IFileManagerService, FileManagerService>();
+            services.AddScoped<IProfileService, ProfileService>();
             services.AddControllers();
         }
 
