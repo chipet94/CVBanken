@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
 using CVBanken.Services.EducationServices;
 using Microsoft.AspNetCore.Authorization;
@@ -40,15 +41,17 @@ namespace CVBanken.Web.Controllers
         }
         
         [HttpGet]
-        public async Task<IEnumerable<Programme>> GetAll()
+        public async Task<IEnumerable<object>> GetAll()
         {
-            return await _context.GetAllProgrammes();
+            var programmes = await _context.GetAllProgrammes();
+            return programmes.ToResponse();
         }
         
         [HttpGet("{id}")]
-        public async Task<Programme> GetById(int id)
+        public async Task<object> GetById(int id)
         {
-            return await _context.GetProgrammeById(id);
+            var programme = await _context.GetProgrammeById(id);
+            return programme.ToResponse();
         }
 
         [HttpGet("category/{id}")]
