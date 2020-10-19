@@ -1,22 +1,34 @@
-<template> 
-  <div>
+<template>
+  <section>
+    <b-table
+        :data="categoryList"
+        :hoverable=true
+        :loading=false
+        :mobile-cards=true
+    >
+      <b-table-column v-slot="props" field="name" label="Klass" @click="handleClick">
+        {{ props.row.name }}
+      </b-table-column>
+    </b-table>
+  </section>
+  <!--<div>
      <b-table v-for="item in data" :key="item.category">
        <div @click="handleClick">
          {{item}}
        </div>
      </b-table>                  
-  </div>
+  </div>-->
 </template>
 
 <script>
 //import Eductations from "@/components/Globals/Eductations";
 export default {
   props:{
-     passedData:[]
+     categoryList:[]
   },
   created() {
-    console.log(this.passedData)
-    this.sortClasses()
+    console.log(this.categoryList)
+    //this.sortClasses()
   },
   data(){
     return{
@@ -46,7 +58,7 @@ export default {
        console.log(this.data)
      },
     handleClick(){
-       console.log(this.data)
+       console.log("klick handled")
     }
   }
 }

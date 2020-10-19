@@ -11,56 +11,58 @@
       </b-table-column>
       
     </b-table>-->
-    <section>
-      <b-table
-          :data="isEmpty ? [] : categoryList"
-          ref="table"
-          paginated
-          per-page="5"
-          :opened-detailed="defaultOpenedDetails"
-          detailed
-          detail-key="id"
-          @details-open="(row) => $buefy.toast.open(`Expanded`)"
-          :show-detail-icon="showDetailIcon"
-          aria-next-label="Next page"
-          aria-previous-label="Previous page"
-          aria-page-label="Page"
-          aria-current-label="Current page">
+    <b-table
+        :data="isEmpty ? [] : categoryList"
+        aria-next-label="Next page"
+        aria-previous-label="Previous page"
+        aria-page-label="Page"
+        aria-current-label="Current page"
+        ref="table"
+        paginated
+        per-page="5"
+        :opened-detailed="defaultOpenedDetails"
+        detailed
+        detail-key="id"
+        @details-open="(row) => $buefy.toast.open(`Expanded`)"
+        :show-detail-icon="showDetailIcon"
+    >
 
-        <b-table-column field="categoryName" label="Utbildningar" width="40" v-slot="props">
-          {{ getCategoryName(props.row.category) }}
-        </b-table-column>
-        
-        <template slot="detail" slot-scope="props">
-          <article class="media">
-            <div class="media-content">
-              <div class="content">
-                <p>{{props}}</p>
-                <class-table :passedData="categoryList"></class-table>
-                <!--Här kan jag göra vadfan som, men det jag borde göra :
-                1. en ny component som skall visa det olika klasserna i kategorin
-                2. för att denna komponent skall fungera behlver jag följade
-                3. komponenten skall ta emot en prop som är en array med strängar i(res)
-                -->
-              </div>
+      <b-table-column field="categoryName" label="Utbildningar" width="40" v-slot="props">
+        {{props.row.categoryName}}
+      </b-table-column>
+      <template slot="detail" slot-scope="props">
+        <article class="media">
+          <div class="media-content">
+            <div class="content">
+              <class-table :category-list="classes[props.row.category]"></class-table>  
+              <!--Här kan jag göra vadfan som, men det jag borde göra :
+              1. en ny component som skall visa det olika klasserna i kategorin
+              2. för att denna komponent skall fungera behlver jag följade
+              3. komponenten skall ta emot en prop som är en array med strängar i(res)
+              -->
             </div>
-          </article>
-        </template>
-      </b-table>
-
-    </section>
+          </div>
+        </article>
+      </template>
+               
+      
+<!--      <class-table :category-list="group"></class-table>-->
+    </b-table>
+    
     
   </div>
 </template>
 
 <script>
-import classTable from "@/components/Globals/classTable";
+//import classTable from "@/components/Globals/classTable";
+import ClassTable from "@/components/Globals/classTable";
 export default {
   name: "EducationTableModel",
+  components: {ClassTable},
   props:{
     categoryList: []
   },
-  components: {classTable},
+  //components: {classTable},
   data(){
     return {
       templist: [{id: 1, category:2,name:"Defult02"},
@@ -74,6 +76,11 @@ export default {
     
   },
   showDetailIcon: true,
+  computed:{
+    classes(){
+      return this.groupBy(this.categoryList, "category")
+    }
+  },
   methods: {
     handleselect(record){
       console.log(record)
@@ -82,6 +89,15 @@ export default {
       //this.$refs.classModal(record)
           //.toggleDetails(record)
       //this.classModal()
+    },
+    groupBy(arr, property) {
+      return arr.reduce(function (narr, x) {
+        if (!narr[x[property]]) {
+          narr[x[property]] = [];
+        }
+        narr[x[property]].push(x);
+        return narr;
+      }, {});
     },
     getCategoryName(num) {
       switch (num) {
