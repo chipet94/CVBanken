@@ -82,13 +82,8 @@ export default {
     }
   },
   methods: {
-    handleselect(record){
-      console.log(record)
-      //classModal(record)
-      //vue.component({classTable})
-      //this.$refs.classModal(record)
-          //.toggleDetails(record)
-      //this.classModal()
+    handleClick() {
+      console.log("klick handled Educationtablemodel")
     },
     groupBy(arr, property) {
       return arr.reduce(function (narr, x) {
