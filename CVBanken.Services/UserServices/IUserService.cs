@@ -8,6 +8,7 @@ namespace CVBanken.Services.UserServices
     {
         Task<User> Authenticate(string username, string password);
         Task<IEnumerable<User>> GetAll();
+        Task<IEnumerable<User>> AdminGetAll();
         Task<User> GetById(int id);
         Task Create(User user);
         Task<bool> Update(User user, string password = null);

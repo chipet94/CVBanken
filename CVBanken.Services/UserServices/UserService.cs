@@ -72,6 +72,10 @@ namespace CVBanken.Services.UserServices
     
         public async Task<IEnumerable<User>> GetAll()
         {
+            return (await _context.Users.ToListAsync()).Where(u => u.Profile.Private != true);
+        }
+        public async Task<IEnumerable<User>> AdminGetAll()
+        {
             return (await _context.Users.ToListAsync()).WithoutPasswords();
         }
     

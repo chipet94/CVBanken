@@ -27,7 +27,9 @@ namespace CVBanken.Data.Helpers
         }
         public static object ToSafeResponse(this User user)
         {
-            return new { user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.ProgrammeId, categoryName = user.Programme.Category.ToString(), class_name = user.Programme.Name};
+            return new { user.Id, user.FirstName, user.LastName,
+                user.Email, user.Role, user.ProgrammeId, 
+                categoryName = user.Programme.Category.ToString(), class_name = user.Programme.Name, url = user.Profile.Url};
         }
         public static object ToAuthResponse(this User user)
         {
