@@ -19,43 +19,50 @@
         aria-role="dialog"
         aria-modal>
       <template #default="props">
-        <modal-form v-bind="formProps" @close="props.close"></modal-form>
+        <modal-form @close="props.close"></modal-form>
       </template>
     </b-modal>
   </section>
-  <!--<div>
-     <b-table v-for="item in data" :key="item.category">
-       <div @click="handleClick">
-         {{item}}
-       </div>
-     </b-table>                  
-  </div>-->
 </template>
 
 <script>
 const ModalForm = {
-  props: ['email', 'password', 'canCancel'],
+  created() {
+    this.loadPublicUsers()
+  },
+  props: {
+    users: []
+  },
+  methods:{
+    async loadPublicUsers() {
+      await this.$store.dispatch("user/all").then(
+          res => {
+            this.users = res
+            console.log(this.users)
+          }
+      )
+    },
+  },
   template: `
             <form action="">
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
-                        <p class="modal-card-title">Login</p>
+                        <p class="modal-card-title">Studenter</p>
                         <button
                             type="button"
                             class="delete"
                             @click="$emit('close')"/>
                     </header>
                     <section class="modal-card-body">
-                      <b-table v-for="user in users" :key="user">
-                        <b-table-column field="name" label="Studenter">
-                          {{ user }}
+                      <b-table :data="users">
+                        <b-table-column v-slot="props" field="name" label="Studenter">
+                          {{ props.row.firstName }}
+                        </b-table-column>
+                        <b-table-column v-slot="props" field="name" label="Utbildning">
+                          {{ props.row.categoryName }}
                         </b-table-column>
                       </b-table>
                     </section>
-                    <footer class="modal-card-foot">
-                        <button class="button" type="button" @click="$emit('close')">Close</button>
-                        <button class="button is-primary">Login</button>
-                    </footer>
                 </div>
             </form>
         `
@@ -68,39 +75,10 @@ export default {
   components: {
     ModalForm
   },
-  created() {
-    console.log(this.categoryList)
-    //this.sortClasses()
-    this.loadAllUsers()
-  },
-  methods: {
-    async loadAllUsers(){
-      await this.$store.dispatch("profile/getAllProfiles").then(
-          res => {
-            this.users = res;
-          }
-      )
-      /*for(let i = 0; i<=this.users.length; i++){
-        console.log(this.users[i].user.firstName)
-      }*/
-      
-      //this.isEmpty = this.users < 1
-      //this.loading = false;
-    },
-    
-    handleClick() {
-      console.log(this.props.categoryList)
-    },
-  },
   data() {
     return {
       data: [],
-      users:[],
       isComponentModalActive: false,
-      formProps: {
-        email: 'evan@you.com',
-        password: 'testing'
-      }
     }
   }
 }
