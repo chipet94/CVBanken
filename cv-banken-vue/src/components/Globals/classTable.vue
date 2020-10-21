@@ -46,7 +46,11 @@ const ModalForm = {
                             @click="$emit('close')"/>
                     </header>
                     <section class="modal-card-body">
-                      
+                      <b-table v-for="user in users" :key="user">
+                        <b-table-column field="name" label="Studenter">
+                          {{ user }}
+                        </b-table-column>
+                      </b-table>
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button" type="button" @click="$emit('close')">Close</button>
@@ -67,36 +71,31 @@ export default {
   created() {
     console.log(this.categoryList)
     //this.sortClasses()
+    this.loadAllUsers()
   },
   methods: {
-    sortClasses() {
-      console.log("PassedData", this.passedData)
-      for (let i = 0; i <= this.passedData.length; i++) {
-        console.log(this.passedData[i].category)
-        switch (this.passedData[i].category) {
-          case 0:
-            this.data.push(this.passedData[i].name)
-            break
-          case 1:
-            this.data.push(this.passedData[i].name)
-            break
-          case 4:
-            this.data.push(this.passedData[i].name)
-            break
-          case 3:
-            this.data.push(this.passedData[i].name)
-            break
-        }
-      }
-      console.log(this.data)
+    async loadAllUsers(){
+      await this.$store.dispatch("profile/getAllProfiles").then(
+          res => {
+            this.users = res;
+          }
+      )
+      /*for(let i = 0; i<=this.users.length; i++){
+        console.log(this.users[i].user.firstName)
+      }*/
+      
+      //this.isEmpty = this.users < 1
+      //this.loading = false;
     },
+    
     handleClick() {
       console.log(this.props.categoryList)
-    }
+    },
   },
   data() {
     return {
       data: [],
+      users:[],
       isComponentModalActive: false,
       formProps: {
         email: 'evan@you.com',
