@@ -1,31 +1,31 @@
 <template>
   <section>
     <b-table
-        :data="isEmpty ? [] : users"
+        :data="users < 1? [] : users"
         :hoverable=true
         :loading=loading
         :mobile-cards=true
     >
       <b-table-column v-slot="props" field="id" label="Id">
-        {{ props.row.user.id }}
+        {{ props.row.id }}
       </b-table-column>
       <b-table-column v-slot="props" field="name" label="Namn">
-        {{ props.row.user.firstName+ " " + props.row.user.lastName }}
+        {{ props.row.firstName + " " + props.row.lastName }}
       </b-table-column>
       <b-table-column v-slot="props" field="email" label="Email">
-        {{ props.row.user.email}}
+        {{ props.row.email }}
       </b-table-column>
       <b-table-column v-slot="props" field="name" label="Program">
-        {{ props.row.user.categoryName }}
+        {{ props.row.categoryName }}
       </b-table-column>
       <b-table-column v-slot="props" field="searching" label="Söker LIA">
-        {{ props.row.searching? "Ja" : "Nej" }}
+        {{ props.row.searching ? "Ja" : "Nej" }}
       </b-table-column>
       <b-table-column v-slot="props" field="private" label="Privat">
-        {{ props.row.private? "Ja" : "Nej" }}
+        {{ props.row.private ? "Ja" : "Nej" }}
       </b-table-column>
       <b-table-column v-slot="props" field="rank" label="Typ">
-        {{ props.row.user.role}}
+        {{ props.row.role }}
       </b-table-column>
       <b-table-column v-slot="props" field="profile" label="Profil">
         <router-link :to="{ name: 'Profile', params: { url: props.row.url }}">Öppna</router-link>
@@ -37,26 +37,18 @@
 <script>
 export default {
   name: "UserList",
+  props:  {users: Array},
   data() {
     return {
       isEmpty: Boolean,
       loading: true,
-      users: []
     }
   },
   async created() {
-    await this.loadAllUsers()
+    this.loading = false;
+    console.log(this.users)
   },
   methods: {
-    async loadAllUsers(){
-      await this.$store.dispatch("profile/getAllProfiles").then(
-          res => {
-            this.users = res;
-          }
-      )
-      this.isEmpty = this.users < 1
-      this.loading = false;
-    }
   }
 }
 </script>

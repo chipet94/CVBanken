@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using API_CVPortalen.Models.Auth;
 using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
-using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
 using CVBanken.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
@@ -15,12 +14,12 @@ namespace CVBanken.Web.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class UserController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly Context _context;
 
-        public UserController(IUserService userService, Context context)
+        public AuthController(IUserService userService, Context context)
         {
             _userService = userService;
             _context = context;
@@ -62,7 +61,7 @@ namespace CVBanken.Web.Controllers
             }
         }
 
-        [HttpGet("super/all")]
+        [HttpGet("/super")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> AdminGetAll()
         {
