@@ -10,15 +10,22 @@ namespace CVBanken.Data.Models.Auth
         public int Id { get; set; }
         public int ProgrammeId { get; set; } = 0;//ProgrammeBuilder.Empty.Id;
         public virtual Programme Programme { get; set; }
-        public virtual Profile Profile { get; set; }
-        
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         
         public string LastName { get; set; }
         public string FirstName { get; set; }
-
+        
+        public bool Private { get; set; } = false;
+        
+        public bool Searching { get; set; } = false;
+        
+        public string Url { get; set; }
+        
+        public string Description { get; set; } = "Skriv något om dig själv.";
+        
+        public virtual ProfilePicture ProfilePicture { get; set; }
 
         public string Role { get; set; } = "User";//Auth.Role.User;
         public string Token { get; set; }
@@ -30,14 +37,11 @@ namespace CVBanken.Data.Models.Auth
         {
             CreatePasswordHash(password, out var hash,out var salt);
             return new User
-            {    
-                Profile = new Profile
-                {
-                    Searching = false,
-                    Private = false,
-                    Description = "Skriv något om dig själv...",
-                    Url = ProfileBuilder.NewProfileUrl(25),
-                },
+            {
+                Searching = false,
+                Private = false,
+                Description = "Skriv något om dig själv...",
+                Url = ProfileBuilder.NewProfileUrl(25),
                 ProgrammeId = programmeid,
                 FirstName = firstname,
                 LastName = lastname,

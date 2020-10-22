@@ -4,6 +4,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
+using CVBanken.Data.Models.Requests.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -72,7 +75,7 @@ namespace CVBanken.Services.UserServices
     
         public async Task<IEnumerable<User>> GetAll()
         {
-            return (await _context.Users.ToListAsync()).Where(u => u.Profile.Private != true);
+            return (await _context.Users.ToListAsync()).Where(u => u.Private != true);
         }
         public async Task<IEnumerable<User>> AdminGetAll()
         {
@@ -83,15 +86,20 @@ namespace CVBanken.Services.UserServices
         {
             return (await _context.Users.FindAsync(id)).WithoutPassword();
         }
-        
-        public async Task Create(User user)
+        public async Task<User> GetByUrl(string url)
+        {
+            var user = await _context.Users.FirstAsync(u => u.Url == url);
+
+            return user;
+        }
+        public async Task Create(RegisterRequest user)
         {
             // validation
             if (await _context.Users.AnyAsync(x => x.Email == user.Email))
                 throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
             try
             {
-                await _context.AddAsync(user);
+                await _context.AddAsync(user.ToUser());
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -100,7 +108,7 @@ namespace CVBanken.Services.UserServices
                 throw;
             }
         }
-        public async Task CreateNew(UserRequest.Register user, string password)
+        public async Task CreateNew(RegisterRequest user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
@@ -115,41 +123,40 @@ namespace CVBanken.Services.UserServices
             
         }
 
-        public async Task<bool> Update(User userParam, string password = null)
+        public async Task<bool> Update(int id, UpdateUserRequest userParam)
         {
-            var user = await _context.Users.FindAsync(userParam.Id);
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // update username if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
+
+            foreach (var prop in userParam.GetType().GetProperties())
             {
-                // throw error if the new username is already taken
-                if (_context.Users.Any(x => x.Email == userParam.Email))
-                    throw new InvalidOperationException("Email " + userParam.Email + " is already taken");
+                var value = prop.GetValue(userParam, null);
+                Console.WriteLine(prop.Name + " - " + value);
+                
+                if (prop.Name != "OldPassword" && prop.GetValue(userParam, null) != null)
+                {
+                    var oldProp = user.GetType().GetProperty(prop.Name);
+                    if (oldProp != null && value != null)
+                    {
+                        if (prop.Name == "Password")
+                        {
+                            CreatePasswordHash((string)value, out var hash, out var salt);
+                            user.PasswordSalt = salt;
+                            user.PasswordHash = hash;
+                            
+                            Console.WriteLine("Updated password for " + user.Email +" To: " + value);
+                        }
+                        else
+                        {
+                            oldProp.SetValue(user,value);
+                        }
+                    }
+                }
 
-                user.Email = userParam.Email;
             }
-
-            // update user properties if provided
-            if (!string.IsNullOrWhiteSpace(userParam.FirstName))
-                user.FirstName = userParam.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(userParam.LastName))
-                user.LastName = userParam.LastName;
-            if (userParam.ProgrammeId != user.ProgrammeId)
-                user.ProgrammeId = userParam.ProgrammeId;
-
-            // update password if provided
-            if (!string.IsNullOrWhiteSpace(password))
-            {
-                CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-            }
-
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return true;
@@ -164,7 +171,39 @@ namespace CVBanken.Services.UserServices
             await _context.SaveChangesAsync();
             return true;
         }
+        
+        public async Task<IEnumerable<User>> GetAllUsersInProgramme(int id)
+        {
+            var users = await _context.Users.Where(u => u.ProgrammeId == id).ToArrayAsync();
+            return users;
+        }
+        public async Task<IEnumerable<User>> GetAllUserInCategory(int category)
+        {
+            var users = await _context.Users.Where(u => (int)u.Programme.Category == category).ToArrayAsync();
+            return users;
+        }
 
+        //todo Krav för bilder
+        public async Task UpdatePicture(int id, IFormFile picture)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user.ProfilePicture == null)
+            {
+                user.ProfilePicture = new ProfilePicture();
+                user.ProfilePicture.User = user;
+                user.ProfilePicture.UserId = user.Id;
+                user.ProfilePicture.ImageTitle = "Profile Picture";
+            }
+
+            await using (var dataSource = new MemoryStream())
+            {
+                await picture.CopyToAsync(dataSource);
+                user.ProfilePicture.ImageData = dataSource.ToArray();
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+        }
         // helper methods
         public async Task<string> GenerateJwtToken(User user)
         {

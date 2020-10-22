@@ -1,8 +1,9 @@
 import profileService from "@/services/profileService";
-import {Profile} from "@/models/Profile";
+
+import User from "@/models/User";
 const initialState = {
-    visitedProfiles:[],
-    userProfile: Profile.prototype
+    selectedProfile: User.prototype,
+    userProfile: {}
 }
 
 export const profile = {
@@ -10,7 +11,7 @@ export const profile = {
     state: initialState,
     getters:{
         getProfile : state => {
-            return state.userProfile;
+            return state.selectedProfile;
         },
     },
     actions:{
@@ -31,7 +32,7 @@ export const profile = {
                 profile => {
                     commit('userProfileSuccess', profile.data);
                     console.log("from store:",profile)
-                    return Promise.resolve(new Profile(profile.data));
+                    return Promise.resolve(profile.data);
                 },
                 error => {
                     commit('educationsFailure');
@@ -44,17 +45,18 @@ export const profile = {
             return profileService.getProfile(url).then(
                 profile => {
                     commit("profileFetchSuccess", profile.data)
-                    return Promise.resolve(new Profile(profile.data));
+                    return Promise.resolve(profile.data);
                 },
                 error => {
                     return Promise.reject(error);
                 }
             )
         },
-        updateProfile({commit, state}, request) {
-            return profileService.updateProfile(state.userProfile.profileId, request).then(
+        updateProfile({commit, state, dispatch}, request) {
+            return profileService.updateProfile(state.selectedProfile.id, request).then(
                 profile => {
-                    commit("profileUpdated", profile.data);
+                    dispatch("getUserProfile").then(commit("profileUpdated"))
+                    //commit("profileUpdated");
                     return Promise.resolve(profile.data);
                 },
                 error => {
@@ -64,7 +66,7 @@ export const profile = {
             )
         },
         updateProfilePicture({commit, state}, request) {
-            return profileService.updateProfilePicture(state.userProfile.profileId, request).then(
+            return profileService.updateProfilePicture(state.selectedProfile.id, request).then(
                 res => {
                     commit("profilePictureUpdated");
                     return Promise.resolve(res);
@@ -78,38 +80,25 @@ export const profile = {
     },
     mutations: {
         async userProfileSuccess(state, profile) {
-            state.userProfile = new Profile( profile);
-            await state.userProfile.getProfilePicture();
+            state.selectedProfile = new User(profile)
+            await state.selectedProfile.getProfilePicture();
         },
         userProfileFailure(state) {
-            state.userProfile = null;
+            state.selectedProfile = null;
         },
         profileFetchSuccess(state, profile) {
-            state.visitedProfiles.map(prof => prof.profileId === profile.profileId
-                ?{...prof, profile}
-                : prof
-            );
+            state.selectedProfile = new User(profile)
         },
-        async profileUpdated(state, profile){
-            console.log("old", state.userProfile)
-            console.log("to be applyed: ", profile)
-            state.userProfile = new Profile( profile);
-            await state.userProfile.getProfilePicture();
-            console.log("new",state.userProfile)
-        },
+        profileUpdated(){
+
+            },
         profileUpdateFail(state, profile){
-            state.userProfile = {...state.userProfile, profile}
+
+            state.selectedProfile = {...state.selectedProfile, profile}
         },
         async profilePictureUpdated(state){
             console.log(state)
-            await state.userProfile.getProfilePicture()
+            await state.selectedProfile.getProfilePicture()
         },
-
-        registerSuccess(state) {
-            state.status.loggedIn = false;
-        },
-        educationsFailure(state) {
-            state.status.loggedIn = false;
-        }
     }
 }

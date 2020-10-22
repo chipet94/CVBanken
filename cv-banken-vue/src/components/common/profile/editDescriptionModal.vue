@@ -34,11 +34,10 @@
   </section>
 </template>
 <script>
-import {Profile} from "@/models/Profile";
 
 export default {
 name: "editDescriptionModal",
-  props: {profile : Profile},
+  props: {profile : {}},
   data() {
     return {
       isShowing: false,

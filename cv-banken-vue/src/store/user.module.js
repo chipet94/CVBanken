@@ -1,7 +1,10 @@
 import UserService from "@/services/UserService";
+import User from "@/models/User";
 const initialState = {
     publicUsers: [],
-    allUsers: []
+    allUsers: [],
+    currentUsers: [],
+    selectedUser: User.prototype,
 }
 
 export const user = {
@@ -13,6 +16,9 @@ export const user = {
         },
         AllPublicUsers: state => {
             return state.publicUsers;
+        },
+        AllCurrentUsers: state => {
+            return state.currentUsers;
         }
     },
     actions:{
@@ -40,6 +46,31 @@ export const user = {
                 }
             )
         },
+        allInProgramme({commit}, id){
+            return UserService.getAllinProgramme(id).then(
+                users => {
+                    commit("currentUsersSuccess", users.data)
+                    return Promise.resolve(users.data)
+                },
+                err => {
+                    console.log(err);
+                    return Promise.reject(err)
+                }
+            )
+        },
+        allInCategory({commit}, id){
+            return UserService.getAllinCategory(id).then(
+                users => {
+                    commit("currentUsersSuccess", users.data)
+                    return Promise.resolve(users.data)
+                },
+                err => {
+                    console.log(err);
+                    return Promise.reject(err)
+                }
+            )
+        },
+
     },
     mutations: {
         adminUsersSuccess(state, users) {
@@ -47,6 +78,9 @@ export const user = {
         },
         usersSuccess(state, users) {
             state.publicUsers = users
+        },
+        currentUsersSuccess(state, users) {
+            state.currentUsers = users
         },
 
 

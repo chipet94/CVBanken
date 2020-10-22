@@ -8,6 +8,12 @@
       <b-tab-item label="all users">
         <user-list v-model="users" :users="thisAllUsers"></user-list>
       </b-tab-item>
+      <b-tab-item label="all users in programme">
+        <user-list v-model="users" :users="thisAllUsersin"></user-list>
+      </b-tab-item>
+      <b-tab-item label="all users in category">
+        <user-list v-model="users" :users="thisAllUsersin"></user-list>
+      </b-tab-item>
     </b-tabs>
   </div>
 </template>
@@ -32,6 +38,9 @@ export default {
     thisAllUsers(){
       return this.$store.getters["user/admin_GetAllUsers"]
     },
+    thisAllUsersin(){
+      return this.$store.getters["user/AllCurrentUsers"]
+    },
     thisUser() {
       return this.$store.getters["auth/getUser"]
     },
@@ -46,6 +55,12 @@ export default {
       }
       if (index === 1){
         await this.loadAllUsers();
+      }
+      if (index === 2){
+        await this.loadAllCurrent();
+      }
+      if (index === 3){
+        await this.loadAllCurrentCategory();
       }
     },
 
@@ -63,6 +78,18 @@ export default {
             return res;
           }
       )
+    },
+      async loadAllCurrent(){
+        await this.$store.dispatch("user/allInProgramme", 1001).then(
+            res => {
+              return res;
+            })
+    },
+    async loadAllCurrentCategory(){
+      await this.$store.dispatch("user/allInCategory", 3).then(
+          res => {
+            return res;
+          })
     }
   }
 }

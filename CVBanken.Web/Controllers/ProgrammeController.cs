@@ -60,6 +60,7 @@ namespace CVBanken.Web.Controllers
             return await _context.GetAllEducationsByCategory(id);
         }
         
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

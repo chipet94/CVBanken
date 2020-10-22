@@ -5,7 +5,7 @@ const API_URL = process.env.VUE_APP_API_URL
 export class ProfileService {
 
     getAllProfiles(){
-        return axios.get(API_URL + "profile/all", {
+        return axios.get(API_URL + "user/", {
         })
     }
     getProfile(url = ""){
@@ -19,7 +19,7 @@ export class ProfileService {
         })
     }
     getProfilePicture(id = 0){
-        return axios.get(API_URL + "profile/"+ id +"/picture" , {responseType: 'blob'}).then( res => {
+        return axios.get(API_URL + "user/"+ id +"/picture" , {responseType: 'blob'}).then( res => {
             return res;
         })
     }
@@ -30,12 +30,12 @@ export class ProfileService {
     }
     updateProfile(id, updateModel){
         console.log(id, updateModel)
-        return axios.put(API_URL + "profile/" + id, updateModel,
+        return axios.put(API_URL + "auth/" + id, updateModel,
             {headers:authHeader()})
     }
     updateProfilePicture(id, updateModel){
         console.log(id, updateModel)
-        return axios.put(API_URL + "profile/" + id + "/picture", updateModel, {headers:authHeader()})
+        return axios.put(API_URL + "auth/" + id + "/picture", updateModel, {headers:authHeader()})
     }
 }
 export default new ProfileService();
