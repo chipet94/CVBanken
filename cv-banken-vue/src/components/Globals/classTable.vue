@@ -28,6 +28,7 @@
 <script>
 const ModalForm = {
   created() {
+    console.log('Modal create')
     this.loadPublicUsers()
   },
   props: {
@@ -38,10 +39,16 @@ const ModalForm = {
       await this.$store.dispatch("user/all").then(
           res => {
             this.users = res
-            console.log(this.users)
           }
-      )
+      )/*.then(
+          this.sortByClass()
+      )*/
     },
+    /*sortByClass(){
+      for(let i = 0; i<=this.users; i++){
+        console.log(this.users[i])
+      }
+    }*/
   },
   template: `
             <form action="">
@@ -67,10 +74,13 @@ const ModalForm = {
             </form>
         `
 }
-//import Eductations from "@/components/Globals/Eductations";
+
 export default {
   props: {
     categoryList: []
+  },
+  created() {
+    console.log('ClassModal class')
   },
   components: {
     ModalForm

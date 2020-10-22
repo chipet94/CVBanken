@@ -1,16 +1,5 @@
 <template>
   <div>
-    <!--<b-table
-        :data="isEmpty ? [] : categoryList"
-        :hoverable=true
-        :mobile-cards=true
-        @click="handleselect"
-    >
-      <b-table-column field="category" label="Educations" v-slot="props">
-        {{ getCategoryName(props.row.category) }}
-      </b-table-column>
-      
-    </b-table>-->
     <b-table
         :data="isEmpty ? [] : categoryList"
         aria-next-label="Next page"
@@ -26,7 +15,6 @@
         @details-open="(row) => $buefy.toast.open(`Expanded`)"
         :show-detail-icon="showDetailIcon"
     >
-
       <b-table-column field="categoryName" label="Utbildningar" width="40" v-slot="props">
         {{props.row.categoryName}}
       </b-table-column>
@@ -44,25 +32,21 @@
           </div>
         </article>
       </template>
-               
-      
-<!--      <class-table :category-list="group"></class-table>-->
     </b-table>
-    
-    
   </div>
 </template>
 
 <script>
-//import classTable from "@/components/Globals/classTable";
 import ClassTable from "@/components/Globals/classTable";
 export default {
   name: "EducationTableModel",
   components: {ClassTable},
+  created() {
+    console.log('EducationTableModal class')
+  },
   props:{
     categoryList: []
   },
-  //components: {classTable},
   data(){
     return {
       templist: [{id: 1, category:2,name:"Defult02"},
@@ -82,9 +66,6 @@ export default {
     }
   },
   methods: {
-    handleClick() {
-      console.log("klick handled Educationtablemodel")
-    },
     groupBy(arr, property) {
       return arr.reduce(function (narr, x) {
         if (!narr[x[property]]) {
@@ -93,31 +74,6 @@ export default {
         narr[x[property]].push(x);
         return narr;
       }, {});
-    },
-    getCategoryName(num) {
-      switch (num) {
-        case 1:
-          return "Webbutveckling"
-        case 2:
-         return  "Applikationsutveckling"
-        case 3:
-          return "JavaUtveckling"
-        case 4:
-          return  ".Netutveckling"
-        case 5:
-          return  "Mjukvarutestare"
-        case 6:
-         return  "Frontendutvecklare"
-        case 7:
-          return  "IT-Projektledare"
-        case 8:
-          return "JavaScriptutveckling"
-        case 9:
-          return "UX-Designer"
-        default:
-          return  "Ingen utbildning"
-      }
-      
     },
   }
 }
