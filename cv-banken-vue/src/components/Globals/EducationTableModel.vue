@@ -22,12 +22,7 @@
         <article class="media">
           <div class="media-content">
             <div class="content">
-              <class-table :category-list="classes[props.row.category]"></class-table>  
-              <!--Här kan jag göra vadfan som, men det jag borde göra :
-              1. en ny component som skall visa det olika klasserna i kategorin
-              2. för att denna komponent skall fungera behlver jag följade
-              3. komponenten skall ta emot en prop som är en array med strängar i(res)
-              -->
+              <class-table :category-list="templist[props.row.category]"></class-table>
             </div>
           </div>
         </article>
@@ -43,16 +38,14 @@ export default {
   components: {ClassTable},
   created() {
     console.log('EducationTableModal class')
+    this.templist = this.classes
   },
   props:{
-    categoryList: []
+    categoryList: Array
   },
   data(){
     return {
-      templist: [{id: 1, category:2,name:"Defult02"},
-        {id: 2, category:2,name:"Defult03"},
-        {id: 3, category:2,name:"Defult04"},
-      ],
+      templist: [],
       defaultOpenedDetails: [1],
       showDetailIcon: true,
       isEmpty: false

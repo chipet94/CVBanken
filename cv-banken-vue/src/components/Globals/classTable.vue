@@ -1,7 +1,7 @@
 <template>
   <section>
     <b-table
-        @click="isComponentModalActive = true"
+        @click="handleClick"
         :data="categoryList"
         :hoverable=true
         :loading=false
@@ -18,37 +18,34 @@
         :destroy-on-hide="false"
         aria-role="dialog"
         aria-modal>
-      <template #default="props">
-        <modal-form @close="props.close"></modal-form>
+      <template>
+        <Modalmodel v-model="specificUsers" @close="isComponentModalActive = false" :users="specificUsers"></Modalmodel>
       </template>
     </b-modal>
   </section>
 </template>
 
 <script>
-const ModalForm = {
-  created() {
+/*const ModalForm = {
+ async created() {
     console.log('Modal create')
-    this.loadPublicUsers()
+    await this.loadAllCurrent()
+  },
+  data(){
+    return{
+      specificUsers: []
+    }
   },
   props: {
-    users: []
+    programmeId: Number
   },
   methods:{
-    async loadPublicUsers() {
-      await this.$store.dispatch("user/all").then(
+    async loadAllCurrent(){
+      await this.$store.dispatch("user/allInProgramme", this.programmeId).then(
           res => {
-            this.users = res
-          }
-      )/*.then(
-          this.sortByClass()
-      )*/
+            this.specificUsers = res;
+          })
     },
-    /*sortByClass(){
-      for(let i = 0; i<=this.users; i++){
-        console.log(this.users[i])
-      }
-    }*/
   },
   template: `
             <form action="">
@@ -61,7 +58,7 @@ const ModalForm = {
                             @click="$emit('close')"/>
                     </header>
                     <section class="modal-card-body">
-                      <b-table :data="users">
+                      <b-table :data="specificUsers">
                         <b-table-column v-slot="props" field="name" label="Studenter">
                           {{ props.row.firstName }}
                         </b-table-column>
@@ -73,22 +70,39 @@ const ModalForm = {
                 </div>
             </form>
         `
-}
+}*/
 
+import Modalmodel from "@/components/Globals/Modalmodel";
 export default {
   props: {
-    categoryList: []
+    categoryList: Array
   },
   created() {
     console.log('ClassModal class')
   },
   components: {
-    ModalForm
+    Modalmodel,
+  },
+  methods:{
+    async handleClick(index){
+      this.selected = index.id
+      await this.loadAllCurrent()
+      this.isComponentModalActive = true
+      
+    },
+    async loadAllCurrent(){
+      await this.$store.dispatch("user/allInProgramme", this.selected).then(
+          res => {
+            this.specificUsers = res;
+          })
+    }
   },
   data() {
     return {
       data: [],
       isComponentModalActive: false,
+      selected: 0,
+      specificUsers: []
     }
   }
 }
