@@ -174,12 +174,12 @@ namespace CVBanken.Services.UserServices
         
         public async Task<IEnumerable<User>> GetAllUsersInProgramme(int id)
         {
-            var users = await _context.Users.Where(u => u.ProgrammeId == id).ToArrayAsync();
+            var users = await _context.Users.Where(u => u.ProgrammeId == id && u.Private == false).ToArrayAsync();
             return users;
         }
         public async Task<IEnumerable<User>> GetAllUserInCategory(int category)
         {
-            var users = await _context.Users.Where(u => (int)u.Programme.Category == category).ToArrayAsync();
+            var users = await _context.Users.Where(u => (int)u.Programme.Category == category && u.Private == false).ToArrayAsync();
             return users;
         }
 
