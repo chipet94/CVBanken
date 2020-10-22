@@ -13,6 +13,14 @@ class UserService {
                 {headers: authHeader(),}
             )
     }
+    getAllinProgramme(id) {
+        return axios
+            .get(API_URL + 'user/programme/' + id)
+    }
+    getAllinCategory(id) {
+        return axios
+            .get(API_URL + 'user/category/'+ id)
+    }
 
 }
 

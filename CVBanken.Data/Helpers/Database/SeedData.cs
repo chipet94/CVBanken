@@ -13,10 +13,6 @@ namespace CVBanken.Data.Helpers.Database
     {
         public static void Seed(ModelBuilder _builder)
         {
-            //_builder.Entity<ProfilePicture>().HasData(DefaultProfilePictures());
-            //_builder.Entity<ProfilePicture>().HasData(ProfilePictureBuilder.NewDefault());
-            _builder.Entity<Profile>().HasData(DefaultProfiles());
-
             var defaultProgs = DefaultProgrammes().ToArray();
             _builder.Entity<Programme>().HasData(
                 defaultProgs
@@ -25,27 +21,6 @@ namespace CVBanken.Data.Helpers.Database
                 DefaultUsers(defaultProgs)
             );
         }
-
-        public static IEnumerable<Profile> DefaultProfiles()
-        {
-            var profiles = new List<Profile>();
-            for (int i = 1; i < 51; i++)
-            {
-                profiles.Add(ProfileBuilder.NewSeedProfile(i));
-            }
-            profiles.Add(new Profile{Description = "I am a god.", ProfileId = 51, Url = ProfileBuilder.NewProfileUrl(25), UserId = 99999});
-            return profiles;
-        }
-        // public static IEnumerable<ProfilePicture> DefaultProfilePictures()
-        // {
-        //     var profiles = new List<ProfilePicture>();
-        //     for (int i = 2; i < 52; i++)
-        //     {
-        //         profiles.Add(new ProfilePicture{Id = i,ProfileId = i});
-        //     }
-        //     profiles.Add(new ProfilePicture{Id = 52, ProfileId = 99999});
-        //     return profiles;
-        // }
         private static IEnumerable<Programme> DefaultProgrammes()
         {
             return new[]
@@ -64,36 +39,40 @@ namespace CVBanken.Data.Helpers.Database
             
             for (int i = 1; i < 51; i++)
             {
-                users.Add(generateUser(i));
+                var user = generateUser(i, programmes);
+                user.Id = i;
+                users.Add(user);
             }
-            var admin = generateAdmin(99999);
-            users.Add(admin);
-            foreach (var user in users)
+            CreatePasswordHash(defaultPassword, out var hash, out var salt);
+            var admin = new User
             {
-                var random  = new Random();
-                user.ProgrammeId = programmes[random.Next(1, programmes.Length)].Id;
-            }
+                Id = 99999,
+                ProgrammeId = 1000,
+                Description = "I am a God, aka admin",
+                Email = "admin@iths.se",
+                FirstName = "Admin",
+                LastName = "Adminsson",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Private = true,
+                Searching = false,
+                ProfilePicture = null,
+                Role = Role.Admin,
+                Url = ProfileBuilder.NewProfileUrl(25)
+
+            };
+            users.Add(admin);
             return users;
         }
 
-        private static User generateUser(int id)
+        private static User generateUser(int id, Programme[] programmes)
         {
-            CreatePasswordHash(defaultPassword, out var hash, out var salt);
-            return new User
-            {
-                Id = id, FirstName = $"name{id}", LastName = $"Lname{id}", Email = $"user{id}@iths.se",
-                Role = Role.User, PasswordHash = hash, PasswordSalt = salt,
-            };
-
-        }
-        private static User generateAdmin(int id)
-        {
-            CreatePasswordHash(defaultPassword, out var hash, out var salt);
-            return new User
-            {
-                Id = id, FirstName = $"admin", LastName = $"Lname{id}", Email = $"admin@iths.se",
-                Role = Role.Admin, PasswordHash = hash, PasswordSalt = salt,
-            };
+            var random  = new Random();
+            return UserBuilder.NewUser(
+            
+                $"user{id}@iths.se", defaultPassword, $"name{id}", $"Lname{id}", programmes[random.Next(1, programmes.Length)].Id,
+                Role.User
+            );
 
         }
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

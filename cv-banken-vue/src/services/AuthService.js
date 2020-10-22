@@ -11,14 +11,14 @@ class AuthService {
             .then(response => {
                 if (response.data.token) {
                    // console.log(response.data)
-                    localStorage.setItem('userData', JSON.stringify(response.data));
+                    localStorage.setItem('sessionData', JSON.stringify(response.data));
                 }
                 return response.data;
             });
     }
 
     logout() {
-        localStorage.removeItem('userData');
+        localStorage.removeItem('sessionData');
     }
 
     register(user) {

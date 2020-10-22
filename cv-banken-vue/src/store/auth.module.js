@@ -1,17 +1,17 @@
 import AuthService from '../services/AuthService';
-import User from "@/models/User";
+import {SessionData} from "@/models/SessionData";
 
-let user = JSON.parse(localStorage.getItem("userData"));
-const initialState = user
-    ? { status: { loggedIn: true }, user }
-    : { status: { loggedIn: false }, user: null };
+let session = JSON.parse(localStorage.getItem("sessionData"));
+const initialState = session
+    ? { status: { loggedIn: true }, session }
+    : { status: { loggedIn: false }, session: null };
 
 export const auth = {
     namespaced: true,
     state: initialState,
     getters:{
         getUser : state => {
-            return User.FromData(state.user)
+            return SessionData.FromData(state.session)
         }
     },
     actions: {
@@ -48,15 +48,15 @@ export const auth = {
     mutations: {
         loginSuccess(state, user) {
             state.status.loggedIn = true;
-            state.user = user;
+            state.session = user;
         },
         loginFailure(state) {
             state.status.loggedIn = false;
-            state.user = null;
+            state.session = null;
         },
         logout(state) {
             state.status.loggedIn = false;
-            state.user = null;
+            state.session = null;
         },
         registerSuccess(state) {
             state.status.loggedIn = false;

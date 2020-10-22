@@ -16,9 +16,10 @@
               </b-field>
               <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
               <b-field label="Utbildning">
-                <b-select v-model="selected" placeholder="Välj din utbildning">
-                  <option v-for="education in educations" v-bind:key="`eductation-${education.id}`"
-                          v-bind:value="education.id">
+                <b-select v-model="programme" placeholder="Välj din utbildning">
+                  <option v-for="education in educations"
+                          :key="education.name"
+                          :value="education.id">
                     {{ education.name }}
                   </option>
                 </b-select>
@@ -50,7 +51,7 @@ export default {
   },
   data() {
     return {
-      selected: "",
+      programme: '',
       educations: [],
       input: "",
       firstName: "",
@@ -63,13 +64,14 @@ export default {
   methods: {
     async signUp() {
       this.locked = true;
+      console.log(this.programme)
       await this.$store.dispatch("auth/register",
           {
             "firstName": this.firstName,
             "lastName": this.lastName,
             "email": this.input,
             "password": this.password,
-            "programmeId": this.selected.id
+            "programmeId": this.programme
           })
           .then(() => {
             alert("Success!")

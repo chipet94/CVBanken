@@ -54,6 +54,7 @@ namespace CVBanken.Web.Controllers
             return programme.ToResponse();
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

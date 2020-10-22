@@ -3,8 +3,8 @@ export const authHeader = (contentType = 'application/json') => {
         'Accept': 'application/json',
         'Content-Type': contentType
     }
-    if (localStorage["userData"]) {
-        headers.Authorization = 'Bearer ' + JSON.parse(localStorage["userData"]).token;
+    if (localStorage["sessionData"]) {
+        headers.Authorization = 'Bearer ' + JSON.parse(localStorage["sessionData"]).token;
     }
     //console.log("authheaders: ", headers);
     return headers;
