@@ -2,13 +2,6 @@
   <div>
     <b-table
         :data="isEmpty ? [] : categoryList"
-        aria-next-label="Next page"
-        aria-previous-label="Previous page"
-        aria-page-label="Page"
-        aria-current-label="Current page"
-        ref="table"
-        paginated
-        per-page="5"
         :opened-detailed="defaultOpenedDetails"
         detailed
         detail-key="id"

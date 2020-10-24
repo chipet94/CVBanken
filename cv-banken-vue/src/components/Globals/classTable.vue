@@ -19,58 +19,19 @@
         aria-role="dialog"
         aria-modal>
       <template>
-        <Modalmodel v-model="specificUsers" @close="isComponentModalActive = false" :users="specificUsers"></Modalmodel>
+        <Modalmodel v-model="specificUsers" 
+                    :class-name="selectedRow.name" 
+                    :programme="selectedRow.categoryName" 
+                    @close="isComponentModalActive = false" 
+                    :users="specificUsers">
+          
+        </Modalmodel>
       </template>
     </b-modal>
   </section>
 </template>
 
 <script>
-/*const ModalForm = {
- async created() {
-    console.log('Modal create')
-    await this.loadAllCurrent()
-  },
-  data(){
-    return{
-      specificUsers: []
-    }
-  },
-  props: {
-    programmeId: Number
-  },
-  methods:{
-    async loadAllCurrent(){
-      await this.$store.dispatch("user/allInProgramme", this.programmeId).then(
-          res => {
-            this.specificUsers = res;
-          })
-    },
-  },
-  template: `
-            <form action="">
-                <div class="modal-card" style="width: auto">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">Studenter</p>
-                        <button
-                            type="button"
-                            class="delete"
-                            @click="$emit('close')"/>
-                    </header>
-                    <section class="modal-card-body">
-                      <b-table :data="specificUsers">
-                        <b-table-column v-slot="props" field="name" label="Studenter">
-                          {{ props.row.firstName }}
-                        </b-table-column>
-                        <b-table-column v-slot="props" field="name" label="Utbildning">
-                          {{ props.row.categoryName }}
-                        </b-table-column>
-                      </b-table>
-                    </section>
-                </div>
-            </form>
-        `
-}*/
 
 import Modalmodel from "@/components/Globals/Modalmodel";
 export default {
@@ -85,13 +46,14 @@ export default {
   },
   methods:{
     async handleClick(index){
-      this.selected = index.id
+      this.selectedRow = index
       await this.loadAllCurrent()
       this.isComponentModalActive = true
       
     },
     async loadAllCurrent(){
-      await this.$store.dispatch("user/allInProgramme", this.selected).then(
+      await this.$store.dispatch("user/allInProgramme", this.selectedRow.id)
+          .then(
           res => {
             this.specificUsers = res;
           })
@@ -102,7 +64,8 @@ export default {
       data: [],
       isComponentModalActive: false,
       selected: 0,
-      specificUsers: []
+      specificUsers: [],
+      selectedRow: {}
     }
   }
 }

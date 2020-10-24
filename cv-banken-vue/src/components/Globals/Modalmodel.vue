@@ -3,9 +3,9 @@
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          {{users[0].categoryName}}
+          {{programme}}
           <br>
-        <span class="subtitle is-centered">{{users[0].class_name}}</span>
+        <span class="subtitle is-centered">{{className}}</span>
         </p>
         <button
             type="button"
@@ -47,7 +47,9 @@ export default {
   props: {
     programmeId: Number,
     isActive: Boolean,
-    users:Array
+    users:Array,
+    className: String,
+    programme: String
   },
   methods:{
     handleClick(index){
