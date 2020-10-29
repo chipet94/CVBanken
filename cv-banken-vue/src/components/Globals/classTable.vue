@@ -1,5 +1,10 @@
 <template>
   <section>
+    <!--<div v-for="category in categoryList" :key="category.categoryName" @click="handleClick">
+      <div>
+        {{category.categoryName}}
+      </div>
+    </div>-->
     <b-table
         @click="handleClick"
         :data="categoryList"
@@ -7,7 +12,7 @@
         :loading=false
         :mobile-cards=true
     >
-      <b-table-column v-slot="props" field="name" label="Klass">
+      <b-table-column v-slot="props">
         {{ props.row.name }}
       </b-table-column>
     </b-table>
@@ -46,6 +51,7 @@ export default {
   },
   methods:{
     async handleClick(index){
+      console.log(index)
       this.selectedRow = index
       await this.loadAllCurrent()
       this.isComponentModalActive = true

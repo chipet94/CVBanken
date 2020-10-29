@@ -59,3 +59,17 @@ export default {
   },
 }
 </script>
+<style>
+
+.modal-card-head{
+  background-color: #693250;
+}
+
+.modal-card-title{
+  color: white;
+}
+
+.subtitle{
+  color: white;
+}
+</style>
