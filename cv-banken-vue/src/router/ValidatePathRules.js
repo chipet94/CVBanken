@@ -14,12 +14,7 @@ export const ValidatePathRules = (to, from, next) => {
                 return next(from)   //stanna om du inte är admin. 
         else
             return next()
-    else if (to.matched.some(record => record.meta.guest))   // om sidan är för gäster
-        if (!user.token)           // ingen userdata, gå vidare
-            next()
-        else
-            return next({name: 'UserProfile'})     //annars gå till profil.
-
+   //else if (to.matched.some(record => record.meta.guest))   // om sidan är för gäster
     //inga krav
     return next()
 }

@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
+using CVBanken.Data.Models.Requests.Auth;
+using CVBanken.Services.FileServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -141,7 +144,44 @@ namespace CVBanken.Services.UserServices
             await _context.SaveChangesAsync();
             return true;
         }
+        
+        public async Task<IEnumerable<User>> GetAllUsersInProgramme(int id)
+        {
+            var users = await _context.Users.Where(u => u.ProgrammeId == id && u.Private == false).ToArrayAsync();
+            return users;
+        }
+        public async Task<IEnumerable<User>> GetAllUserInCategory(int category)
+        {
+            var users = await _context.Users.Where(u => (int)u.Programme.CategoryId == category && u.Private == false).ToArrayAsync();
+            return users;
+        }
 
+        //todo Krav för bilder
+        public async Task UpdatePicture(int id, IFormFile picture)
+        {
+            var ext = Path.GetExtension(picture.FileName);
+            if (!FilesSettings.SUPPORTED_IMAGES.Contains(ext))
+            {
+                throw new Exception($"'{ext}' Is not suppoted.");
+            }
+            var user = await _context.Users.FindAsync(id);
+            if (user.ProfilePicture == null)
+            {
+                user.ProfilePicture = new ProfilePicture();
+                user.ProfilePicture.User = user;
+                user.ProfilePicture.UserId = user.Id;
+                user.ProfilePicture.ImageTitle = "Profile Picture";
+            }
+
+            await using (var dataSource = new MemoryStream())
+            {
+                await picture.CopyToAsync(dataSource);
+                user.ProfilePicture.ImageData = dataSource.ToArray();
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+        }
         // helper methods
         public async Task<string> GenerateJwtToken(User user)
         {

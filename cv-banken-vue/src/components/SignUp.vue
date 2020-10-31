@@ -5,8 +5,7 @@
     <div id="section" class="m-t-12">
       <div class="columns is-centered">
         <div class="column is-6">
-          <div class="box">
-            <div class="container">
+              <span class="has-text-danger">{{ errors.FirstName }}</span>
               <b-field label="Förnamn">
                 <b-input v-model="firstName" required type="text"></b-input>
               </b-field>
@@ -31,8 +30,6 @@
                 <b-button class="button is-purple text is-black" @click.native="signUp">Registrera</b-button>
               </b-field>
             </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>

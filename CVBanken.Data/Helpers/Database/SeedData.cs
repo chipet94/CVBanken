@@ -12,8 +12,9 @@ namespace CVBanken.Data.Helpers.Database
     {
         public static void Seed(ModelBuilder _builder)
         {
-
-            var defaultProgs = DefaultProgrammes().ToArray();
+            var defaultCategories = DefaultCategories().ToArray();
+            _builder.Entity<Category>().HasData(defaultCategories);
+            var defaultProgs = DefaultProgrammes(defaultCategories).ToArray();
             _builder.Entity<Programme>().HasData(
                 defaultProgs
             );
@@ -21,16 +22,58 @@ namespace CVBanken.Data.Helpers.Database
                 DefaultUsers(defaultProgs)
             );
         }
-        
-        private static IEnumerable<Programme> DefaultProgrammes()
+        private static IEnumerable<Category> DefaultCategories()
         {
             return new[]
             {
-                new Programme{Id=1000, Category = Programme.ProgrammeCategory.Empty,Start = DateTime.Parse("2000-01-02"), End = DateTime.Parse("2002-01-02"), Name = "Default"},
-                new Programme{Id=1001, Category = Programme.ProgrammeCategory.Webbutvecklare, Start = DateTime.Parse("2000-01-02"), End = DateTime.Parse("2002-01-02"), Name = "Webb02"},
-                new Programme{Id=1002, Category = Programme.ProgrammeCategory.Net_Utvecklare, Start = DateTime.Parse("2000-01-02"), End = DateTime.Parse("2002-01-02"), Name = "DotNet02"},
-                new Programme{Id=1003, Category = Programme.ProgrammeCategory.JavaUtvecklare, Start = DateTime.Parse("2000-01-02"), End = DateTime.Parse("2002-01-02"), Name = "Java02"},
+                new Category{Id=1, Name ="Default" },
+                new Category{Id=2, Name ="Webb utvecklare" },                
+                new Category{Id=3, Name ="App utvecklare" },
+                new Category{Id=4, Name ="Javautvecklare" },
+                new Category{Id=5, Name =".NET-utvecklare" },
+                new Category{Id=6, Name ="Mjukvarutestare" },
+                new Category{Id=7, Name ="Frontend utvecklare" },
+                new Category{Id=8, Name ="IT-Projektledare" },
+                new Category{Id=9, Name ="JavaScript utvecklare" },
+                new Category{Id=10, Name ="UX-designer" },
             };
+        }
+        private static IEnumerable<Programme> DefaultProgrammes(Category[] categories)
+        {
+            var programmes = new List<Programme>();
+            var count = 1;
+            for (int i = 2010; i < 2015; i++)
+            {
+                foreach (var category in categories)
+                {
+                    var start = new DateTime(i, 01, 23);
+                    if (category.Id != 1)
+                    {
+                        programmes.Add(new Programme
+                        {
+                            Id = (category.Id * 1000) + count,
+                            Start = start,
+                            End = start.AddYears(2),
+                            Name = category.Name == "JavaScript utvecklare"? "Js" + start.Year : category.Name.Substring(0,4) + start.Year,
+                            // Category = category,
+                            CategoryId = category.Id
+                        });
+                    }
+                }
+
+                count++;
+            }
+            programmes.Add(new Programme
+            {
+                Id = 1000,
+                Start = DateTime.Now,
+                End = DateTime.Now.AddYears(2),
+                Name = "Default",
+                // Category = category,
+                CategoryId = 1
+            });
+
+            return programmes;
         }
         
         private static string defaultPassword = "password123";
@@ -38,9 +81,11 @@ namespace CVBanken.Data.Helpers.Database
         {
             var users = new List<User>();
             
-            for (int i = 1; i < 51; i++)
+            for (int i = 1; i < 400; i++)
             {
-                users.Add(generateUser(i));
+                var user = generateUser(i, programmes.Where(p => p.Name != "Default").ToArray());
+                user.Id = i;
+                users.Add(user);
             }
             var admin = generateAdmin(99999);
             users.Add(admin);
@@ -52,24 +97,28 @@ namespace CVBanken.Data.Helpers.Database
             return users;
         }
 
-        private static User generateUser(int id)
+        private static string[] FirstNames =
         {
-            CreatePasswordHash(defaultPassword, out var hash, out var salt);
-            return new User
-            {
-                Id = id, FirstName = $"name{id}", LastName = $"Lname{id}", Email = $"user{id}@iths.se",
-                Role = Role.User, PasswordHash = hash, PasswordSalt = salt
-            };
+            "Anders", "Göran", "Adolf", "Simon", "Sanne", "Bodil", "Ove", "Olivia", "Emelie", "Rebacca",
+            "Majvor", "Håkan", "Klas", "Anna", "Linnea", "Daniel", "Martin", "Annie", "Aaron", "Hanna",
+            "Donald", "Joe", "Hillary", "John", "Jeffrey", "Bill"
+        };
 
-        }
-        private static User generateAdmin(int id)
+        private static string[] LastNames =
         {
-            CreatePasswordHash(defaultPassword, out var hash, out var salt);
-            return new User
-            {
-                Id = id, FirstName = $"admin", LastName = $"Lname{id}", Email = $"admin@iths.se",
-                Role = Role.Admin, PasswordHash = hash, PasswordSalt = salt
-            };
+            "Epstein", "Trump", "Biden", "Clinton", "Podesta"
+        };
+        private static User generateUser(int id, Programme[] programmes)
+        {
+            var random  = new Random();
+            return UserBuilder.NewUser(
+            
+                $"user{id}@iths.se", defaultPassword, 
+                FirstNames[random.Next(0,FirstNames.Length)],
+                LastNames[random.Next(0, LastNames.Length)],
+                programmes[random.Next(2, programmes.Length)].Id,
+                Role.User
+            );
 
         }
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

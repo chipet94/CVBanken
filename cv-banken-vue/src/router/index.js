@@ -46,6 +46,29 @@ let router = new Router({
             component: Profile
         },
         {
+            path: '/educations',
+            name: 'Educations',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/EducationsList.vue')
+
+        },
+        {
+            path: '/utbildningar',
+            name: 'Utbildningar',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/CategoryView.vue')
+
+        },
+        {
+            path: '/profile/:url',
+            name: 'Profile',
+            component: UserProfile
+        },
+        {
             path: '/admin_dashboard',
             name: 'AdminDashboard',
             meta: {

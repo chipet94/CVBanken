@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using API_CVPortalen.Models.Auth;
+using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
 using CVBanken.Services.EducationServices;
 using Microsoft.AspNetCore.Authorization;
@@ -44,11 +47,39 @@ namespace CVBanken.Web.Controllers
         {
             return await _context.GetAllProgrammes();
         }
-        
+        [HttpGet]
+        [Route("category")]
+        public async Task<IEnumerable<object>> GetAllCategories()
+        {
+            var programmes = await _context.GetAllCategories();
+            if (User.IsInRole(Role.Admin))
+            {
+                return programmes.ToResponse();
+            }
+
+            return programmes.Where(p => p.Name != "Default").ToResponse();
+        }
         [HttpGet("{id}")]
         public async Task<Programme> GetById(int id)
         {
-            return await _context.GetProgrammeById(id);
+            var programme = await _context.GetProgrammeById(id);
+            return programme.ToResponse();
+        }
+        [HttpGet("{id}/students")]
+        public async Task<object> GetStudentsIn(int id)
+        {
+            var programme = await _context.GetProgrammeById(id);
+            if (User.IsInRole(Role.Admin))
+            {
+                return programme.Students.ToSafeResponse();
+            }
+            return programme.Students.Where(u => !u.Private).ToSafeResponse();
+        }
+
+        [HttpGet("category/{id}")]
+        public async Task<IEnumerable<Programme>> GetByCategory(int id)
+        {
+            return await _context.GetAllEducationsByCategory(id);
         }
         
         [HttpDelete("{id}")]

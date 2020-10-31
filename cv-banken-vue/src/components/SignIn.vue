@@ -1,10 +1,7 @@
 <template>
   <div>
-    <h1 id="headline">Logga in på ditt konto för att ladda upp ditt cv</h1>
     <div id="section" class="m-t-12">
       <div class="columns is-centered">
-        <div class="column is-6">
-          <div class="box">
             <div class="container">
               <b-field label="E-post">
                 <b-input v-model="input" required type="email"></b-input>
@@ -18,8 +15,6 @@
               </b-field>
             </div>
           </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>

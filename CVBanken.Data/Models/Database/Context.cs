@@ -22,5 +22,12 @@ namespace CVBanken.Data.Models.Database
 
         public DbSet<User> Users { get; set; } 
         public DbSet<Programme> Programmes { get; set; }
+<<<<<<< Updated upstream
+=======
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<UserFile> Files { get; set; }
+ 
+        public DbSet<ProfilePicture> ProfilePictures { get; set; }
+>>>>>>> Stashed changes
     }
 }

@@ -19,8 +19,23 @@ namespace CVBanken.Services.EducationServices
         {
             return await _context.Programmes.ToListAsync();
         }
-        
 
+        public async Task<IEnumerable<Category>> GetAllCategories()
+        {
+            return await _context.Categories.ToListAsync();
+        }
+        public async Task<IEnumerable<Programme>> GetAllEducationsByCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            return category.Programmes;
+        }
+        
+        
+        public async Task<IEnumerable<User>> GetStudents(int id)
+        {
+            var programme = await _context.Programmes.FindAsync(id);
+            return programme.Students;
+        }
         public async Task<Programme> GetProgrammeById(int id)
         {
             var programme = await _context.Programmes.FindAsync(id);
