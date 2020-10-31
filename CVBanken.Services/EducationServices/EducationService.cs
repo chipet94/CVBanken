@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CVBanken.Data.Models;
+using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
 using Microsoft.EntityFrameworkCore;
 

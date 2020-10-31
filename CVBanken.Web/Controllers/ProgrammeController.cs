@@ -43,9 +43,10 @@ namespace CVBanken.Web.Controllers
         }
         
         [HttpGet]
-        public async Task<IEnumerable<Programme>> GetAll()
+        public async Task<IEnumerable<object>> GetAll()
         {
-            return await _context.GetAllProgrammes();
+            var programmes = await _context.GetAllProgrammes();
+            return programmes.ToResponse();
         }
         [HttpGet]
         [Route("category")]
@@ -60,7 +61,7 @@ namespace CVBanken.Web.Controllers
             return programmes.Where(p => p.Name != "Default").ToResponse();
         }
         [HttpGet("{id}")]
-        public async Task<Programme> GetById(int id)
+        public async Task<object> GetById(int id)
         {
             var programme = await _context.GetProgrammeById(id);
             return programme.ToResponse();
@@ -82,6 +83,7 @@ namespace CVBanken.Web.Controllers
             return await _context.GetAllEducationsByCategory(id);
         }
         
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

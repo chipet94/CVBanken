@@ -1,8 +1,10 @@
+import UserFileService from "@/services/UserFileService";
+import EducationService from "@/services/EducationService";
+import ProfileService from "@/services/profileService";
 export default class User {
     email;
     firstName;
     lastName;
-    role;
     programmeId;
     id;
     profile;
@@ -16,10 +18,10 @@ export default class User {
     profilePicture;
     gotCv;
     constructor(data = {}) {
+        this.id = data.id,
         this.firstName = data.firstName;
         this.lastName = data.lastName;
         this.email = data.email;
-        this.role = data.role;
         this.programmeId = data.programmeId;
         this.class_name = data.class_name;
         this.categoryName = data.categoryName;

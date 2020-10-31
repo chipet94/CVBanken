@@ -4,10 +4,12 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
+using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
 using CVBanken.Data.Models.Requests.Auth;
@@ -63,9 +65,20 @@ namespace CVBanken.Services.UserServices
             await _context.SaveChangesAsync();
             return user.WithoutPassword();
         }
+
+        public async Task<bool> ConfirmPassword(int id, string password)
+        {
+            var user = await _context.Users.FindAsync(id);
+            CreatePasswordHash(password, out var hash, out var salt);
+            return user.PasswordHash == hash && user.PasswordSalt == salt;
+        }
     
     
         public async Task<IEnumerable<User>> GetAll()
+        {
+            return (await _context.Users.ToListAsync()).Where(u => u.Private != true);
+        }
+        public async Task<IEnumerable<User>> AdminGetAll()
         {
             return (await _context.Users.ToListAsync()).WithoutPasswords();
         }
@@ -74,62 +87,77 @@ namespace CVBanken.Services.UserServices
         {
             return (await _context.Users.FindAsync(id)).WithoutPassword();
         }
-        
-        public async Task<User> Create(User user, string password)
+        public async Task<User> GetByUrl(string url)
+        {
+            var user = await _context.Users.FirstAsync(u => u.Url == url);
+
+            return user;
+        }
+        public async Task Create(RegisterRequest user)
+        {
+            // validation
+            if (await _context.Users.AnyAsync(x => x.Email == user.Email))
+                throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
+            try
+            {
+                await _context.AddAsync(user.ToUser());
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        public async Task CreateNew(RegisterRequest user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new InvalidOperationException("Password is required");
+            if (user.ProgrammeId == 0 )
+            {
+                throw new InvalidOperationException("Programme is required");
+            }
 
             if (await _context.Users.AnyAsync(x => x.Email == user.Email))
                 throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
-
-            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            return user;
+            
         }
 
-        public async Task<bool> Update(User userParam, string password = null)
+        public async Task<bool> Update(int id, UpdateUserRequest userParam)
         {
-            var user = await _context.Users.FindAsync(userParam.Id);
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // update username if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
+
+            foreach (var prop in userParam.GetType().GetProperties())
             {
-                // throw error if the new username is already taken
-                if (_context.Users.Any(x => x.Email == userParam.Email))
-                    throw new InvalidOperationException("Email " + userParam.Email + " is already taken");
+                var value = prop.GetValue(userParam, null);
+                Console.WriteLine(prop.Name + " - " + value);
+                
+                if (prop.Name != "OldPassword" && prop.GetValue(userParam, null) != null)
+                {
+                    var oldProp = user.GetType().GetProperty(prop.Name);
+                    if (oldProp != null && value != null)
+                    {
+                        if (prop.Name == "Password")
+                        {
+                            CreatePasswordHash((string)value, out var hash, out var salt);
+                            user.PasswordSalt = salt;
+                            user.PasswordHash = hash;
+                            
+                            Console.WriteLine("Updated password for " + user.Email +" To: " + value);
+                        }
+                        else
+                        {
+                            oldProp.SetValue(user,value);
+                        }
+                    }
+                }
 
-                user.Email = userParam.Email;
             }
-
-            // update user properties if provided
-            if (!string.IsNullOrWhiteSpace(userParam.FirstName))
-                user.FirstName = userParam.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(userParam.LastName))
-                user.LastName = userParam.LastName;
-            if (userParam.ProgrammeId != user.ProgrammeId)
-                user.ProgrammeId = userParam.ProgrammeId;
-
-            // update password if provided
-            if (!string.IsNullOrWhiteSpace(password))
-            {
-                CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-            }
-
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return true;
@@ -212,7 +240,7 @@ namespace CVBanken.Services.UserServices
         {
             return Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
         }
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException(nameof(password));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));

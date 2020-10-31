@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1 id="headline">Skapa ett konto med din iths mail, för att ladda upp ditt cv</h1>
-    <span class="has-text-danger">{{ message }}</span>
     <div id="section" class="m-t-12">
       <div class="columns is-centered">
         <div class="column is-6">
@@ -9,25 +8,30 @@
               <b-field label="Förnamn">
                 <b-input v-model="firstName" required type="text"></b-input>
               </b-field>
+              <span class="has-text-danger">{{ errors.LastName }}</span>
               <b-field label="Efternamn">
                 <b-input v-model="lastName" required type="text"></b-input>
               </b-field>
+              <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
               <b-field label="Utbildning">
-                <b-select v-model="selected" placeholder="Välj din utbildning">
-                  <option v-for="education in educations" v-bind:key="`eductation-${education.id}`"
-                          v-bind:value="{ id: education.id, name: education.name }">
+                <b-select v-model="programme" placeholder="Välj din utbildning">
+                  <option v-for="education in educations"
+                          :key="education.name"
+                          :value="education.id">
                     {{ education.name }}
                   </option>
                 </b-select>
               </b-field>
+              <span class="has-text-danger">{{ errors.Email }}</span>
               <b-field label="E-post">
                 <b-input id="emailfield" v-model="input" required type="email"></b-input>
               </b-field>
+              <span class="has-text-danger">{{ errors.Password }}</span>
               <b-field label="Lösenord">
                 <b-input v-model="password" password-reveal required type="password" value=""></b-input>
               </b-field>
               <b-field>
-                <b-button class="button is-purple text is-black" @click.native="signUp">Registrera</b-button>
+                <b-button class="button is-purple text is-black" @click.native="signUp" :disabled="locked">Registrera</b-button>
               </b-field>
             </div>
       </div>
@@ -43,32 +47,35 @@ export default {
   },
   data() {
     return {
-      selected: "",
+      programme: '',
       educations: [],
       input: "",
       firstName: "",
       lastName: "",
       password: "",
-
-      message: ""
+      locked: false,
+      errors: {}
     };
   },
   methods: {
     async signUp() {
+      this.locked = true;
+      console.log(this.programme)
       await this.$store.dispatch("auth/register",
           {
             "firstName": this.firstName,
             "lastName": this.lastName,
             "email": this.input,
             "password": this.password,
-            "programmeId": this.selected.id
+            "programmeId": this.programme
           })
           .then(() => {
             alert("Success!")
             this.$router.push("/login")
           })
           .catch(err => {
-            this.message = err.response.data.error
+            this.errors = err.response.data.errors
+            this.locked = false;
           })
     },
     async getProgrammes() {

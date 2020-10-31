@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using API_CVPortalen.Models.Auth;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;

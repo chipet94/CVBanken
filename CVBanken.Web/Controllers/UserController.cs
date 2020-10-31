@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using API_CVPortalen.Models.Auth;
 using CVBanken.Data.Helpers;
@@ -13,7 +14,6 @@ namespace CVBanken.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -25,48 +25,36 @@ namespace CVBanken.Web.Controllers
             _context = context;
         }
 
-        [HttpPost("authenticate")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Authenticate(UserRequest.Authenticate model)
-        {
-            var user = await _userService.Authenticate(model.Email, model.Password);
-
-            if (user == null)
-                return BadRequest(new {error = "Username or password is incorrect"});
-
-            return Ok(user.ToAuthResponse());
-        }
-
-        [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Create(UserRequest.Register request)
-        {
-            if (request == null)
-            {
-                return BadRequest();
-            }
-
-
-            try
-            {
-                var user = await _userService.Create(request.ToUser(), request.Password);
-                return Ok("Success!");
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new {error = e.Message});
-            }
-        }
-
-        [HttpGet]
+        [HttpGet("super/all")]
         [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> AdminGetAll()
+        {
+            var users = await _userService.AdminGetAll();
+            return Ok(users.ToSafeResponse());
+        }
+        [HttpGet()]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAll();
             return Ok(users.ToSafeResponse());
         }
-
+        
+        [HttpGet("programme/{id}")]
+        public async Task<object> GetAllUsers(int id)
+        {
+            var users = await _userService.GetAllUsersInProgramme(id);
+            return users.ToSafeResponse();
+        }
+        
+        [HttpGet("category/{category}")]
+        public async Task<object> GetAllUsersInCategory(int category)
+        {
+            var users = await _userService.GetAllUserInCategory(category);
+            return users.ToSafeResponse();
+        }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetById(id);
@@ -77,64 +65,22 @@ namespace CVBanken.Web.Controllers
 
             return NotFound();
         }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpGet]
+        [Route("{id}/picture")]
+        public async Task<IActionResult> GetPicture(int id)
         {
-            if (!User.IsInRole(Role.Admin))
+            var profile = await _userService.GetById(id);
+            if (profile == null)
             {
-                if (User.Identity.Name != id.ToString())
-                {
-                    return Unauthorized();
-                }
-            }
-
-            try
-            {
-                var deleted = await _userService.Delete(id);
-                if (deleted)
-                {
-                    return Ok();
-                }
-
                 return NotFound();
             }
-            catch (Exception e)
+
+            if (profile.ProfilePicture == null || profile.ProfilePicture.ImageData == null)
             {
-                return BadRequest(new {error = e.Message});
+                return NoContent();
             }
+            return File(profile.ProfilePicture.ImageData,"image/jpeg");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UserRequest.Update request)
-        {
-            if (!User.IsInRole(Role.Admin))
-            {
-                if (User.Identity.Name != id.ToString())
-                {
-                    return Unauthorized();
-                }
-            }
-
-            var user = request.ToUser();
-            user.Id = id;
-            try
-            {
-                var updated = await _userService.Update(user, request.Password);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new {error = e.Message});
-            }
-        }
-
-        [HttpGet]
-        [Authorize]
-        [Route("loggedin")]
-        public ActionResult IsLoggedIn()
-        {
-            return Ok();
-        }
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="user_profile">
-    <UserProfile></UserProfile>
+      <UserProfile :editable="true"></UserProfile>
   </div>
 </template>
 
@@ -12,6 +12,7 @@ export default {
   name: 'Profile',
   components: {
     UserProfile
-  }
+  },
+
 }
 </script>
