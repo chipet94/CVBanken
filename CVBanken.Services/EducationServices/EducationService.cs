@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
@@ -15,8 +14,9 @@ namespace CVBanken.Services.EducationServices
 
         public EducationService(Context context)
         {
-            this._context = context;
+            _context = context;
         }
+
         public async Task<IEnumerable<Programme>> GetAllProgrammes()
         {
             return await _context.Programmes.ToListAsync();
@@ -26,24 +26,26 @@ namespace CVBanken.Services.EducationServices
         {
             return await _context.Categories.ToListAsync();
         }
+
         public async Task<IEnumerable<Programme>> GetAllEducationsByCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
             return category.Programmes;
         }
-        
-        
+
+
         public async Task<IEnumerable<User>> GetStudents(int id)
         {
             var programme = await _context.Programmes.FindAsync(id);
             return programme.Students;
         }
+
         public async Task<Programme> GetProgrammeById(int id)
         {
             var programme = await _context.Programmes.FindAsync(id);
             return programme ?? null;
         }
-        
+
         public async Task Create(Programme programme)
         {
             await _context.AddAsync(programme);
@@ -57,10 +59,7 @@ namespace CVBanken.Services.EducationServices
             {
                 var sourceProp = property.GetValue(programme);
                 var targetProp = property.GetValue(toUpdate);
-                if (sourceProp != null && targetProp != sourceProp)
-                {
-                    property.SetValue(toUpdate, sourceProp);
-                }
+                if (sourceProp != null && targetProp != sourceProp) property.SetValue(toUpdate, sourceProp);
             }
 
             try
@@ -72,16 +71,12 @@ namespace CVBanken.Services.EducationServices
             {
                 throw e;
             }
-      
         }
 
         public async Task Delete(int id)
         {
             var toDelete = await _context.Programmes.FindAsync(id);
-            if (toDelete == null)
-            {
-                throw new Exception("not found.");
-            }
+            if (toDelete == null) throw new Exception("not found.");
             _context.Programmes.Remove(toDelete);
             await _context.SaveChangesAsync();
         }

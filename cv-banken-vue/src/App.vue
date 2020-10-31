@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar wrapper-class="ITHS-nav" mobile-burger centered transparent >
+    <b-navbar centered mobile-burger transparent wrapper-class="ITHS-nav">
       <template slot="brand">
         <div class="navbar-brand ITHS-brand">
           <img src="https://www.iths.se/wp-content/themes/stella/assets/images/logo.svg">
@@ -8,9 +8,9 @@
       </template>
 
       <template slot="start">
-        <b-navbar-item tag="router-link" :to="{name: 'Home' }">Start</b-navbar-item>
-        <b-navbar-item tag="router-link" :to="{ name: 'Educations' }">Markus- ej klar</b-navbar-item>
-        <b-navbar-item tag="router-link" :to="{ name: 'Utbildningar' }">Utbildningar</b-navbar-item>
+        <b-navbar-item :to="{name: 'Home' }" tag="router-link">Start</b-navbar-item>
+        <b-navbar-item :to="{ name: 'Educations' }" tag="router-link">Markus- ej klar</b-navbar-item>
+        <b-navbar-item :to="{ name: 'Utbildningar' }" tag="router-link">Utbildningar</b-navbar-item>
       </template>
       <template slot="end">
 
@@ -33,6 +33,7 @@
 import LoginContainer from "@/components/common/LoginContainer";
 import UserMenu from "@/components/common/UserMenu";
 import IthsFooter from "@/components/IthsFooter";
+
 export default {
   components: {IthsFooter, UserMenu, LoginContainer},
   data() {
@@ -45,7 +46,7 @@ export default {
       return this.$store.state.auth.status.loggedIn
     },
     thisUser() {
-      return this.$store.getters["auth/getUser"]
+      return this.$store.getters["auth/getSession"]
     }
   },
   methods: {
@@ -65,16 +66,19 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-.ITHS-title{
+
+.ITHS-title {
   color: #f1f1f1;
   font-size: 2rem;
   font-weight: 600;
   color: white;
   text-decoration-line: none;
 }
-.is-ITHS-purple{
+
+.is-ITHS-purple {
   background-color: #693250;
- }
+}
+
 .ITHS-nav {
   background-color: #693250;
   color: #f1f1f1;
@@ -82,14 +86,16 @@ export default {
   display: inherit;
   text-align: center;
 }
-.ITHS-nav a.navbar-item{
+
+.ITHS-nav a.navbar-item {
   color: #f1f1f1;
   font-weight: bold;
   text-align: center;
   margin-top: auto;
   margin-bottom: auto;
 }
-.ITHS-nav a.navbar-burger{
+
+.ITHS-nav a.navbar-burger {
   margin-top: auto;
   margin-bottom: auto;
   color: white;
@@ -99,19 +105,22 @@ export default {
   right: 0;
   left: auto;
 }
-a.navbar-burger.burger :hover{
+
+a.navbar-burger.burger :hover {
   background-color: #710642;
 }
+
 /*a.navbar-burger.burger{*/
 /*  color: white;*/
 /*}*/
-.ITHS-brand{
+.ITHS-brand {
   padding: 10px;
   margin-left: 20px;
   margin-bottom: 5px;
   margin-top: 5px;
 }
-.ITHS-nav .navbar-item{
+
+.ITHS-nav .navbar-item {
   color: #f1f1f1;
   font-weight: bold;
   text-align: center;
@@ -121,24 +130,29 @@ a.navbar-burger.burger :hover{
   position: center;
   vertical-align: center;
 }
-.ITHS-nav .navbar-item:hover{
+
+.ITHS-nav .navbar-item:hover {
   color: white;
   background-color: rgba(102, 50, 78, 0.7);
 }
-.router-link-exact-active{
+
+.router-link-exact-active {
   background-color: #68495c;
 }
-.ITHS-Nav div a{
+
+.ITHS-Nav div a {
   color: #f1f1f1;
   font-weight: bold;
   text-align: center;
   margin-top: auto;
   margin-bottom: auto;
 }
-.ITHS-nav .navbar-menu{
+
+.ITHS-nav .navbar-menu {
 
 }
-.ITHS-nav div.navbar-menu.is-active{
+
+.ITHS-nav div.navbar-menu.is-active {
   background-color: #6f435b;
 }
 </style>

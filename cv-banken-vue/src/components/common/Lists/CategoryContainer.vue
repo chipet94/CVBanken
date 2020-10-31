@@ -1,14 +1,14 @@
 <template>
   <section>
-    <b-collapse class="card" animation="slide" aria-id="categoryName">
+    <b-collapse animation="slide" aria-id="categoryName" class="card">
       <div
           slot="trigger"
           slot-scope="props"
+          aria-controls="categoryName"
           class="card-header ITHS-header"
-          role="button"
-          aria-controls="categoryName">
+          role="button">
         <p class="card-header-title is-centered ITHS-text">
-          {{category.name}}
+          {{ category.name }}
         </p>
         <a class="card-header-icon ITHS-text">
           <b-icon
@@ -28,27 +28,28 @@
 
 <script>
 import ProgrammeList from "@/components/common/Lists/ProgrammeList";
-export default {
-name: "CategoryContainer",
-  components: {ProgrammeList},
-  props:{category: {}},
-  data(){
-    return{
 
-    }
+export default {
+  name: "CategoryContainer",
+  components: {ProgrammeList},
+  props: {category: {}},
+  data() {
+    return {}
   }
 }
 </script>
 
 <style scoped>
-.ITHS-header{
- background-color: #693250;
+.ITHS-header {
+  background-color: #693250;
   color: #f1f1f1;
 }
-.ITHS-header :hover{
+
+.ITHS-header :hover {
   background-color: #710642;
 }
-.ITHS-text{
+
+.ITHS-text {
   color: #f1f1f1;
 }
 </style>

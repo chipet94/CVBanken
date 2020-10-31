@@ -1,6 +1,7 @@
 import profileService from "@/services/profileService";
 
 import User from "@/models/User";
+
 const initialState = {
     selectedProfile: User.prototype,
     userProfile: {}
@@ -9,39 +10,38 @@ const initialState = {
 export const profile = {
     namespaced: true,
     state: initialState,
-    getters:{
-        getProfile : state => {
+    getters: {
+        getProfile: state => {
             return state.selectedProfile;
         },
     },
-    actions:{
-        getAllProfiles(){
-          return profileService.getAllProfiles().then(
-              profiles => {
-                  console.log(profiles)
-                  return Promise.resolve(profiles.data)
-              },
-              err => {
-                  console.log(err);
-                  return Promise.reject(err)
-              }
-          )
+    actions: {
+        getAllProfiles() {
+            return profileService.getAllProfiles().then(
+                profiles => {
+                    console.log(profiles)
+                    return Promise.resolve(profiles.data)
+                },
+                err => {
+                    console.log(err);
+                    return Promise.reject(err)
+                }
+            )
         },
-        getUserProfile({commit}){
+        getUserProfile({commit}) {
             return profileService.getCurrentUserProfile().then(
                 profile => {
                     commit('userProfileSuccess', profile.data);
-                    console.log("from store:",profile)
+                    console.log("from store:", profile)
                     return Promise.resolve(profile.data);
                 },
                 error => {
                     commit('educationsFailure');
                     return Promise.reject(error);
                 }
-
             )
         },
-        getByUrl({commit}, url){
+        getByUrl({commit}, url) {
             return profileService.getProfile(url).then(
                 profile => {
                     commit("profileFetchSuccess", profile.data)
@@ -89,14 +89,14 @@ export const profile = {
         profileFetchSuccess(state, profile) {
             state.selectedProfile = new User(profile)
         },
-        profileUpdated(){
+        profileUpdated() {
 
-            },
-        profileUpdateFail(state, profile){
+        },
+        profileUpdateFail(state, profile) {
 
             state.selectedProfile = {...state.selectedProfile, profile}
         },
-        async profilePictureUpdated(state){
+        async profilePictureUpdated(state) {
             console.log(state)
             await state.selectedProfile.getProfilePicture()
         },

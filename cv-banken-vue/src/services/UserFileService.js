@@ -2,6 +2,7 @@ import axios from "axios";
 import {authHeader} from "@/services/AuthHeader";
 
 const API_URL = process.env.VUE_APP_API_URL
+
 class UserFileService {
     getAll() {
         return axios
@@ -12,6 +13,7 @@ class UserFileService {
                 return response.data;
             });
     }
+
     getAllByUser(userId) {
         return axios
             .get(API_URL + 'files/user/' + userId,
@@ -30,19 +32,21 @@ class UserFileService {
             return res.data
         });
     }
-    uploadFiles(files, onUploadProgress){
+
+    uploadFiles(files, onUploadProgress) {
         let formData = new FormData();
         formData.append("files", files);
 
         return axios.post(API_URL + "files/upload_files", formData, {
-            headers:authHeader("multipart/form-data"),
+            headers: authHeader("multipart/form-data"),
             credentials: 'include',
             onUploadProgress
         }).then(res => {
             return res.data;
         })
     }
-    downloadFile(id = 0){
+
+    downloadFile(id = 0) {
         return axios.get(API_URL + "files/download/" + id, {
             headers: authHeader(),
             responseType: 'blob',
@@ -50,7 +54,8 @@ class UserFileService {
             return res.data;
         })
     }
-    setCv(id){
+
+    setCv(id) {
         return axios.get(API_URL + "files/setcv/" + id, {
             headers: authHeader(),
         }).then(res => {
@@ -58,17 +63,18 @@ class UserFileService {
         })
     }
 
-    uploadFile(uploadfile){
-        console.log("Toupload",uploadfile)
+    uploadFile(uploadfile) {
+        console.log("Toupload", uploadfile)
         return axios.post(API_URL + "files/upload", uploadfile, {
-            headers:authHeader("multipart/form-data"),
+            headers: authHeader("multipart/form-data"),
         }).then(res => {
             return res.data;
         })
     }
-    removeFile(id){
+
+    removeFile(id) {
         return axios.delete(API_URL + "files/" + id, {
-            headers:authHeader(),
+            headers: authHeader(),
             credentials: 'include'
         }).then(res => {
             return res;

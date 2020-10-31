@@ -24,14 +24,15 @@
 
 <script>
 import ImageSliderContainer from "@/components/common/ImageSliderContainer";
+
 export default {
   name: "Home",
   components: {ImageSliderContainer},
   created() {
     this.$store.dispatch("Site/getHome").then(console.log(this.thisHome));
   },
-  computed:{
-    thisHome(){
+  computed: {
+    thisHome() {
       return this.$store.getters["Site/getHome"];
     }
   }

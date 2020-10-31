@@ -1,9 +1,5 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using API_CVPortalen.Models.Auth;
 using CVBanken.Data.Helpers;
-using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
 using CVBanken.Services.UserServices;
@@ -16,8 +12,8 @@ namespace CVBanken.Web.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
         private readonly Context _context;
+        private readonly IUserService _userService;
 
         public UserController(IUserService userService, Context context)
         {
@@ -32,55 +28,48 @@ namespace CVBanken.Web.Controllers
             var users = await _userService.AdminGetAll();
             return Ok(users.ToSafeResponse());
         }
-        [HttpGet()]
+
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAll();
             return Ok(users.ToSafeResponse());
         }
-        
+
         [HttpGet("programme/{id}")]
         public async Task<object> GetAllUsers(int id)
         {
             var users = await _userService.GetAllUsersInProgramme(id);
             return users.ToSafeResponse();
         }
-        
+
         [HttpGet("category/{category}")]
         public async Task<object> GetAllUsersInCategory(int category)
         {
             var users = await _userService.GetAllUserInCategory(category);
             return users.ToSafeResponse();
         }
+
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetById(id);
-            if (user != null)
-            {
-                return Ok(user.ToSafeResponse());
-            }
+            if (user != null) return Ok(user.ToSafeResponse());
 
             return NotFound();
         }
+
         [HttpGet]
         [Route("{id}/picture")]
         public async Task<IActionResult> GetPicture(int id)
         {
             var profile = await _userService.GetById(id);
-            if (profile == null)
-            {
-                return NotFound();
-            }
+            if (profile == null) return NotFound();
 
-            if (profile.ProfilePicture == null || profile.ProfilePicture.ImageData == null)
-            {
-                return NoContent();
-            }
-            return File(profile.ProfilePicture.ImageData,"image/jpeg");
+            if (profile.ProfilePicture == null || profile.ProfilePicture.ImageData == null) return NoContent();
+            return File(profile.ProfilePicture.ImageData, "image/jpeg");
         }
-
     }
 }

@@ -42,7 +42,7 @@ export default {
       return this.$store.getters["user/AllCurrentUsers"]
     },
     thisUser() {
-      return this.$store.getters["auth/getUser"]
+      return this.$store.getters["auth/getSession"]
     },
   },
   async created() {

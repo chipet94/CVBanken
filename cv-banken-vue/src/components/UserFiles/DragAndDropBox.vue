@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import UserFileService from "@/services/UserFileService";
+//import UserFileService from "@/services/UserFileService";
 
 export default {
   name: "DragAndDropBox",
@@ -70,12 +70,13 @@ export default {
         for (let i = 0; i < files.length; i++) {
           formData.append('files', files[i]);
         }
-        await UserFileService.uploadFile(formData).then(() => {
-          this.fileList = [];
-          this.loading = false;
-          alert("Success! Dina filer är nu uppladdade!")
-
-        }).catch(err => {
+        await this.$store.dispatch("files/UploadFiles", formData).then(
+            () => {
+              this.fileList = [];
+              this.loading = false;
+              alert("Success! Dina filer är nu uppladdade!")
+            }
+        ).catch(err => {
 
           this.loading = false;
           alert(err.response.data)

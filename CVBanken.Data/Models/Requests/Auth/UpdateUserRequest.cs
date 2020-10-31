@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace CVBanken.Data.Models.Requests.Auth
 {
     public class UpdateUserRequest
@@ -14,5 +12,4 @@ namespace CVBanken.Data.Models.Requests.Auth
         public string? OldPassword { get; set; }
         public string? Password { get; set; }
     }
-
 }

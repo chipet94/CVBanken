@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CVBanken.Data.Models.Database;
 using CVBanken.Services.EducationServices;
 using CVBanken.Services.FileServices;
@@ -11,13 +7,10 @@ using CVBanken.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CVBanken.Web
@@ -34,8 +27,8 @@ namespace CVBanken.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = this.Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<Context>(options => 
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<Context>(options =>
             {
                 //options.UseSqlServer(connectionString);
                 options.UseSqlite(connectionString);
@@ -53,7 +46,8 @@ namespace CVBanken.Web
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
@@ -80,14 +74,10 @@ namespace CVBanken.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
 
@@ -96,10 +86,7 @@ namespace CVBanken.Web
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("VueCorsPolicy");
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

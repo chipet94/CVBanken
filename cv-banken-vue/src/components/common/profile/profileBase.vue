@@ -22,18 +22,19 @@
                                        :profile-picture="profilePicture"></profile-picture-box>
                   <p class="subtitle">Uppgifter</p>
                   <b-field horizontal label="Namn:">
-                    {{ thisUser.firstName }} {{thisUser.lastName}}
+                    {{ thisUser.firstName }} {{ thisUser.lastName }}
                   </b-field>
                   <b-field horizontal label="Email:">
                     {{ thisUser.email }}
                   </b-field>
                   <b-field horizontal label="Klass:">
-                    {{ thisUser.class_name }} / {{thisUser.categoryName}}
+                    {{ thisUser.class_name }} / {{ thisUser.categoryName }}
                   </b-field>
-                  <b-field horizontal label="Söker:" >
-                      <b-tag rounded :class="thisUser.searching?'is-success': 'is-danger'" style="float: left; font-weight: bold; font-size: 1rem">
-                        {{thisUser.searching? "ja": "nej"}}
-                      </b-tag>
+                  <b-field horizontal label="Söker:">
+                    <b-tag :class="thisUser.searching?'is-success': 'is-danger'" rounded
+                           style="float: left; font-weight: bold; font-size: 1rem">
+                      {{ thisUser.searching ? "ja" : "nej" }}
+                    </b-tag>
                   </b-field>
                 </article>
               </div>
@@ -56,7 +57,7 @@
               <article class="tile is-child notification">
                 <div class="content">
                   <user-file-list v-if="thisUser.id !== undefined" :can-edit="canEdit"
-                                  :user-id="thisUser.id"></user-file-list>
+                                  :files="thisUser.files" :user-id="thisUser.id"></user-file-list>
                 </div>
               </article>
             </div>

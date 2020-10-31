@@ -1,6 +1,6 @@
 <template>
   <div class="user_profile">
-      <UserProfile :editable="true"></UserProfile>
+    <UserProfile :editable="true"></UserProfile>
   </div>
 </template>
 

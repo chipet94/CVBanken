@@ -1,21 +1,25 @@
 import AuthService from '../services/AuthService';
 import {SessionData} from "@/models/SessionData";
+import User from "@/models/User";
 
 let session = JSON.parse(localStorage.getItem("sessionData"));
 const initialState = session
-    ? { status: { loggedIn: true }, session }
-    : { status: { loggedIn: false }, session: null };
+    ? {status: {loggedIn: true}, session}
+    : {status: {loggedIn: false}, session: null};
 
 export const auth = {
     namespaced: true,
     state: initialState,
-    getters:{
-        getUser : state => {
+    getters: {
+        getSession: state => {
             return SessionData.FromData(state.session)
+        },
+        getUser: state => {
+            return User.FromData(state.session);
         }
     },
     actions: {
-        login({ commit }, request) {
+        login({commit}, request) {
             return AuthService.login(request).then(
                 user => {
                     commit('loginSuccess', user);
@@ -28,11 +32,11 @@ export const auth = {
                 }
             );
         },
-        logout({ commit }) {
+        logout({commit}) {
             AuthService.logout();
             commit('logout');
         },
-        register({ commit }, user) {
+        register({commit}, user) {
             return AuthService.register(user).then(
                 response => {
                     commit('registerSuccess');

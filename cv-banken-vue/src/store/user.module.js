@@ -1,5 +1,6 @@
 import UserService from "@/services/UserService";
 import User from "@/models/User";
+
 const initialState = {
     publicUsers: [],
     allUsers: [],
@@ -10,7 +11,7 @@ const initialState = {
 export const user = {
     namespaced: true,
     state: initialState,
-    getters:{
+    getters: {
         admin_GetAllUsers: state => {
             return state.allUsers;
         },
@@ -21,8 +22,8 @@ export const user = {
             return state.currentUsers;
         }
     },
-    actions:{
-        all({commit}){
+    actions: {
+        all({commit}) {
             return UserService.getAll().then(
                 users => {
                     commit("usersSuccess", users.data)
@@ -34,7 +35,7 @@ export const user = {
                 }
             )
         },
-        admin_all({commit}){
+        admin_all({commit}) {
             return UserService.adminGetAll().then(
                 users => {
                     commit("adminUsersSuccess", users.data)
@@ -46,7 +47,7 @@ export const user = {
                 }
             )
         },
-        allInProgramme({commit}, id){
+        allInProgramme({commit}, id) {
             return UserService.getAllinProgramme(id).then(
                 users => {
                     commit("currentUsersSuccess", users.data)
@@ -58,7 +59,7 @@ export const user = {
                 }
             )
         },
-        allInCategory({commit}, id){
+        allInCategory({commit}, id) {
             return UserService.getAllinCategory(id).then(
                 users => {
                     commit("currentUsersSuccess", users.data)

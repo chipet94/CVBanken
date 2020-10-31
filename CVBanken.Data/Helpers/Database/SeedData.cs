@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using API_CVPortalen.Models.Auth;
+using System.Security.Cryptography;
+using System.Text;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +11,20 @@ namespace CVBanken.Data.Helpers.Database
 {
     public class SeedData
     {
+        private static readonly string defaultPassword = "password123";
+
+        private static readonly string[] FirstNames =
+        {
+            "Anders", "Göran", "Adolf", "Simon", "Sanne", "Bodil", "Ove", "Olivia", "Emelie", "Rebacca",
+            "Majvor", "Håkan", "Klas", "Anna", "Linnea", "Daniel", "Martin", "Annie", "Aaron", "Hanna",
+            "Donald", "Joe", "Hillary", "John", "Jeffrey", "Bill"
+        };
+
+        private static readonly string[] LastNames =
+        {
+            "Epstein", "Trump", "Biden", "Clinton", "Podesta"
+        };
+
         public static void Seed(ModelBuilder _builder)
         {
             var defaultCategories = DefaultCategories().ToArray();
@@ -23,47 +37,50 @@ namespace CVBanken.Data.Helpers.Database
                 DefaultUsers(defaultProgs)
             );
         }
+
         private static IEnumerable<Category> DefaultCategories()
         {
             return new[]
             {
-                new Category{Id=1, Name ="Default" },
-                new Category{Id=2, Name ="Webb utvecklare" },                
-                new Category{Id=3, Name ="App utvecklare" },
-                new Category{Id=4, Name ="Javautvecklare" },
-                new Category{Id=5, Name =".NET-utvecklare" },
-                new Category{Id=6, Name ="Mjukvarutestare" },
-                new Category{Id=7, Name ="Frontend utvecklare" },
-                new Category{Id=8, Name ="IT-Projektledare" },
-                new Category{Id=9, Name ="JavaScript utvecklare" },
-                new Category{Id=10, Name ="UX-designer" },
+                new Category {Id = 1, Name = "Default"},
+                new Category {Id = 2, Name = "Webb utvecklare"},
+                new Category {Id = 3, Name = "App utvecklare"},
+                new Category {Id = 4, Name = "Javautvecklare"},
+                new Category {Id = 5, Name = ".NET-utvecklare"},
+                new Category {Id = 6, Name = "Mjukvarutestare"},
+                new Category {Id = 7, Name = "Frontend utvecklare"},
+                new Category {Id = 8, Name = "IT-Projektledare"},
+                new Category {Id = 9, Name = "JavaScript utvecklare"},
+                new Category {Id = 10, Name = "UX-designer"}
             };
         }
+
         private static IEnumerable<Programme> DefaultProgrammes(Category[] categories)
         {
             var programmes = new List<Programme>();
             var count = 1;
-            for (int i = 2010; i < 2015; i++)
+            for (var i = 2010; i < 2015; i++)
             {
                 foreach (var category in categories)
                 {
                     var start = new DateTime(i, 01, 23);
                     if (category.Id != 1)
-                    {
                         programmes.Add(new Programme
                         {
-                            Id = (category.Id * 1000) + count,
+                            Id = category.Id * 1000 + count,
                             Start = start,
                             End = start.AddYears(2),
-                            Name = category.Name == "JavaScript utvecklare"? "Js" + start.Year : category.Name.Substring(0,4) + start.Year,
+                            Name = category.Name == "JavaScript utvecklare"
+                                ? "Js" + start.Year
+                                : category.Name.Substring(0, 4) + start.Year,
                             // Category = category,
                             CategoryId = category.Id
                         });
-                    }
                 }
 
                 count++;
             }
+
             programmes.Add(new Programme
             {
                 Id = 1000,
@@ -76,18 +93,18 @@ namespace CVBanken.Data.Helpers.Database
 
             return programmes;
         }
-        
-        private static string defaultPassword = "password123";
+
         private static IEnumerable<User> DefaultUsers(Programme[] programmes)
         {
             var users = new List<User>();
-            
-            for (int i = 1; i < 400; i++)
+
+            for (var i = 1; i < 400; i++)
             {
                 var user = generateUser(i, programmes.Where(p => p.Name != "Default").ToArray());
                 user.Id = i;
                 users.Add(user);
             }
+
             CreatePasswordHash(defaultPassword, out var hash, out var salt);
             var admin = new User
             {
@@ -104,46 +121,34 @@ namespace CVBanken.Data.Helpers.Database
                 ProfilePicture = null,
                 Role = Role.Admin,
                 Url = ProfileBuilder.NewProfileUrl(25)
-
             };
             users.Add(admin);
             foreach (var user in users)
             {
-                var random  = new Random();
+                var random = new Random();
                 user.ProgrammeId = programmes[random.Next(1, programmes.Length)].Id;
             }
+
             return users;
         }
 
-        private static string[] FirstNames =
-        {
-            "Anders", "Göran", "Adolf", "Simon", "Sanne", "Bodil", "Ove", "Olivia", "Emelie", "Rebacca",
-            "Majvor", "Håkan", "Klas", "Anna", "Linnea", "Daniel", "Martin", "Annie", "Aaron", "Hanna",
-            "Donald", "Joe", "Hillary", "John", "Jeffrey", "Bill"
-        };
-
-        private static string[] LastNames =
-        {
-            "Epstein", "Trump", "Biden", "Clinton", "Podesta"
-        };
         private static User generateUser(int id, Programme[] programmes)
         {
-            var random  = new Random();
+            var random = new Random();
             return UserBuilder.NewUser(
-            
-                $"user{id}@iths.se", defaultPassword, 
-                FirstNames[random.Next(0,FirstNames.Length)],
+                $"user{id}@iths.se", defaultPassword,
+                FirstNames[random.Next(0, FirstNames.Length)],
                 LastNames[random.Next(0, LastNames.Length)],
                 programmes[random.Next(2, programmes.Length)].Id,
                 Role.User
             );
-
         }
+
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            using var hmac = new HMACSHA512();
             passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
     }
 }

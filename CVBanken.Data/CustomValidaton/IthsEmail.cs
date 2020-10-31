@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace CVBanken.Data.CustomValidaton
@@ -27,10 +26,7 @@ namespace CVBanken.Data.CustomValidaton
                 string DomainMapper(Match match)
                 {
                     //0 = @iths.se  || 1 = @ || 2 = iths.se
-                    if (match.Groups[2].ToString().ToUpper() != "ITHS.SE")
-                    {
-                        throw new ArgumentException();
-                    }
+                    if (match.Groups[2].ToString().ToUpper() != "ITHS.SE") throw new ArgumentException();
                     return match.Groups[1].Value + match.Groups[2];
                 }
             }

@@ -10,6 +10,7 @@ namespace CVBanken.Web.Controllers
     public class SiteController : ControllerBase
     {
         private readonly ISiteService _context;
+
         public SiteController(ISiteService context)
         {
             _context = context;
@@ -20,6 +21,5 @@ namespace CVBanken.Web.Controllers
         {
             return await _context.GetHome();
         }
-        
     }
 }

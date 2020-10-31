@@ -22,7 +22,7 @@
         <div style="background-color: white">
           <span class="is-small has-text-danger">Limits: 10mb per file & 5 files per user</span>
           <br>
-          <span class="is-small has-text-danger">allowed: {{supportedExt}}</span>
+          <span class="is-small has-text-danger">allowed: {{ supportedExt }}</span>
         </div>
 
         <section class="modal-card-body">
@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       isComponentModalActive: false,
-      supportedExt: [".jpg", ".jpeg", ".png", ".txt", ".docx", ".doc", ".pdf" ],
+      supportedExt: [".jpg", ".jpeg", ".png", ".txt", ".docx", ".doc", ".pdf"],
       formProps: {}
     }
   }

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL
+
 class AuthService {
     login(user) {
         return axios
@@ -10,7 +11,7 @@ class AuthService {
             })
             .then(response => {
                 if (response.data.token) {
-                   // console.log(response.data)
+                    // console.log(response.data)
                     localStorage.setItem('sessionData', JSON.stringify(response.data));
                 }
                 return response.data;

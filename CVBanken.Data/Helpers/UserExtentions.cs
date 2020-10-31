@@ -1,59 +1,42 @@
 using System.Collections.Generic;
 using System.Linq;
+using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
+using CVBanken.Data.Models.Response;
 
 namespace CVBanken.Data.Helpers
 {
     public static class UserExtentions
     {
-        public static IEnumerable<Models.Auth.User> WithoutPasswords(this IEnumerable<Models.Auth.User> users) 
+        public static IEnumerable<User> WithoutPasswords(this IEnumerable<User> users)
         {
             if (users == null) return null;
 
-            return Enumerable.Select(users, x => WithoutPassword(x));
+            return users.Select(x => WithoutPassword(x));
         }
 
-        public static Models.Auth.User WithoutPassword(this Models.Auth.User user) 
+        public static User WithoutPassword(this User user)
         {
-            if (user == null) return null;    
+            if (user == null) return null;
 
             user.PasswordHash = null;
             user.PasswordSalt = null;
             return user;
         }
-        public static IEnumerable<object> ToSafeResponse(this IEnumerable<User> users)
+
+        public static IEnumerable<UserResponse> ToSafeResponse(this IEnumerable<User> users)
         {
             return users?.Select(x => x.ToSafeResponse());
         }
-        public static object ToSafeResponse(this User user)
+
+        public static UserResponse ToSafeResponse(this User user)
         {
-            return new { user.Id,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.Role,
-                user.ProgrammeId, 
-                categoryName = user.Programme.Category.Name,
-                class_name = user.Programme.Name,
-                user.Url,
-                user.Description,
-                gotCv= user.GotCv(),
-                user.Private,
-                user.Searching
-                
-            };
+            return UserResponse.FromUser(user);
         }
-        public static object ToProfileResponse(this User user)
+
+        public static SessionResponse ToAuthResponse(this User user)
         {
-            return new { user.Id, user.FirstName, user.LastName,
-                gotCv= user.GotCv(),
-                user.Email, user.Role, user.ProgrammeId, 
-                categoryName = user.Programme.Category.Name, class_name = user.Programme.Name, user.Url};
+            return SessionResponse.FromUser(user);
         }
-        public static object ToAuthResponse(this User user)
-        {
-            return new { user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.ProgrammeId, user.Token};
-        }
-        
     }
 }

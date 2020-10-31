@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     getUser() {
-      return this.$store.getters["auth/getUser"]
+      return this.$store.getters["auth/getSession"]
     }
   },
   methods: {

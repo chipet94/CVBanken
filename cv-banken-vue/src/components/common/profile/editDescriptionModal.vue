@@ -8,8 +8,8 @@
         :destroy-on-hide="false"
         aria-modal
         aria-role="dialog"
-        has-modal-card
-        trap-focus class="is-8">
+        class="is-8"
+        has-modal-card trap-focus>
       <div class="modal-card" style="">
         <header class="modal-card-head" style="background-color: #693250; color:white; ">
           <p class="modal-card-title" style="color: white">Inställningar</p>
@@ -20,8 +20,9 @@
         </header>
         <section class="modal-card-body">
           <div class="modal-card-content is-inline-block" style="background-color: white">
-            <b-field horizontal label="Description" class="is-inline">
-              <textarea aria-label="Description" cols="50" style="max-width: max-content; min-width: 550px" v-model="profile.description"></textarea>
+            <b-field class="is-inline" horizontal label="Description">
+              <textarea v-model="profile.description" aria-label="Description" cols="50"
+                        style="max-width: max-content; min-width: 550px"></textarea>
             </b-field>
 
             <b-field>
@@ -36,8 +37,8 @@
 <script>
 
 export default {
-name: "editDescriptionModal",
-  props: {profile : {}},
+  name: "editDescriptionModal",
+  props: {profile: {}},
   data() {
     return {
       isShowing: false,

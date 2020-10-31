@@ -9,7 +9,7 @@ namespace CVBanken.Data.Models
         public string Name { get; set; }
         public byte[] Data { get; set; }
         public string Ext { get; set; }
-        
+
         public bool IsCv { get; set; }
         public long Size { get; set; }
         public DateTime Uploaded { get; set; }

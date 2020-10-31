@@ -6,17 +6,22 @@ namespace CVBanken.Data.Models.Site
         public SlideInfo[] Slides { get; set; }
         public string Content { get; set; }
     }
+
     public static class HomeInfoBuilder
     {
         public static HomeInfo Default()
         {
             return new HomeInfo
             {
-                Slides = new []
+                Slides = new[]
                 {
-                    new SlideInfo{Title = "PlAcEhOlDeR Title", Subtitle = "Placeholder subtitle",Text ="placeholder text", Color = "primary"},
-                    new SlideInfo{Title = "PlAcEhOlDeR 2 Title", Text = "Placeholder text without subtitle", Color = "info"},
-                    
+                    new SlideInfo
+                    {
+                        Title = "PlAcEhOlDeR Title", Subtitle = "Placeholder subtitle", Text = "placeholder text",
+                        Color = "primary"
+                    },
+                    new SlideInfo
+                        {Title = "PlAcEhOlDeR 2 Title", Text = "Placeholder text without subtitle", Color = "info"}
                 },
                 Content = "<div> Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
                           " sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam," +

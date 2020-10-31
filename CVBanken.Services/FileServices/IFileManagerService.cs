@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CVBanken.Data.Models;
-using CVBanken.Data.Models.Requests;
-using CVBanken.Services.UserServices;
 using Microsoft.AspNetCore.Http;
-
 
 namespace CVBanken.Services.FileServices
 {

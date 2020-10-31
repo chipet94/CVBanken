@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using API_CVPortalen.Models.Auth;
 using CVBanken.Data.Models;
+using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Requests;
 using CVBanken.Services.FileServices;
-using CVBanken.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MediaTypeHeaderValue = Microsoft.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace CVBanken.Web.Controllers
 {
@@ -22,17 +17,19 @@ namespace CVBanken.Web.Controllers
     public class FilesController : ControllerBase
     {
         private readonly IFileManagerService _context;
+
         public FilesController(IFileManagerService context)
         {
-            this._context = context;
+            _context = context;
         }
-        
+
         [HttpGet]
         public async Task<IEnumerable<object>> GetAll()
         {
             var files = await _context.GetAll();
             return files.WithoutDatas();
         }
+
         [HttpGet]
         [Route("user/{userId}")]
         public async Task<IEnumerable<object>> GetAllByUser(int userId)
@@ -44,39 +41,37 @@ namespace CVBanken.Web.Controllers
         [HttpGet]
         [Route("{id}")]
         public async Task<byte[]> GetById(int id)
-        { 
+        {
             var userFile = await _context.GetFile(id);
             return userFile.Data;
         }
+
         [HttpGet]
         [Route("download/{id}")]
         public async Task<IActionResult> DownloadFile(int id)
         {
             try
             {
-                var file = await  _context.GetFile(id);
-                if (file == null)
-                {
-                    return NotFound();
-                }
+                var file = await _context.GetFile(id);
+                if (file == null) return NotFound();
 
-               return File(file.Data, $"application/{file.Ext}", file.Name);
+                return File(file.Data, $"application/{file.Ext}", file.Name);
             }
             catch
             {
                 return BadRequest();
             }
         }
-        
+
         [HttpPost]
         [Authorize]
         [Route("upload")]
-        public async Task<IActionResult> Upload([FromForm]IFormFile[] files)
+        public async Task<IActionResult> Upload([FromForm] IFormFile[] files)
         {
             try
             {
                 if (files == null) return BadRequest();
-                
+
                 int uploaderId;
                 int.TryParse(User.Identity.Name, out uploaderId);
                 if (User.Identity.Name == null) return BadRequest("Failed - No user ID was found.");
@@ -88,10 +83,8 @@ namespace CVBanken.Web.Controllers
                 {
                     return BadRequest(e.Message);
                 }
-                foreach (var file in files)
-                {
-                    await _context.Upload(uploaderId, file);
-                }
+
+                foreach (var file in files) await _context.Upload(uploaderId, file);
 
                 return NoContent();
                 //return BadRequest();
@@ -102,13 +95,13 @@ namespace CVBanken.Web.Controllers
                 throw;
             }
         }
-        
-        
+
+
         //obsolete just for debuging
         [HttpPost]
         [Authorize]
         [Route("upload_files")]
-        public async Task<string> UploadMany([FromForm]UploadFileRequest files)
+        public async Task<string> UploadMany([FromForm] UploadFileRequest files)
         {
             try
             {
@@ -117,12 +110,8 @@ namespace CVBanken.Web.Controllers
                     int uploaderId;
                     int.TryParse(User.Identity.Name, out uploaderId);
                     if (User.Identity.Name == null) return "Failed - No user ID was found.";
-                    foreach (var file in files.FileData)
-                    {
-                        await _context.Upload(uploaderId, file);
-                    }
+                    foreach (var file in files.FileData) await _context.Upload(uploaderId, file);
                     return "completed.";
-
                 }
 
                 return "Failed";
@@ -143,9 +132,7 @@ namespace CVBanken.Web.Controllers
             {
                 var file = await _context.GetFile(id);
                 if (User.Identity.Name != file.OwnerID.ToString())
-                {
                     return BadRequest("You're not the owner of this file.");
-                }
             }
 
             try
@@ -160,7 +147,7 @@ namespace CVBanken.Web.Controllers
 
             return Ok();
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -170,12 +157,10 @@ namespace CVBanken.Web.Controllers
             }
             catch (Exception e)
             {
-                return this.Problem(e.Message);
+                return Problem(e.Message);
             }
 
             return NoContent();
         }
-        
-        
     }
 }
