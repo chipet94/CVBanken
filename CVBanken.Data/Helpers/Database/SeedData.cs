@@ -88,7 +88,24 @@ namespace CVBanken.Data.Helpers.Database
                 user.Id = i;
                 users.Add(user);
             }
-            var admin = generateAdmin(99999);
+            CreatePasswordHash(defaultPassword, out var hash, out var salt);
+            var admin = new User
+            {
+                Id = 99999,
+                ProgrammeId = 1000,
+                Description = "I am a God, aka admin",
+                Email = "admin@iths.se",
+                FirstName = "Admin",
+                LastName = "Adminsson",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Private = true,
+                Searching = false,
+                ProfilePicture = null,
+                Role = Role.Admin,
+                Url = ProfileBuilder.NewProfileUrl(25)
+
+            };
             users.Add(admin);
             foreach (var user in users)
             {
