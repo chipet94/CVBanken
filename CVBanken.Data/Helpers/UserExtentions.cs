@@ -33,10 +33,11 @@ namespace CVBanken.Data.Helpers
                 user.Email,
                 user.Role,
                 user.ProgrammeId, 
-                categoryName = user.Programme.Category.ToString(),
+                categoryName = user.Programme.Category.Name,
                 class_name = user.Programme.Name,
                 user.Url,
                 user.Description,
+                gotCv= user.GotCv(),
                 user.Private,
                 user.Searching
                 
@@ -45,8 +46,9 @@ namespace CVBanken.Data.Helpers
         public static object ToProfileResponse(this User user)
         {
             return new { user.Id, user.FirstName, user.LastName,
+                gotCv= user.GotCv(),
                 user.Email, user.Role, user.ProgrammeId, 
-                categoryName = user.Programme.Category.ToString(), class_name = user.Programme.Name, user.Url};
+                categoryName = user.Programme.Category.Name, class_name = user.Programme.Name, user.Url};
         }
         public static object ToAuthResponse(this User user)
         {
