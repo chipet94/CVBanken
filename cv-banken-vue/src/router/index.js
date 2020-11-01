@@ -65,6 +65,24 @@ let router = new Router({
 
         },
         {
+            path: '/utbildningar/:name',
+            name: 'Kategori',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/CategoryPage.vue')
+
+        },
+        {
+            path: '/klass/:name',
+            name: 'Klass',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/ProgrammePage.vue')
+
+        },
+        {
             path: '/profile/:url',
             name: 'Profile',
             component: UserProfile

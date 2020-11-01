@@ -35,7 +35,7 @@
         <b-table-column v-if="isAdmin" v-slot="props" field="rank" label="Typ">
           {{ props.row.role }}
         </b-table-column>
-        <b-table-column v-if="isAdmin" v-slot="props" field="cv" label="Har CV">
+        <b-table-column v-slot="props" field="cv" label="Har CV">
           {{ props.row.gotCv ? "ja" : "nej" }}
         </b-table-column>
         <b-table-column v-slot="props" field="profile" label="Profil">

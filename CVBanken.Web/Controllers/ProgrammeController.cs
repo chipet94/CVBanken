@@ -58,10 +58,16 @@ namespace CVBanken.Web.Controllers
             return categories.Where(p => p.Name != "Default").ToResponse();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ProgrammeResponse> GetById(int id)
         {
             var programme = await _context.GetProgrammeById(id);
+            return programme.ToResponse();
+        }
+        [HttpGet("{name}")]
+        public async Task<ProgrammeResponse> GetByName(string name)
+        {
+            var programme = await _context.GetProgrammeByName(name);
             return programme.ToResponse();
         }
 
@@ -73,10 +79,10 @@ namespace CVBanken.Web.Controllers
             return programme.Students.Where(u => !u.Private).ToSafeResponse();
         }
 
-        [HttpGet("category/{id}")]
-        public async Task<IEnumerable<Programme>> GetByCategory(int id)
+        [HttpGet("category/{name}")]
+        public async Task<Category> GetByCategory(string name)
         {
-            return await _context.GetAllEducationsByCategory(id);
+            return await _context.GetCategoryByName(name);
         }
 
 

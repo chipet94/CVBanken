@@ -10,11 +10,16 @@
         <p class="card-header-title is-centered ITHS-text">
           {{ category.name }}
         </p>
-        <a class="card-header-icon ITHS-text">
+        <a class="card-header-icon ITHS-text" title="Expandera">
           <b-icon
               :icon="props.open ? 'menu-down' : 'menu-up'">
           </b-icon>
         </a>
+        <router-link class="card-header-icon ITHS-text"  :to="{ name: 'Kategori', params: {name: category.name}}" title="Gå till kategori">
+          <b-icon
+              icon="link">
+          </b-icon>
+        </router-link>
       </div>
       <div class="card-content">
         <div class="content">

@@ -1,13 +1,10 @@
 <template>
-  <section class="container">
-
-    <b-notification :closable="false" size="10x10">
+  <section>
       <b-loading v-model="loading" :can-cancel="true" :is-full-page="true"></b-loading>
       <div v-for="category in categories" :key="category.id">
         <category-container :category="category"></category-container>
         <br>
       </div>
-    </b-notification>
   </section>
 
 </template>

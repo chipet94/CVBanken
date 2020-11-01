@@ -9,7 +9,6 @@
 
       <template slot="start">
         <b-navbar-item :to="{name: 'Home' }" tag="router-link">Start</b-navbar-item>
-        <b-navbar-item :to="{ name: 'Educations' }" tag="router-link">Markus- ej klar</b-navbar-item>
         <b-navbar-item :to="{ name: 'Utbildningar' }" tag="router-link">Utbildningar</b-navbar-item>
       </template>
       <template slot="end">

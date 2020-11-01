@@ -9,6 +9,8 @@ namespace CVBanken.Services.EducationServices
     {
         Task<IEnumerable<Programme>> GetAllProgrammes();
         Task<IEnumerable<Category>> GetAllCategories();
+        Task<Programme> GetProgrammeByName(string name);
+        Task<Category> GetCategoryByName(string name);
         Task<IEnumerable<User>> GetStudents(int id);
         Task<IEnumerable<Programme>> GetAllEducationsByCategory(int id);
         Task<Programme> GetProgrammeById(int id);

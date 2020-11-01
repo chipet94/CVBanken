@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="programmes.length > 0">
+  <ul>
     <template v-for="item in programmes">
       <li :key="item.id" class="ITHS-list">
         <b-collapse v-if="item.totalStudents > 0" :open="false" animation="slide" aria-id="programmeName" class="card"
@@ -22,6 +22,11 @@
                   :icon="props.open ? 'menu-down' : 'menu-up'">
               </b-icon>
             </a>
+            <router-link class="card-header-icon ITHS-text"  :to="{ name: 'Klass', params: {name: item.name}}" title="Gå till klass">
+              <b-icon
+                  icon="link">
+              </b-icon>
+            </router-link>
           </div>
           <div class="card-content">
             <div class="content">

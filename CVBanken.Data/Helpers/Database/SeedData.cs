@@ -43,14 +43,14 @@ namespace CVBanken.Data.Helpers.Database
             return new[]
             {
                 new Category {Id = 1, Name = "Default"},
-                new Category {Id = 2, Name = "Webb utvecklare"},
-                new Category {Id = 3, Name = "App utvecklare"},
+                new Category {Id = 2, Name = "Webbutvecklare"},
+                new Category {Id = 3, Name = "Apputvecklare"},
                 new Category {Id = 4, Name = "Javautvecklare"},
-                new Category {Id = 5, Name = ".NET-utvecklare"},
+                new Category {Id = 5, Name = "Dotnetutvecklare"},
                 new Category {Id = 6, Name = "Mjukvarutestare"},
-                new Category {Id = 7, Name = "Frontend utvecklare"},
+                new Category {Id = 7, Name = "Frontendutvecklare"},
                 new Category {Id = 8, Name = "IT-Projektledare"},
-                new Category {Id = 9, Name = "JavaScript utvecklare"},
+                new Category {Id = 9, Name = "JavaScriptutvecklare"},
                 new Category {Id = 10, Name = "UX-designer"}
             };
         }

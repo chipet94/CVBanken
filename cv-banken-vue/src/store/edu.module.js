@@ -20,15 +20,45 @@ export const edu = {
         getCategories: state => {
             return state.categories
         },
+        getCategory: state => (id) => {
+            return state.categories.find(p => p.id === id)
+        },
+        getCategoryFromName: state => (name) => {
+            return state.categories.find(category => category.name.toUpperCase() === name.toUpperCase())
+        },
+        getProgrammeFromName: state => name => {
+            return state.programmes.find(p => p.name === name)
+        }
 
     },
     actions: {
 
         getAllCategories({commit}) {
-            return EducationService.getEducationCategories().then(
+            return EducationService.getCategories().then(
                 categories => {
-                    console.log(categories)
                     commit('categoriesSuccess', categories);
+                    return Promise.resolve(categories);
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            )
+        },
+        getCategoryByName({commit}, name) {
+            return EducationService.getCategoryByName(name).then(
+                category => {
+                    commit('categorySuccess', category);
+                    return Promise.resolve(category);
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            )
+        },
+        getCategoryById({commit}, id) {
+            return EducationService.getCategoryById(id).then(
+                categories => {
+                    commit('categorySuccess', categories);
                     return Promise.resolve(categories);
                 },
                 error => {
@@ -57,7 +87,17 @@ export const edu = {
                     return Promise.reject(error);
                 }
             )
-
+        },
+        getByName({commit}, name) {
+            return EducationService.getEducationByName(name).then(
+                education => {
+                    commit("educationSuccess", education)
+                    return Promise.resolve(education);
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            )
         },
         getStudentsIn({commit}, id) {
             return EducationService.getStudentsInProgramme(id).then(
@@ -91,6 +131,13 @@ export const edu = {
         categoriesSuccess(state, categories) {
             state.categories = categories;
         },
+        categorySuccess(state, category) {
+            console.log(category)
+            let target = state.categories.find(cat => {return category.id === cat.id;});
+
+            target ? Object.assign(target, category) : state.categories.push(category);
+            console.log(state.categories)
+        },
         studentsSuccess(state, students) {
             students.forEach(sourceElement => {
                 let targetElement = state.students.find(targetElement => {
@@ -100,11 +147,10 @@ export const edu = {
             })
         }
         ,
-        educationSuccess(state, edu) {
-            state.programmes.map(prog => prog.id === edu.id
-                ? {...prog, edu}
-                : prog
-            );
+        educationSuccess(state, education) {
+            let target = state.programmes.find(edu => {return edu.id === education.id;});
+
+            target ? Object.assign(target, education) : state.programmes.push(education);
         },
         registerSuccess(state) {
             state.status.loggedIn = false;
