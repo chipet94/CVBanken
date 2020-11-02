@@ -102,7 +102,6 @@ export default {
       this.fileUrl = URL.createObjectURL(e);
     },
     async upload() {
-      console.log(this.file)
       if (this.file !== null && this.file.name !== undefined) {
         let formData = new FormData();
         formData.append("image", this.file)
@@ -110,7 +109,6 @@ export default {
             this.isEditing = false,
             this.onReload()
         ).catch(err => {
-          console.log(err)
           this.file = {}
           alert(err.data)
         })

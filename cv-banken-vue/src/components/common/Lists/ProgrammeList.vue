@@ -50,7 +50,6 @@ export default {
   methods: {
     async programmeExpanded(prog) {
       if (this.$store.getters["edu/studentsInProgramme"](prog) < 1) {
-        console.log("fetching... " + prog)
         await this.$store.dispatch("edu/getStudentsIn", prog)
       }
     }

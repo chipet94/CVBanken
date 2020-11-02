@@ -65,10 +65,6 @@ export default {
     }
   },
   async created() {
-    // await this.$store.dispatch("edu/getStudentsIn", this.programmeId).then(console.log(this.thisStudents))
-    // if (this.students === undefined && this.programmeId !== undefined){
-    //   this.studentArr = await this.$store.dispatch("user/allInProgramme", this.programmeId)
-    // }
   },
   methods: {
     getRowClass(row) {

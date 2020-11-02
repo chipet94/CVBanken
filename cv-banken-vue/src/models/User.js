@@ -1,6 +1,7 @@
 import UserFileService from "@/services/UserFileService";
 import EducationService from "@/services/EducationService";
-import ProfileService from "@/services/profileService";
+
+
 
 export default class User {
     email;
@@ -54,24 +55,46 @@ export default class User {
             console.log(res)
         });
     }
-
-    async getProfilePicture() {
-        await ProfileService.getProfilePicture(this.id).then(res => {
-            console.log(res)
-            if (res.status === 200) {
-                let reader = new FileReader();
-                //reader.readAsDataURL(res.data)
-                reader.readAsDataURL(res.data);
-                reader.onload = () => {
-                    this.profilePicture = reader.result;
-                }
+    dataToProfilePicture(data){
+        if (data){
+            let reader = new FileReader();
+            //reader.readAsDataURL(res.data)
+            reader.readAsDataURL(data);
+            reader.onload = () => {
+                return reader.result;
             }
+        }
+        else
+            return null;
+
+    }
+    async setProfilePicture(picdata){
+        if (picdata){
+            let reader = new FileReader();
+            //reader.readAsDataURL(res.data)
+            reader.readAsDataURL(picdata);
+            reader.onload = () => {
+                this.profilePicture = reader.result;
+            }
+        }
+    }
+    async getProfilePicture() {
+        // await this.$store.dispatch("profile/getProfilePicture", this.id).then(res => {
+        //     console.log(res)
+        //     if (res.status === 200) {
+        //         let reader = new FileReader();
+        //         //reader.readAsDataURL(res.data)
+        //         reader.readAsDataURL(res.data);
+        //         reader.onload = () => {
+        //             this.profilePicture = reader.result;
+        //         }
+        //     }
             // this.profilePicture =  'data:image/jpg;base64,'.concat(this.profilePicture.concat(res.data));
 
-        }).catch(err => {
-            console.log(err)
-            this.profilePicture = null
-        })
+        // }).catch(err => {
+        //     console.log(err)
+        //     this.profilePicture = null
+        // })
     }
 
     async getFiles() {

@@ -79,12 +79,22 @@ namespace CVBanken.Services.UserServices
 
         public async Task<User> GetById(int id)
         {
-            return (await _context.Users.FindAsync(id));
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                throw new Exception("Not found...");
+            }
+
+            return user;
         }
 
         public async Task<User> GetByUrl(string url)
         {
             var user = await _context.Users.FirstAsync(u => u.Url == url);
+            if (user == null)
+            {
+                throw new Exception("Not found...");
+            }
 
             return user;
         }

@@ -5,7 +5,7 @@ export const ValidatePathRules = (to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) // om sidan kräver auth.
         if (!user.token)                   //om ingen userData finns, skicka till lgoin.
             return next({
-                path: '/login',
+                path: '/unauthenticated',
                 params: {nextUrl: to.fullPath}
             })
         else if (to.matched.some(record => record.meta.requireAdmin)) // om sidan kräver admin      
@@ -15,7 +15,7 @@ export const ValidatePathRules = (to, from, next) => {
                 return next(from)   //stanna om du inte är admin. 
         else
             return next()
-    //else if (to.matched.some(record => record.meta.guest))   // om sidan är för gäster
+    else if (to.matched.some(record => record.meta.guest))   // om sidan är för gäster
     //inga krav
     return next()
 }

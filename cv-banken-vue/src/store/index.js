@@ -10,8 +10,9 @@ import {Site} from "@/store/site.module";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
     modules: {
         auth, edu, files, profile, user, Site
     }
 });
+export default store;

@@ -16,7 +16,7 @@
       </a>
     </div>
     <b-table
-        :data="isEmpty ? [] : userFiles"
+        :data="isEmpty ? [] : files"
         :hoverable=true
         :loading=false
         :mobile-cards=true
@@ -60,19 +60,14 @@ export default {
     };
   },
   async created() {
-    //await this.getFiles();
-    this.userFiles = this.files;
   },
   methods: {
     async getFiles() {
-      console.log(this.userId)
       await this.$store.dispatch("files/getAllByUserId", this.userId).then(
           res => {
             this.userFiles = res;
-            console.log(res)
           }
       )
-      console.log(this.userFiles)
     },
     async handleDownload(id, name) {
       await this.$store.dispatch("files/downloadById", id).then(
@@ -101,16 +96,13 @@ export default {
     },
     async Remove(id, name) {
       let confirmed = confirm("Remove file '" + name + "'?")
-      console.log(id)
       if (confirmed) {
         await this.$store.dispatch("files/removeById", id).then(() => {
-          console.log("item has been removed.")
           this.getFiles();
-        }).catch(err => console.log(err))
+        }).catch(alert("something went wrong..."))
       }
     },
     async SetCv(id) {
-      console.log(id)
       await this.$store.dispatch("files/SetCV", id).then(() => {
         this.getFiles()
       }).catch(() => alert("Something went wrong, unable to set cv."))

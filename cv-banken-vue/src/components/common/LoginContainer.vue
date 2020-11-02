@@ -39,7 +39,7 @@
                 <b-icon icon="information-outline"></b-icon>
                 <span class="has-text-black"> Registrera</span>
               </template>
-              <sign-up></sign-up>
+              <sign-up :on-success="registerSuccess"></sign-up>
             </b-tab-item>
           </b-tabs>
         </div>
@@ -63,6 +63,11 @@ export default {
     return {
       isComponentModalActive: false,
       activeTab: 0
+    }
+  },
+  methods:{
+    registerSuccess(){
+      this.activeTab = 0;
     }
   }
 }

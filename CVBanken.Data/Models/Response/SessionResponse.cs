@@ -7,6 +7,7 @@ namespace CVBanken.Data.Models.Response
         public string Role { get; set; }
         public string Token { get; set; }
         public string Name { get; set; }
+        public string Url { get; set; }
 
         public static SessionResponse FromUser(User user)
         {
@@ -14,7 +15,8 @@ namespace CVBanken.Data.Models.Response
             {
                 Role = user.Role,
                 Token = user.Token,
-                Name = user.FullName()
+                Name = user.FullName(),
+                Url = user.Url
             };
         }
     }

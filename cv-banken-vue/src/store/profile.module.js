@@ -4,6 +4,7 @@ import User from "@/models/User";
 
 const initialState = {
     selectedProfile: User.prototype,
+    profiles: [],
     userProfile: {}
 }
 
@@ -11,8 +12,8 @@ export const profile = {
     namespaced: true,
     state: initialState,
     getters: {
-        getProfile: state => {
-            return state.selectedProfile;
+        getProfile: state => (url) => {
+            return state.profiles.find(p => p.url === url)
         },
     },
     actions: {
@@ -32,19 +33,18 @@ export const profile = {
             return profileService.getCurrentUserProfile().then(
                 profile => {
                     commit('userProfileSuccess', profile.data);
-                    console.log("from store:", profile)
                     return Promise.resolve(profile.data);
                 },
                 error => {
-                    commit('educationsFailure');
                     return Promise.reject(error);
                 }
             )
         },
-        getByUrl({commit}, url) {
+        getByUrl({commit, dispatch}, url) {
             return profileService.getProfile(url).then(
                 profile => {
-                    commit("profileFetchSuccess", profile.data)
+                    commit("userProfileSuccess", profile.data)
+                    dispatch("getProfilePicture", new User(profile.data).id)
                     return Promise.resolve(profile.data);
                 },
                 error => {
@@ -55,8 +55,8 @@ export const profile = {
         updateProfile({commit, state, dispatch}, request) {
             return profileService.updateProfile(state.selectedProfile.id, request).then(
                 profile => {
-                    dispatch("getUserProfile").then(commit("profileUpdated"))
-                    //commit("profileUpdated");
+                    dispatch("getByUrl", state.selectedProfile.url).then(commit("profileUpdated"))
+                    commit("userProfileSuccess");
                     return Promise.resolve(profile.data);
                 },
                 error => {
@@ -65,10 +65,22 @@ export const profile = {
                 }
             )
         },
-        updateProfilePicture({commit, state}, request) {
+        getProfilePicture({commit}, id){
+            return profileService.getProfilePicture(id).then(
+                picture => {
+                    commit("profilePictureFetchSuccess", {data:picture.data, id})
+                    return Promise.resolve(picture)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        updateProfilePicture({commit, state, dispatch}, request) {
             return profileService.updateProfilePicture(state.selectedProfile.id, request).then(
                 res => {
                     commit("profilePictureUpdated");
+                    dispatch("getProfilePicture", state.selectedProfile.id)
                     return Promise.resolve(res);
                 },
                 error => {
@@ -80,24 +92,38 @@ export const profile = {
     },
     mutations: {
         async userProfileSuccess(state, profile) {
-            state.selectedProfile = new User(profile)
-            await state.selectedProfile.getProfilePicture();
+            let user = new User(profile);
+            state.selectedProfile = user;
+            let target = state.profiles.find(prof => {return prof.id === user.id;});
+            target ? Object.assign(target, user) : state.profiles.push(user);
+            console.log(state.profiles)
         },
         userProfileFailure(state) {
             state.selectedProfile = null;
         },
-        profileFetchSuccess(state, profile) {
-            state.selectedProfile = new User(profile)
-        },
-        profileUpdated() {
+        async profilePictureFetchSuccess(state, {data, id}) {
+            if (data.size > 1){
+                let target = state.profiles.find(prof => prof.id === id);
+                if (target !== undefined)
+                {
+                    await target.setProfilePicture(data)
+                }
+            }
 
+            //await user.setProfilePicture(picture);
+            // let tar = state.profiles.find(p => p.url === url)
+            // console.log("before", tar)
+            // tar? Object.assign(tar.profilePicture, picture): state.profiles.push(new User({url: url, profilePicture: picture}))
+            // console.log("after", tar)
+        },
+        async profileUpdated(state) {
+            await state.selectedProfile.getProfilePicture()
         },
         profileUpdateFail(state, profile) {
 
             state.selectedProfile = {...state.selectedProfile, profile}
         },
         async profilePictureUpdated(state) {
-            console.log(state)
             await state.selectedProfile.getProfilePicture()
         },
     }

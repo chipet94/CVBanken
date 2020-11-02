@@ -38,7 +38,6 @@ export default {
       await this.$store.dispatch("edu/getAllCategories").then(this.loading = false)
     },
     groupBy(arr, property) {
-      console.log(arr)
       return arr.reduce(function (narr, x) {
         if (!narr[x[property]]) {
           narr[x[property]] = [];

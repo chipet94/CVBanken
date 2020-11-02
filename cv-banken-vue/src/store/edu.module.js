@@ -17,6 +17,9 @@ export const edu = {
         studentsInProgramme: (state) => (id) => {
             return state.students.filter(p => p.programmeId === id)
         },
+        getAllProgrammes: state =>{
+          return [].concat(state.categories.map(category => {return category.programmes}))
+        },
         getCategories: state => {
             return state.categories
         },
@@ -132,11 +135,8 @@ export const edu = {
             state.categories = categories;
         },
         categorySuccess(state, category) {
-            console.log(category)
             let target = state.categories.find(cat => {return category.id === cat.id;});
-
             target ? Object.assign(target, category) : state.categories.push(category);
-            console.log(state.categories)
         },
         studentsSuccess(state, students) {
             students.forEach(sourceElement => {
@@ -149,7 +149,6 @@ export const edu = {
         ,
         educationSuccess(state, education) {
             let target = state.programmes.find(edu => {return edu.id === education.id;});
-
             target ? Object.assign(target, education) : state.programmes.push(education);
         },
         registerSuccess(state) {

@@ -22,6 +22,22 @@ let router = new Router({
             }
         },
         {
+            path: '/error',
+            name: 'Error',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/ErrorPage'),
+        },
+        {
+            path: '/unauthenticated',
+            name: 'Unauthenticated',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/NotAuthenticatedPage'),
+        },
+        {
             path: '/login',
             name: 'Login',
             component: Login,
@@ -39,7 +55,7 @@ let router = new Router({
 
         },
         {
-            path: '/profile',
+            path: '/my_profile',
             name: 'UserProfile',
             meta: {
                 requireAuth: true,
@@ -85,7 +101,10 @@ let router = new Router({
         {
             path: '/profile/:url',
             name: 'Profile',
-            component: UserProfile
+            component: UserProfile,
+            meta: {
+                guest: true
+            },
         },
         {
             path: '/admin_dashboard',

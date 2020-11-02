@@ -27,7 +27,7 @@
           <div class="card-content" style="background-color: white">
             <div class="content">
               <span v-if="request.private" class="has-text-danger">Med privat profil kan endast du och administratörer se din profil.</span>
-              <b-field class="" label="Ska din profil vara synlig?">
+              <b-field class="" label="Ska din profil vara privat?">
                 <div class="field">
                   <b-switch v-model="request.private">
                     {{ request.private ? "Profilen ska vara privat." : "Profilen ska vara synlig." }}
@@ -49,15 +49,28 @@
                 <b-input v-model="request.lastName" required type="text"></b-input>
               </b-field>
               <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
-              <b-field label="Utbildning">
-                <b-select v-model="request.programmeId" :loading="educations.length < 0 "
-                          :placeholder="request.programme">
-                  <option v-for="education in educations"
-                          :key="education.name"
-                          :value="education.id">
-                    {{ education.name }}
-                  </option>
-                </b-select>
+              <b-field class="" label="Utbildning" grouped>
+                <b-field label="Program" horizontal label-position="left">
+                  <b-select v-model="category" placeholder="Utbildningskategori" @input="categoryChanged" :value="userCategory">
+                    <option v-for="cat in categories"
+                            :key="cat.name"
+                            :value="cat">
+                      {{ cat.name }}
+                    </option>
+                  </b-select>
+                  <div v-if="category">
+                    <b-field label="klass" horizontal>
+                      <b-select v-model="request.programmeId" placeholder="Välj klass" :value="null">
+                        <option v-for="prog in category.programmes"
+                                :key="prog.name"
+                                :value="prog.id">
+                          {{ prog.name }}
+                        </option>
+                      </b-select>
+                    </b-field>
+
+                  </div>
+                </b-field>
               </b-field>
               <span class="has-text-danger">{{ errors.Email }}</span>
               <b-field label="E-post">
@@ -94,6 +107,7 @@ export default {
     return {
       educations: [],
       isActive: false,
+      category: this.userCategory,
       request: {
         firstName: this.user.firstName,
         lastName: this.user.lastName,
@@ -110,6 +124,12 @@ export default {
     }
   },
   computed: {
+    categories(){
+      return this.$store.getters["edu/getCategories"]
+    },
+    userCategory(){
+      return this.$store.getters["edu/getCategoryFromName"](this.user.categoryName)
+    },
     currentUserProgramme() {
       return {id: this.user.programmeId, name: this.user.programme}
     },
@@ -124,12 +144,14 @@ export default {
           && !this.locked;
     }
   },
-  created() {
-    this.getProgrammes();
+  async mounted() {
+    await this.getProgrammes();
     this.reset();
   },
   methods: {
     reset() {
+      console.log(this.userCategory)
+      this.category = this.userCategory;
       this.request = {
         firstName: this.user.firstName,
         lastName: this.user.lastName,
@@ -141,17 +163,19 @@ export default {
         searching: this.user.searching,
       }
     },
+    categoryChanged() {
+      this.programme = null;
+    },
     async send() {
       this.locked = true;
       let _request = updateProfileModel(this.request);
-      console.log(_request)
       await this.$store.dispatch("profile/updateProfile", _request).then(this.isActive = false).catch(err => {
         alert(err)
       })
       this.locked = false;
     },
     async getProgrammes() {
-      this.educations = await this.$store.dispatch("edu/getAll").catch(err => alert(err))
+      await this.$store.dispatch("edu/getAllCategories")
     },
   }
 }

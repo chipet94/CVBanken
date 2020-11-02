@@ -1,6 +1,6 @@
 <template>
   <div>
-    <profile-base :editable="true" :user-model="thisUser"></profile-base>
+    <profile-base :editable="true" :url="thisSession.url"></profile-base>
   </div>
 </template>
 <script>
@@ -16,8 +16,8 @@ export default {
     };
   },
   computed: {
-    thisUser(){
-      return this.$store.getters["profile/getThisUser"]?? null
+    thisSession(){
+      return this.$store.getters["auth/getSession"];
     }
   },
   methods: {

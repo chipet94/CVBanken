@@ -1,5 +1,5 @@
 <template>
-  <section class="container is-size-10">
+  <section v-if="thisUser !== undefined" class="container is-size-10">
     <div v-if="!loading" class="card is-centered">
       <div class="card-header" role="button">
         <p class="card-header-title is-centered">
@@ -12,14 +12,12 @@
       </div>
       <div class="card-content">
         <template v-if="!loading && thisUser !== null">
-
-
           <div class="content tile is-vertical">
             <div class="tile">
               <div class="tile is-parent is-vertical">
                 <article class="tile is-child notification is-centered">
-                  <profile-picture-box v-model="profilePicture" :can-edit="canEdit" :on-reload="onReloadPic"
-                                       :profile-picture="profilePicture"></profile-picture-box>
+                  <profile-picture-box v-model="thisUser.profilePicture" :can-edit="canEdit" :on-reload="onReloadPic"
+                                       :profile-picture="thisUser.profilePicture"></profile-picture-box>
                   <p class="subtitle">Uppgifter</p>
                   <b-field horizontal label="Namn:">
                     {{ thisUser.firstName }} {{ thisUser.lastName }}
@@ -79,7 +77,7 @@ import User from "@/models/User";
 export default {
   name: "profileBase",
   components: {userFileList, ProfilePictureBox, SettingsModal},
-  props: {editable: Boolean},
+  props: {editable: Boolean, url: String},
   data() {
     return {
       loading: true,
@@ -91,7 +89,10 @@ export default {
   },
   computed: {
     thisUser() {
-      return this.$store.getters["profile/getProfile"];
+      return this.$store.getters["profile/getProfile"](this.url?? this.$route.params.url)
+    },
+    thisSession(){
+      return this.$store.getters["auth/getSession"];
     },
     profilePicture() {
       return this.thisUser.profilePicture ?
@@ -121,29 +122,18 @@ export default {
       // await this.LoadProfile()
     },
     async LoadProfile() {
-      // this.loading = true;
-      // this.user = this.thisUser
-      // if (this.user !== null){
-      //   await this.user.getProfilePicture()
-      // }
-      // this.loading = false;
       this.loading = true;
-      if (this.$route.params.url) {
-        await this.$store.dispatch("profile/getByUrl", this.$route.params.url).then(res => {
-          //this.user= new User(res);
-          console.log(res.name)
-        })
-        console.log(this.thisUser)
+      let profileUrl = this.$route.params.url?? this.url;
+      if (profileUrl) {
+        await this.$store.dispatch("profile/getByUrl", profileUrl).catch( err => {
+          console.log(err)
+          this.$router.push({name:"Error"})
+        });
       } else {
-        await this.$store.dispatch("profile/getUserProfile").then(res => {
-          //this.user = new User(res);
-          console.log(res.name)
-          console.log(this.thisUser)
-        })
+        console.log("nothing")
       }
-      this.user = this.thisUser
-      if (this.thisUser) {
-        await this.thisUser.getProfilePicture();
+      if (this.thisUser.profilePicture === null) {
+        await this.$store.dispatch("profile/getProfilePicture", profileUrl)
       }
 
       this.loading = false;

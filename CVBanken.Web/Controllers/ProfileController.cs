@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
 using CVBanken.Data.Models.Auth;
@@ -44,12 +45,24 @@ namespace CVBanken.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetByUrl(string url)
         {
-            var profile = await _context.GetByUrl(url);
-            if (profile == null) return NotFound();
-            if (profile.Private)
-                if (!User.IsInRole(Role.Admin))
-                    return BadRequest();
-            return Ok(profile.ToSafeResponse());
+            try
+            {
+                var profile = await _context.GetByUrl(url);
+                if (profile.Private)
+                    if (!User.IsInRole(Role.Admin))
+                        if (User.Identity.Name != profile.Id.ToString())
+                        {
+                            return BadRequest();
+                        }
+                        
+                return Ok(profile.ToSafeResponse());
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+
+
         }
 
         [HttpGet]

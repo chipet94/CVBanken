@@ -11,7 +11,7 @@
               </b-field>
               <span class="has-text-danger">{{ message }}</span>
               <b-field>
-                <b-button class="button is-purple text is black" @click.native="signIn">Logga in</b-button>
+                <b-button class="button ITHS-button" @click.native="signIn">Logga in</b-button>
               </b-field>
             </div>
           </div>
@@ -38,7 +38,7 @@ export default {
       await this.$store.dispatch("auth/login",
           {email: this.input, password: this.password})
           .then(() => {
-            this.$router.push("/profile")
+            this.$router.push("/my_profile")
           })
           .catch(err => {
             this.message = err.response.data.error
@@ -52,5 +52,13 @@ export default {
 #headline {
   color: red;
   font-size: 20px;
+}
+.ITHS-button{
+  background-color: #693250;
+  width: 100%;
+  height: 5rem;
+  color: white;
+  font-size: large;
+  font-weight: bold;
 }
 </style>
