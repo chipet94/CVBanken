@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace CVBanken.Data.Models.Response
@@ -13,6 +14,8 @@ namespace CVBanken.Data.Models.Response
         public string End { get; set; }
         public int TotalStudents { get; set; }
         public int PublicStudents { get; set; }
+        
+        public bool Hidden { get; set; }
 
         public static ProgrammeResponse FromProgramme(Programme programme)
         {
@@ -20,10 +23,11 @@ namespace CVBanken.Data.Models.Response
             {
                 Id = programme.Id,
                 Name = programme.Name,
+                Hidden = programme.Hidden,
                 CategoryId = programme.CategoryId,
                 CategoryName = programme.Category.Name,
-                End = programme.End.ToShortDateString(),
-                Start = programme.Start.ToShortDateString(),
+                End = programme.End.Date.ToShortDateString(),
+                Start = programme.Start.Date.ToShortDateString(),
                 TotalStudents =  programme.TotalStudents(),
                 PublicStudents = programme.PublicStudents()
             };

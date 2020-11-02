@@ -89,7 +89,49 @@ class EducationService {
     }
     getEducationByCategory(id) {
         return axios.get(API_URL + "programme/category/" + id, {
-            authHeader
+            headers: authHeader(),
+        }).then(res => {
+            return res.data
+        });
+    }
+    addProgramme(programme){
+        return axios.post(API_URL + "programme", programme,{
+            headers: authHeader(),
+        }).then(res => {
+            return res.data
+        });
+    }
+    updateProgramme(id, programme){
+        return axios.put(API_URL + "programme/"+id, programme,{
+            headers: authHeader(),
+        }).then(res => {
+            return res.data
+        });
+    }
+    deleteProgramme(id){
+        return axios.delete(API_URL + "programme/"+id,{
+            headers: authHeader(),
+        }).then(res => {
+            return res.data
+        });
+    }
+    addCategory(category){
+        return axios.post(API_URL + "category", category,{
+            headers: authHeader(),
+        }).then(res => {
+            return res.data
+        });
+    }
+    updateCategory(id, category){
+        return axios.put(API_URL + "category/"+id, category,{
+            headers: authHeader(),
+        }).then(res => {
+            return res.data
+        });
+    }
+    deleteCategory(id){
+        return axios.delete(API_URL + "category/" +id,{
+            headers: authHeader(),
         }).then(res => {
             return res.data
         });

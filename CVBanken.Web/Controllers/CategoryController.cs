@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
+using CVBanken.Data.Models.Requests;
 using CVBanken.Data.Models.Response;
 using CVBanken.Services.EducationServices;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,30 @@ namespace CVBanken.Web.Controllers
             var category = await _context.GetCategoryByName(name);
             return category.ToResponse();
         }
+        [HttpGet("{id:int}")]
+        public async Task<CategoryResponse> GetCategory(int id)
+        {
+            var category = await _context.GetCategoryById(id);
+            return category.ToResponse();
+        }
+        [HttpPost]
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> Create(CategoryRequest model)
+        {
+
+            if (model == null) return BadRequest();
+            var category = model.ToCategory();
+            try
+            {
+                await _context.CreateCategory(category);
+            }
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+            }
+            
+            return NoContent();
+        }
 
 
         [HttpDelete("{id}")]
@@ -44,7 +69,7 @@ namespace CVBanken.Web.Controllers
         {
             try
             {
-                await _context.Delete(id);
+                await _context.DeleteCategory(id);
             }
             catch (Exception e)
             {

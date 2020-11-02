@@ -42,7 +42,7 @@ namespace CVBanken.Data.Helpers.Database
         {
             return new[]
             {
-                new Category {Id = 1, Name = "Default"},
+                new Category {Id = 1, Name = "Default", Hidden = true},
                 new Category {Id = 2, Name = "Webbutvecklare"},
                 new Category {Id = 3, Name = "Apputvecklare"},
                 new Category {Id = 4, Name = "Javautvecklare"},
@@ -64,10 +64,10 @@ namespace CVBanken.Data.Helpers.Database
                 foreach (var category in categories)
                 {
                     var start = new DateTime(i, 01, 23);
-                    if (category.Id != 1)
+                    if (category.Hidden != true)
                         programmes.Add(new Programme
                         {
-                            Id = category.Id * 1000 + count,
+                            Id = (category.Id * 1000) + count,
                             Start = start,
                             End = start.AddYears(2),
                             Name = category.Name == "JavaScript utvecklare"
@@ -86,8 +86,9 @@ namespace CVBanken.Data.Helpers.Database
                 Id = 1000,
                 Start = DateTime.Now,
                 End = DateTime.Now.AddYears(2),
-                Name = "Default",
-                // Category = category,
+                Name = "Default", 
+                Hidden = true,
+                //Category = category,
                 CategoryId = 1
             });
 
@@ -100,7 +101,7 @@ namespace CVBanken.Data.Helpers.Database
 
             for (var i = 1; i < 400; i++)
             {
-                var user = generateUser(i, programmes.Where(p => p.Name != "Default").ToArray());
+                var user = generateUser(i, programmes.Where(p => !p.Hidden).ToArray());
                 user.Id = i;
                 users.Add(user);
             }
@@ -123,12 +124,6 @@ namespace CVBanken.Data.Helpers.Database
                 Url = ProfileBuilder.NewProfileUrl(25)
             };
             users.Add(admin);
-            foreach (var user in users)
-            {
-                var random = new Random();
-                user.ProgrammeId = programmes[random.Next(1, programmes.Length)].Id;
-            }
-
             return users;
         }
 
@@ -139,7 +134,7 @@ namespace CVBanken.Data.Helpers.Database
                 $"user{id}@iths.se", defaultPassword,
                 FirstNames[random.Next(0, FirstNames.Length)],
                 LastNames[random.Next(0, LastNames.Length)],
-                programmes[random.Next(2, programmes.Length)].Id,
+                programmes[random.Next(1, programmes.Length)].Id,
                 Role.User
             );
         }

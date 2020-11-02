@@ -1,18 +1,13 @@
 <template>
-  <div>Only admins belong here.
+  <div>Only admins belong here *WORK-IN-PROGRESS*.
     <b-tabs v-model="activeTab" @input="handleTabs">
-      <b-tab-item label="public users">
-        <user-list v-model="users"  :users="thisUsers"></user-list>
+      <b-tab-item label="Programmes">
+        <admin-programme-container>
+        </admin-programme-container>
       </b-tab-item>
-
-      <b-tab-item label="all users">
-        <user-list v-model="users" :users="thisAllUsers"></user-list>
+      <b-tab-item label="Placeholder">
       </b-tab-item>
-      <b-tab-item label="all users in programme">
-        <user-list v-model="users" :users="thisAllUsersin"></user-list>
-      </b-tab-item>
-      <b-tab-item label="all users in category">
-        <user-list v-model="users" :users="thisAllUsersin"></user-list>
+      <b-tab-item label="Placeholder">
       </b-tab-item>
     </b-tabs>
   </div>
@@ -20,25 +15,25 @@
 
 <script>
 
+import AdminProgrammeContainer from "@/components/admin/programme/AdminProgrammeContainer";
 
-import UserList from "@/components/admin/UserList";
 export default {
   name: "AdminDashboard",
-  components: {UserList},
-  data(){
-    return{
+  components: {AdminProgrammeContainer},
+  data() {
+    return {
       activeTab: 0,
       users: []
     }
   },
-  computed:{
-    thisUsers(){
-      return this.$store.getters["user/AllPublicUsers"];
+  computed: {
+    thisProgrammes() {
+      return this.$store.getters["edu/getAllProgrammes"];
     },
-    thisAllUsers(){
+    thisAllUsers() {
       return this.$store.getters["user/admin_GetAllUsers"]
     },
-    thisAllUsersin(){
+    thisAllUsersin() {
       return this.$store.getters["user/AllCurrentUsers"]
     },
     thisUser() {
@@ -46,21 +41,22 @@ export default {
     },
   },
   async created() {
+    console.log(this.thisProgrammes)
     await this.loadPublicUsers();
   },
-  methods:{
+  methods: {
     async handleTabs(index) {
-      if (index === 0){
-        await this.loadPublicUsers();
+      if (index === 0) {
+        console.log(0)
       }
-      if (index === 1){
-        await this.loadAllUsers();
+      if (index === 1) {
+        console.log(1)
       }
-      if (index === 2){
-        await this.loadAllCurrent();
+      if (index === 2) {
+        console.log(2)
       }
-      if (index === 3){
-        await this.loadAllCurrentCategory();
+      if (index === 3) {
+        console.log(3)
       }
     },
 
@@ -79,13 +75,13 @@ export default {
           }
       )
     },
-      async loadAllCurrent(){
-        await this.$store.dispatch("user/allInProgramme", 1001).then(
-            res => {
-              return res;
-            })
+    async loadAllCurrent() {
+      await this.$store.dispatch("user/allInProgramme", 1001).then(
+          res => {
+            return res;
+          })
     },
-    async loadAllCurrentCategory(){
+    async loadAllCurrentCategory() {
       await this.$store.dispatch("user/allInCategory", 3).then(
           res => {
             return res;

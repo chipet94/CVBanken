@@ -37,7 +37,7 @@
 <script>
 export default {
   name: "UserList",
-  props:  {users: Array},
+  props: {users: Array},
   data() {
     return {
       isEmpty: Boolean,
@@ -48,8 +48,7 @@ export default {
     this.loading = false;
     console.log(this.users)
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>
 

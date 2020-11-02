@@ -9,6 +9,7 @@ namespace CVBanken.Data.Models.Response
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool Hidden { get; set; }
         public IEnumerable<ProgrammeResponse> Programmes { get; set; }
 
         public static CategoryResponse FromCategory(Category category)
@@ -17,6 +18,7 @@ namespace CVBanken.Data.Models.Response
             {
                 Id = category.Id,
                 Name = category.Name,
+                Hidden = category.Hidden,
                 Programmes = category.Programmes.ToResponse()
             };
         }

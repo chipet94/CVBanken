@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
+using CVBanken.Data.Models.Requests;
 using CVBanken.Data.Models.Response;
 using CVBanken.Services.EducationServices;
 using Microsoft.AspNetCore.Authorization;
@@ -24,21 +25,22 @@ namespace CVBanken.Web.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Create(Programme model)
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> Create(ProgrammeRequest model)
         {
-            if (model == null) return BadRequest();
 
+            if (model == null) return BadRequest();
+            var programme = model.ToProgramme();
             try
             {
-                await _context.Create(model);
+                await _context.Create(programme);
             }
             catch (Exception e)
             {
-                Conflict(e);
+                return Conflict(e.Message);
             }
-
-            return Ok();
+            
+            return NoContent();
         }
 
         [HttpGet]
@@ -87,6 +89,7 @@ namespace CVBanken.Web.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -95,7 +98,7 @@ namespace CVBanken.Web.Controllers
             }
             catch (Exception e)
             {
-                return Problem(e.Message);
+                return BadRequest("Something went wrong... " + e.Message);
             }
 
             return NoContent();

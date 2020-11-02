@@ -18,7 +18,10 @@ export const edu = {
             return state.students.filter(p => p.programmeId === id)
         },
         getAllProgrammes: state =>{
-          return [].concat(state.categories.map(category => {return category.programmes}))
+            state.categories.map(cat => {
+                state.programmes = [...state.programmes, ...cat.programmes]
+            })
+          return state.programmes//[].concat(state.categories.map(category => {return category.programmes}))
         },
         getCategories: state => {
             return state.categories
@@ -124,8 +127,84 @@ export const edu = {
                     return Promise.reject(error);
                 }
             )
-
-        }
+        },
+        createProgramme({commit, dispatch}, programme){
+            let id = programme.categoryId
+            return EducationService.addProgramme(programme).then(
+                res => {
+                    dispatch("getCategoryById", id)
+                    commit("programmeCreated");
+                    return Promise.resolve(res)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        updateProgramme({commit, dispatch}, programme){
+            let id = programme.categoryId
+            let pId = programme.id;
+            return EducationService.updateProgramme(pId, programme).then(
+                res => {
+                    dispatch("getCategoryById", id)
+                    commit("programmeCreated");
+                    return Promise.resolve(res)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        deleteProgramme({commit, dispatch}, id){
+            return EducationService.deleteProgramme(id).then(
+                res => {
+                    dispatch("getAllCategories")
+                    commit("programmeCreated");
+                    return Promise.resolve(res)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        createCategory({commit, dispatch}, category){
+            let name = category.name
+            return EducationService.addCategory(category).then(
+                res => {
+                    dispatch("getCategoryByName", name)
+                    commit("programmeCreated");
+                    return Promise.resolve(res)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        updateCategory({commit, dispatch}, category){
+            let pId = category.id;
+            return EducationService.updateProgramme(pId, category).then(
+                res => {
+                    dispatch("getCategoryById", pId)
+                    commit("programmeCreated");
+                    return Promise.resolve(res)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        deleteCategory({commit, dispatch}, id){
+            return EducationService.deleteCategory(id).then(
+                res => {
+                    dispatch("getAllCategories")
+                    commit("programmeCreated");
+                    return Promise.resolve(res)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
     },
     mutations: {
         educationsSuccess(state, educations) {
@@ -148,14 +227,14 @@ export const edu = {
         }
         ,
         educationSuccess(state, education) {
-            let target = state.programmes.find(edu => {return edu.id === education.id;});
-            target ? Object.assign(target, education) : state.programmes.push(education);
+            let category = state.categories.find(cat => cat.id === education.categoryId)
+                let programme = category.programmes.find(programme => {
+                    return education['id'] === programme['id']
+                })
+            programme ? Object.assign(programme, education) : state.programmes.push(education);
         },
-        registerSuccess(state) {
-            state.status.loggedIn = false;
-        },
-        educationsFailure(state) {
-            state.status.loggedIn = false;
+        programmeCreated() {
+            console.log("Programme Created")
         }
     }
 }

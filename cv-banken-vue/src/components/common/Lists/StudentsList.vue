@@ -59,6 +59,7 @@ export default {
   computed: {
     thisStudents() {
       return this.$store.getters["edu/studentsInProgramme"](this.programmeId);
+      //return this.$store.getters["e"]
     },
     isAdmin() {
       return this.$store.getters["auth/getSession"].role === "Admin";

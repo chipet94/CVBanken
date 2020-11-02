@@ -10,6 +10,8 @@ namespace CVBanken.Data.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public bool Hidden { get; set; } = false;
+
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public DateTime Start { get; set; }
@@ -32,6 +34,7 @@ namespace CVBanken.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool Hidden { get; set; } = false;
         public virtual ICollection<Programme> Programmes { get; set; }
     }
 }

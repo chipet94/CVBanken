@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
@@ -30,6 +31,10 @@ namespace CVBanken.Services.EducationServices
         {
             return await _context.Categories.FirstAsync(c => c.Name.ToUpper() == name.ToUpper());
         }
+        public async Task<Category> GetCategoryById(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
 
         public async Task<Programme> GetProgrammeByName(string name)
         {
@@ -56,8 +61,22 @@ namespace CVBanken.Services.EducationServices
 
         public async Task Create(Programme programme)
         {
-            await _context.AddAsync(programme);
-            await _context.SaveChangesAsync();
+            var exists = await _context.Programmes.AnyAsync(p => p.Name == programme.Name);
+            if (exists)
+            {
+                throw new Exception($"A programme with the name '{programme.Name}' already exists.");
+            }
+            try
+            {
+                await _context.AddAsync(programme);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+  
         }
 
         public async Task Update(int id, Programme programme)
@@ -85,8 +104,67 @@ namespace CVBanken.Services.EducationServices
         {
             var toDelete = await _context.Programmes.FindAsync(id);
             if (toDelete == null) throw new Exception("not found.");
-            _context.Programmes.Remove(toDelete);
-            await _context.SaveChangesAsync();
+ 
+            try
+            {
+                if (toDelete.Students.Any())
+                {
+                    foreach (var student in toDelete.Students)
+                    {
+                        student.ProgrammeId = 1000;
+                    }
+                    _context.UpdateRange(toDelete.Students);
+                }
+                _context.Remove(toDelete);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        public async Task CreateCategory(Category category)
+        {
+            var exists = await _context.Categories.AnyAsync(p => p.Name == category.Name);
+            if (exists)
+            {
+                throw new Exception($"A category with the name '{category.Name}' already exists.");
+            }
+            try
+            {
+                await _context.AddAsync(category);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteCategory(int id)
+        {
+            var toDelete = await _context.Categories.FindAsync(id);
+            if (toDelete == null) throw new Exception("not found.");
+ 
+            try
+            {
+                if (toDelete.Programmes.Any())
+                {
+                    foreach (var programme in toDelete.Programmes)
+                    {
+                        programme.CategoryId = 1;
+                    }
+                    _context.UpdateRange(toDelete.Programmes);
+                }
+                _context.Remove(toDelete);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

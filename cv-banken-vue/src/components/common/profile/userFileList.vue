@@ -1,38 +1,26 @@
 <template>
   <section>
-    <div
-        slot="trigger"
-        slot-scope="props"
-        aria-controls="userFilesContent"
-        class="card-header"
-        role="button">
-      <p class="card-header-title is-centered">
-        Bilagor
-      </p>
-      <a class="card-header-icon">
-        <b-icon
-            :icon="props.open ? 'menu-down' : 'menu-up'">
-        </b-icon>
-      </a>
-    </div>
+    <div class="title is-6">Filer</div>
     <b-table
         :data="isEmpty ? [] : files"
         :hoverable=true
         :loading=false
         :mobile-cards=true
+        :header-class="getRowClass"
+        title="Filer"
     >
-      <b-table-column v-slot="props" field="name" label="Namn">
-        {{ props.row.name }}
+      <b-table-column v-slot="props" field="cv" width="80" class="">
+        <span v-if="props.row.isCv" class="has-text-black has-text-weight-bold">CV</span>
+        <span v-else class="has-text-black has-text-weight-bold">Övrigt</span>
+<!--        {{ props.row.isCv === true?-->
+<!--        '<b-icon icon="home"></b-icon>' : '<b-icon icon="close"></b-icon>' }}-->
+        <b-button v-if="canEdit && !props.row.isCv" @click="SetCv(props.row.id)" class="is-info">set cv</b-button>
       </b-table-column>
-      <b-table-column v-slot="props" field="ext" label="Typ">
-        {{ props.row.ext }}
-      </b-table-column>
-      <b-table-column v-slot="props" field="cv" label="CV">
-        {{ props.row.isCv ? 'X' : ' ' }}
-        <button v-if="canEdit && !props.row.isCv" @click="SetCv(props.row.id)">set</button>
-      </b-table-column>
-      <b-table-column v-slot="props" field="size" label="Storlek">
-        {{ formatBytes(props.row.size) }}
+      <b-table-column v-slot="props" field="name" class="fileTable">
+        <span :title="'storlek: ' +formatBytes(props.row.size)">
+                  {{ props.row.name }}
+        </span>
+
       </b-table-column>
       <b-table-column v-slot="props">
         <b-button v-if="canEdit" class="is-danger" @click="Remove(props.row.id, props.row.name)">X</b-button>
@@ -62,6 +50,9 @@ export default {
   async created() {
   },
   methods: {
+    getRowClass(){
+      return 'has-text-centered'
+    },
     async getFiles() {
       await this.$store.dispatch("files/getAllByUserId", this.userId).then(
           res => {
@@ -112,5 +103,8 @@ export default {
 </script>
 
 <style scoped>
+.fileTable{
+  padding-left: 50px;
+}
 
 </style>
