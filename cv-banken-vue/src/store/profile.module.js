@@ -65,11 +65,22 @@ export const profile = {
                 }
             )
         },
-        getProfilePicture({commit}, id){
+        getProfilePicture({commit}, id) {
             return profileService.getProfilePicture(id).then(
                 picture => {
-                    commit("profilePictureFetchSuccess", {data:picture.data, id})
+                    commit("profilePictureFetchSuccess", {data: picture.data, id})
                     return Promise.resolve(picture)
+                },
+                err => {
+                    return Promise.reject(err)
+                }
+            )
+        },
+        getUserFiles({commit}, id) {
+            return profileService.getUserFiles(id).then(
+                files => {
+                    commit("userFilesSuccess", {data: files.data, id})
+                    return Promise.resolve(files)
                 },
                 err => {
                     return Promise.reject(err)
@@ -94,18 +105,27 @@ export const profile = {
         async userProfileSuccess(state, profile) {
             let user = new User(profile);
             state.selectedProfile = user;
-            let target = state.profiles.find(prof => {return prof.id === user.id;});
+            let target = state.profiles.find(prof => {
+                return prof.id === user.id;
+            });
             target ? Object.assign(target, user) : state.profiles.push(user);
             console.log(state.profiles)
+        },
+        userFilesSuccess(state, {data, id}) {
+            let target = state.profiles.find(prof => {
+                return prof.id === id;
+            });
+            if (target) {
+                target.files = data
+            }
         },
         userProfileFailure(state) {
             state.selectedProfile = null;
         },
         async profilePictureFetchSuccess(state, {data, id}) {
-            if (data.size > 1){
+            if (data.size > 1) {
                 let target = state.profiles.find(prof => prof.id === id);
-                if (target !== undefined)
-                {
+                if (target !== undefined) {
                     await target.setProfilePicture(data)
                 }
             }

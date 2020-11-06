@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
-using Microsoft.EntityFrameworkCore;
+using CVBanken.Data.Models.Database;
 
 namespace CVBanken.Data.Helpers.Database
 {
@@ -25,17 +25,31 @@ namespace CVBanken.Data.Helpers.Database
             "Epstein", "Trump", "Biden", "Clinton", "Podesta"
         };
 
-        public static void Seed(ModelBuilder _builder)
+        public static void Seed(Context context)
         {
+            context.Database.EnsureCreated();
             var defaultCategories = DefaultCategories().ToArray();
-            _builder.Entity<Category>().HasData(defaultCategories);
             var defaultProgs = DefaultProgrammes(defaultCategories).ToArray();
-            _builder.Entity<Programme>().HasData(
-                defaultProgs
-            );
-            _builder.Entity<User>().HasData(
-                DefaultUsers(defaultProgs)
-            );
+            var users = DefaultUsers(defaultProgs);
+            if (!context.Categories.Any())
+            {
+                context.Categories.AddRange(defaultCategories);
+                context.SaveChanges();
+            }
+
+            if (!context.Programmes.Any())
+            {
+                context.Programmes.AddRange(defaultProgs);
+                context.SaveChanges();
+            }
+
+            if (!context.Users.Any())
+            {
+                context.Users.AddRange(users);
+                context.SaveChanges();
+            }
+
+            context.SaveChanges();
         }
 
         private static IEnumerable<Category> DefaultCategories()
@@ -67,7 +81,7 @@ namespace CVBanken.Data.Helpers.Database
                     if (category.Hidden != true)
                         programmes.Add(new Programme
                         {
-                            Id = (category.Id * 1000) + count,
+                            Id = category.Id * 1000 + count,
                             Start = start,
                             End = start.AddYears(2),
                             Name = category.Name == "JavaScript utvecklare"
@@ -86,7 +100,7 @@ namespace CVBanken.Data.Helpers.Database
                 Id = 1000,
                 Start = DateTime.Now,
                 End = DateTime.Now.AddYears(2),
-                Name = "Default", 
+                Name = "Default",
                 Hidden = true,
                 //Category = category,
                 CategoryId = 1
@@ -109,19 +123,22 @@ namespace CVBanken.Data.Helpers.Database
             CreatePasswordHash(defaultPassword, out var hash, out var salt);
             var admin = new User
             {
-                Id = 99999,
-                ProgrammeId = 1000,
-                Description = "I am a God, aka admin",
+                Student = new Student
+                {
+                    Email = "admin@iths.se",
+                    ProgrammeId = 1000,
+                    Description = "I am a God, aka admin",
+                    FirstName = "Admin",
+                    LastName = "Adminsson",
+                    Private = true,
+                    Searching = false,
+                    ProfilePicture = null,
+                    Url = ProfileBuilder.NewProfileUrl(25)
+                },
                 Email = "admin@iths.se",
-                FirstName = "Admin",
-                LastName = "Adminsson",
                 PasswordHash = hash,
                 PasswordSalt = salt,
-                Private = true,
-                Searching = false,
-                ProfilePicture = null,
-                Role = Role.Admin,
-                Url = ProfileBuilder.NewProfileUrl(25)
+                Role = Role.Admin
             };
             users.Add(admin);
             return users;

@@ -1,6 +1,5 @@
 //using API_CVPortalen.Helpers.DataSeeding;
 
-using CVBanken.Data.Helpers.Database;
 using CVBanken.Data.Models.Auth;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +12,12 @@ namespace CVBanken.Data.Models.Database
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Student> Students { get; set; }
         public DbSet<Programme> Programmes { get; set; }
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserFile> Files { get; set; }
+        public DbSet<UserCv> CvFiles { get; set; }
 
         public DbSet<ProfilePicture> ProfilePictures { get; set; }
 
@@ -26,7 +27,7 @@ namespace CVBanken.Data.Models.Database
             //builder.Entity<User>().HasOne(p => p.Profile).WithOne(u => u.User).HasForeignKey<Profile>(p => p.UserId);
             //builder.Entity<User>().HasOne(p => p.Profile).WithOne(u => u.User).HasForeignKey<Profile>(p => p.UserId);
             base.OnModelCreating(builder);
-            SeedData.Seed(builder);
+            //SeedData.Seed(builder);
             // DataSeeder.Seed(builder);
         }
     }

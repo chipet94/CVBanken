@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CVBanken.Data.Models;
-using CVBanken.Data.Models.Auth;
-using CVBanken.Data.Models.Requests;
 using CVBanken.Services.FileServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +37,31 @@ namespace CVBanken.Web.Controllers
         }
 
         [HttpGet]
+        [Route("user/{userId}/cv")]
+        public async Task<UserCv> GetUserCv(int userId)
+        {
+            var cv = await _context.GetStudentCv(userId);
+            return cv;
+        }
+
+        [HttpDelete]
+        [Route("cv/{id}")]
+        public async Task<IActionResult> RemoveCv(int id)
+        {
+            try
+            {
+                await _context.RemoveCv(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
+
+            return NoContent();
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public async Task<byte[]> GetById(int id)
         {
@@ -53,6 +76,23 @@ namespace CVBanken.Web.Controllers
             try
             {
                 var file = await _context.GetFile(id);
+                if (file == null) return NotFound();
+
+                return File(file.Data, $"application/{file.Ext}", file.Name);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("cv/{id}")]
+        public async Task<IActionResult> DownloadCv(int id)
+        {
+            try
+            {
+                var file = await _context.GetCv(id);
                 if (file == null) return NotFound();
 
                 return File(file.Data, $"application/{file.Ext}", file.Name);
@@ -96,25 +136,30 @@ namespace CVBanken.Web.Controllers
             }
         }
 
-
-        //obsolete just for debuging
         [HttpPost]
         [Authorize]
-        [Route("upload_files")]
-        public async Task<string> UploadMany([FromForm] UploadFileRequest files)
+        [Route("upload/cv/")]
+        public async Task<IActionResult> UploadCv([FromForm] IFormFile file)
         {
             try
             {
-                if (files != null)
+                if (file == null) return BadRequest();
+                int uploaderId;
+                int.TryParse(User.Identity.Name, out uploaderId);
+                if (User.Identity.Name == null) return BadRequest("Failed - No user ID was found.");
+                try
                 {
-                    int uploaderId;
-                    int.TryParse(User.Identity.Name, out uploaderId);
-                    if (User.Identity.Name == null) return "Failed - No user ID was found.";
-                    foreach (var file in files.FileData) await _context.Upload(uploaderId, file);
-                    return "completed.";
+                    _context.ValidateFile(file);
+                    await _context.UploadCv(uploaderId, file);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
                 }
 
-                return "Failed";
+
+                return NoContent();
+                //return BadRequest();
             }
             catch (Exception e)
             {
@@ -123,30 +168,6 @@ namespace CVBanken.Web.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("setcv/{id}")]
-        [Authorize]
-        public async Task<IActionResult> SetCv(int id)
-        {
-            if (!User.IsInRole(Role.Admin))
-            {
-                var file = await _context.GetFile(id);
-                if (User.Identity.Name != file.OwnerID.ToString())
-                    return BadRequest("You're not the owner of this file.");
-            }
-
-            try
-            {
-                await _context.SetCv(id);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return Ok();
-        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

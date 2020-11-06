@@ -17,11 +17,11 @@ export const edu = {
         studentsInProgramme: (state) => (id) => {
             return state.students.filter(p => p.programmeId === id)
         },
-        getAllProgrammes: state =>{
+        getAllProgrammes: state => {
             state.categories.map(cat => {
                 state.programmes = [...state.programmes, ...cat.programmes]
             })
-          return state.programmes//[].concat(state.categories.map(category => {return category.programmes}))
+            return state.programmes//[].concat(state.categories.map(category => {return category.programmes}))
         },
         getCategories: state => {
             return state.categories
@@ -128,7 +128,7 @@ export const edu = {
                 }
             )
         },
-        createProgramme({commit, dispatch}, programme){
+        createProgramme({commit, dispatch}, programme) {
             let id = programme.categoryId
             return EducationService.addProgramme(programme).then(
                 res => {
@@ -141,7 +141,7 @@ export const edu = {
                 }
             )
         },
-        updateProgramme({commit, dispatch}, programme){
+        updateProgramme({commit, dispatch}, programme) {
             let id = programme.categoryId
             let pId = programme.id;
             return EducationService.updateProgramme(pId, programme).then(
@@ -155,7 +155,7 @@ export const edu = {
                 }
             )
         },
-        deleteProgramme({commit, dispatch}, id){
+        deleteProgramme({commit, dispatch}, id) {
             return EducationService.deleteProgramme(id).then(
                 res => {
                     dispatch("getAllCategories")
@@ -167,7 +167,7 @@ export const edu = {
                 }
             )
         },
-        createCategory({commit, dispatch}, category){
+        createCategory({commit, dispatch}, category) {
             let name = category.name
             return EducationService.addCategory(category).then(
                 res => {
@@ -180,9 +180,9 @@ export const edu = {
                 }
             )
         },
-        updateCategory({commit, dispatch}, category){
+        updateCategory({commit, dispatch}, category) {
             let pId = category.id;
-            return EducationService.updateProgramme(pId, category).then(
+            return EducationService.updateCategory(pId, category).then(
                 res => {
                     dispatch("getCategoryById", pId)
                     commit("programmeCreated");
@@ -193,7 +193,7 @@ export const edu = {
                 }
             )
         },
-        deleteCategory({commit, dispatch}, id){
+        deleteCategory({commit, dispatch}, id) {
             return EducationService.deleteCategory(id).then(
                 res => {
                     dispatch("getAllCategories")
@@ -214,7 +214,9 @@ export const edu = {
             state.categories = categories;
         },
         categorySuccess(state, category) {
-            let target = state.categories.find(cat => {return category.id === cat.id;});
+            let target = state.categories.find(cat => {
+                return category.id === cat.id;
+            });
             target ? Object.assign(target, category) : state.categories.push(category);
         },
         studentsSuccess(state, students) {
@@ -228,9 +230,9 @@ export const edu = {
         ,
         educationSuccess(state, education) {
             let category = state.categories.find(cat => cat.id === education.categoryId)
-                let programme = category.programmes.find(programme => {
-                    return education['id'] === programme['id']
-                })
+            let programme = category.programmes.find(programme => {
+                return education['id'] === programme['id']
+            })
             programme ? Object.assign(programme, education) : state.programmes.push(education);
         },
         programmeCreated() {

@@ -17,65 +17,17 @@
         </div>
       </div>
     </figure>
-    <b-modal
-        v-if="canEdit"
-        v-model="isEditing"
-        :destroy-on-hide="false"
-        aria-modal
-        aria-role="dialog"
-        class="is-8"
-        has-modal-card trap-focus>
-      <div class="modal-card">
-        <header class="modal-card-head" style="background-color: #693250; color:white; ">
-          <p class="modal-card-title" style="color: white">Profilbild</p>
-          <button
-              class="delete"
-              type="button"
-              @click="isEditing= false"/>
-        </header>
-        <section class="modal-card-body">
-          <span class="is-small has-text-danger">allowed files: {{ supportedExt }}</span><br>
-          <div v-if="fileUrl !== null">
-            <img :src="fileUrl">
-          </div>
-          <b-field class="detail-container">
-            <b-field :class="{'has-name': !!file}" class="file is-primary">
-              <div class="columns">
-                <div class="column">
-                  <b-upload v-model="file" class="file-label" @input="previewImage">
-                    <span class="file-cta">
-                        <b-icon class="file-icon" icon="upload"></b-icon>
-                        <span class="file-label">Välj fil</span>
-                    </span>
-                  </b-upload>
-                </div>
-                <div class="column">
-                <span v-if="file" class="file-name">
-                    {{ file.name }}
-                </span>
-                </div>
-                <div class="column">
-                  <b-button v-if="file.name" label="Ladda upp" @click="upload">
-                  </b-button>
-                </div>
-              </div>
-            </b-field>
-          </b-field>
-        </section>
-
-      </div>
-
-    </b-modal>
-    <b-modal v-model="isShowing">
-      <img :src="profilePicture || require('@/assets/stockPhoto.jpg')" alt="Profilbild" class="">
-    </b-modal>
   </section>
 </template>
 
 <script>
 
+import ViewProfilePictureModal from "@/components/common/profile/ViewProfilePictureModal";
+import EditPictureModal from "@/components/common/profile/EditPictureModal";
+
 export default {
   name: "ProfilePictureBox",
+  components: {},
   props: {profilePicture: String, canEdit: Boolean, onReload: Function},
   data() {
     return {
@@ -92,10 +44,23 @@ export default {
   },
   methods: {
     pictureClicked() {
-      this.isShowing = true;
+      this.$buefy.modal.open({
+        parent: this.$parent,
+        component: ViewProfilePictureModal,
+        props: {profilePicture: this.profilePicture},
+        hasModalCard: true,
+        customClass: '',
+        trapFocus: true
+      })
     },
     editPicture() {
-      this.isEditing = true
+      this.$buefy.modal.open({
+        parent: this.$parent,
+        component: EditPictureModal,
+        hasModalCard: true,
+        customClass: '',
+        trapFocus: true
+      })
     },
     previewImage(e) {
       console.log(e)

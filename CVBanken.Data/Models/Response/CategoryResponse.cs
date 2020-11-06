@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using CVBanken.Data.Helpers;
 
 namespace CVBanken.Data.Models.Response

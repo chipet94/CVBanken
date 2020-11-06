@@ -23,21 +23,10 @@ namespace CVBanken.Services.FileServices
         {
             try
             {
-                var owner = await _context.Users.FindAsync(userID);
+                var owner = await _context.Students.FindAsync(userID);
                 if (owner == null) throw new Exception("Incorrect uploader.");
 
-                var file = new UserFile();
-                file.OwnerID = owner.Id;
-                file.Owner = owner;
-                file.Name = formFile.FileName;
-                file.Uploaded = DateTime.Now;
-                file.Ext = Path.GetExtension(formFile.FileName);
-                file.Size = formFile.Length; //storlek i bytes tex: 1 000 000
-                await using (var dataSource = new MemoryStream())
-                {
-                    formFile.CopyTo(dataSource);
-                    file.Data = dataSource.ToArray();
-                }
+                var file = await UserFileBuilder.NewUserFileAsync(owner, formFile);
 
                 await _context.Files.AddAsync(file);
                 await _context.SaveChangesAsync();
@@ -50,19 +39,45 @@ namespace CVBanken.Services.FileServices
             }
         }
 
+        public async Task UploadCv(int userID, IFormFile formFile)
+        {
+            try
+            {
+                var student = await _context.Students.FindAsync(userID);
+                if (student == null) throw new Exception("Incorrect uploader.");
+                var file = await UserCvBuilder.NewCvAsync(student, formFile);
+                await _context.CvFiles.AddAsync(file);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<UserCv> GetStudentCv(int studentId)
+        {
+            var file = await _context.CvFiles.FirstAsync(f => f.StudentId == studentId);
+            if (file == null) throw new Exception("Cv not found.");
+
+            return file;
+        }
+
+        public async Task<UserCv> GetCv(int id)
+        {
+            var file = await _context.CvFiles.FindAsync(id);
+            if (file == null) throw new Exception("Cv not found.");
+
+            return file;
+        }
+
         public async Task<UserFile> GetFile(int id)
         {
             var file = await _context.Files.FindAsync(id);
             if (file == null) throw new Exception("File not found.");
 
             return file;
-        }
-
-        public async Task SetCv(int id)
-        {
-            var file = await _context.Files.FindAsync(id);
-            file.Owner.SetCv(file);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<UserFile>> GetAll()
@@ -76,6 +91,27 @@ namespace CVBanken.Services.FileServices
             if (target == null) throw new Exception("File not found.");
 
             _context.Remove(target);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCv(int id)
+        {
+            var cv = await _context.CvFiles.FindAsync(id);
+            if (cv == null) throw new Exception("Student cv not found.");
+            var student = await _context.Students.FindAsync(cv.Student.Id);
+            if (student != null)
+                try
+                {
+                    student.Cv = null;
+                    _context.Update(student);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+
+            _context.Remove(cv);
             await _context.SaveChangesAsync();
         }
 
@@ -97,6 +133,18 @@ namespace CVBanken.Services.FileServices
                 if (!FilesSettings.SUPPORTED_FILES.Contains(ext))
                     throw new Exception($"fileformat '{ext}' is not supported.");
             }
+
+            return true;
+        }
+
+        public bool ValidateFile(IFormFile file)
+        {
+            if (file.Length > FilesSettings.MAX_SIZE)
+                throw new Exception($"The size limit per file is {(FilesSettings.MAX_SIZE * 10) ^ -6} mb");
+
+            var ext = Path.GetExtension(file.FileName);
+            if (!FilesSettings.SUPPORTED_FILES.Contains(ext))
+                throw new Exception($"fileformat '{ext}' is not supported.");
 
             return true;
         }

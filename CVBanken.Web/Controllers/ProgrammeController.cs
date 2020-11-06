@@ -28,7 +28,6 @@ namespace CVBanken.Web.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Create(ProgrammeRequest model)
         {
-
             if (model == null) return BadRequest();
             var programme = model.ToProgramme();
             try
@@ -39,7 +38,7 @@ namespace CVBanken.Web.Controllers
             {
                 return Conflict(e.Message);
             }
-            
+
             return NoContent();
         }
 
@@ -57,7 +56,7 @@ namespace CVBanken.Web.Controllers
             var categories = await _context.GetAllCategories();
             if (User.IsInRole(Role.Admin)) return categories.ToResponse();
 
-            return categories.Where(p => p.Name != "Default").ToResponse();
+            return categories.Where(p => !p.Hidden).ToResponse();
         }
 
         [HttpGet("{id:int}")]
@@ -66,6 +65,7 @@ namespace CVBanken.Web.Controllers
             var programme = await _context.GetProgrammeById(id);
             return programme.ToResponse();
         }
+
         [HttpGet("{name}")]
         public async Task<ProgrammeResponse> GetByName(string name)
         {
@@ -74,7 +74,7 @@ namespace CVBanken.Web.Controllers
         }
 
         [HttpGet("{id}/students")]
-        public async Task<IEnumerable<UserResponse>> GetStudentsIn(int id)
+        public async Task<IEnumerable<StudentResponse>> GetStudentsIn(int id)
         {
             var programme = await _context.GetProgrammeById(id);
             if (User.IsInRole(Role.Admin)) return programme.Students.ToSafeResponse();

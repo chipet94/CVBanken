@@ -1,98 +1,87 @@
 <template>
   <section>
-    <b-button @click="isActive = true">
-      <b-icon icon="cog" style="color:black"></b-icon>
-    </b-button>
-    <b-modal
-        :active.sync="isActive"
-        :destroy-on-hide="true"
-        aria-modal
-        aria-role="dialog"
-        has-modal-card
-        onclose="this.$emit('close')"
-        trap-focus>
-      <div class="modal-card" style="">
-        <header class="modal-card-head" style="background-color: #693250; color:white; ">
-          <b-button v-if="hasChanged" class="is-small" style="background-color: #693250; border: none" title="Återställ"
-                    @click="reset">
-            <b-icon icon="reload" style="color: white"></b-icon>
-          </b-button>
-          <p class="modal-card-title" style="color: white">Konto inställningar</p>
-          <button
-              class="delete"
-              type="button"
-              @click="isActive = false"/>
-        </header>
-        <section class="modal-card-body">
-          <div class="card-content" style="background-color: white">
-            <div class="content">
-              <span v-if="request.private" class="has-text-danger">Med privat profil kan endast du och administratörer se din profil.</span>
-              <b-field class="" label="Ska din profil vara privat?">
-                <div class="field">
-                  <b-switch v-model="request.private">
-                    {{ request.private ? "Profilen ska vara privat." : "Profilen ska vara synlig." }}
-                  </b-switch>
+    <div class="modal-card" style="">
+      <header class="modal-card-head" style="background-color: #693250; color:white; ">
+        <b-button v-if="hasChanged" class="is-small" style="background-color: #693250; border: none" title="Återställ"
+                  @click="reset">
+          <b-icon icon="reload" style="color: white"></b-icon>
+        </b-button>
+        <p class="modal-card-title" style="color: white">Konto inställningar</p>
+        <button
+            class="delete"
+            type="button"
+            @click="$emit('close')"/>
+      </header>
+      <section class="modal-card-body">
+        <div class="card-content" style="background-color: white">
+          <div class="content">
+            <span v-if="request.private" class="has-text-danger">Med privat profil kan endast du och administratörer se din profil.</span>
+            <b-field class="" label="Ska din profil vara privat?">
+              <div class="field">
+                <b-switch v-model="request.private">
+                  {{ request.private ? "Profilen ska vara privat." : "Profilen ska vara synlig." }}
+                </b-switch>
+              </div>
+            </b-field>
+            <b-field label="Söker du LIA?">
+              <div class="field">
+                <b-switch v-model="request.searching">{{ request.searching ? "Ja!" : "Nej!" }}</b-switch>
+              </div>
+            </b-field>
+
+            <span class="has-text-danger">{{ errors.FirstName }}</span>
+            <b-field label="Förnamn">
+              <b-input v-model="request.firstName" required type="text"></b-input>
+            </b-field>
+            <span class="has-text-danger">{{ errors.LastName }}</span>
+            <b-field label="Efternamn">
+              <b-input v-model="request.lastName" required type="text"></b-input>
+            </b-field>
+            <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
+            <b-field class="" grouped label="Utbildning">
+              <b-field horizontal label="Program" label-position="left">
+                <b-select v-model="category" :value="userCategory" placeholder="Utbildningskategori"
+                          @input="categoryChanged">
+                  <option v-for="cat in categories"
+                          :key="cat.name"
+                          :value="cat">
+                    {{ cat.name }}
+                  </option>
+                </b-select>
+                <div v-if="category">
+                  <b-field horizontal label="klass">
+                    <b-select v-model="request.programmeId" :value="null" placeholder="Välj klass">
+                      <option v-for="prog in category.programmes"
+                              :key="prog.name"
+                              :value="prog.id">
+                        {{ prog.name }}
+                      </option>
+                    </b-select>
+                  </b-field>
+
                 </div>
               </b-field>
-              <b-field label="Söker du LIA?">
-                <div class="field">
-                  <b-switch v-model="request.searching">{{ request.searching ? "Ja!" : "Nej!" }}</b-switch>
-                </div>
-              </b-field>
-
-              <span class="has-text-danger">{{ errors.FirstName }}</span>
-              <b-field label="Förnamn">
-                <b-input v-model="request.firstName" required type="text"></b-input>
-              </b-field>
-              <span class="has-text-danger">{{ errors.LastName }}</span>
-              <b-field label="Efternamn">
-                <b-input v-model="request.lastName" required type="text"></b-input>
-              </b-field>
-              <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
-              <b-field class="" label="Utbildning" grouped>
-                <b-field label="Program" horizontal label-position="left">
-                  <b-select v-model="category" placeholder="Utbildningskategori" @input="categoryChanged" :value="userCategory">
-                    <option v-for="cat in categories"
-                            :key="cat.name"
-                            :value="cat">
-                      {{ cat.name }}
-                    </option>
-                  </b-select>
-                  <div v-if="category">
-                    <b-field label="klass" horizontal>
-                      <b-select v-model="request.programmeId" placeholder="Välj klass" :value="null">
-                        <option v-for="prog in category.programmes"
-                                :key="prog.name"
-                                :value="prog.id">
-                          {{ prog.name }}
-                        </option>
-                      </b-select>
-                    </b-field>
-
-                  </div>
-                </b-field>
-              </b-field>
-              <span class="has-text-danger">{{ errors.Email }}</span>
-              <b-field label="E-post">
-                <b-input id="email" v-model="request.email" required type="email"></b-input>
-              </b-field>
-              <span class="has-text-danger">{{ errors.Password }}</span>
-              <b-field label="Nuvarande lösenord">
-                <b-input v-model="request.oldPassword" :validation-message="errors.Password" password-reveal type="password"
-                         value=""></b-input>
-              </b-field>
-              <b-field label="Nytt lösenord">
-                <b-input v-model="request.password" :validation-message="errors.Password" password-reveal type="password"
-                         value=""></b-input>
-              </b-field>
-              <b-field>
-                <b-button :disabled="!hasChanged" class="is-success" @click="send">Spara</b-button>
-              </b-field>
-            </div>
+            </b-field>
+            <span class="has-text-danger">{{ errors.Email }}</span>
+            <b-field label="E-post">
+              <b-input id="email" v-model="request.email" required type="email"></b-input>
+            </b-field>
+            <span class="has-text-danger">{{ errors.Password }}</span>
+            <!--              <b-field label="Nuvarande lösenord">-->
+            <!--                <b-input v-model="request.oldPassword" :validation-message="errors.Password" password-reveal type="password"-->
+            <!--                         value=""></b-input>-->
+            <!--              </b-field>-->
+            <b-field label="Nytt lösenord">
+              <b-input v-model="request.password" :validation-message="errors.Password" password-reveal type="password"
+                       value=""></b-input>
+            </b-field>
+            <b-field>
+              <b-button :disabled="!hasChanged" class="is-success" @click="send">Spara</b-button>
+            </b-field>
           </div>
-        </section>
-      </div>
-    </b-modal>
+        </div>
+      </section>
+    </div>
   </section>
 </template>
 
@@ -113,7 +102,7 @@ export default {
         lastName: this.user.lastName,
         email: this.user.email,
         programmeId: this.user.programmeId,
-        oldPassword: '',
+        // oldPassword: '',
         password: '',
         searching: this.user.searching,
         private: this.user.private
@@ -124,10 +113,10 @@ export default {
     }
   },
   computed: {
-    categories(){
+    categories() {
       return this.$store.getters["edu/getCategories"]
     },
-    userCategory(){
+    userCategory() {
       return this.$store.getters["edu/getCategoryFromName"](this.user.categoryName)
     },
     currentUserProgramme() {
@@ -150,14 +139,13 @@ export default {
   },
   methods: {
     reset() {
-      console.log(this.userCategory)
       this.category = this.userCategory;
       this.request = {
         firstName: this.user.firstName,
         lastName: this.user.lastName,
         email: this.user.email,
         programmeId: this.user.programmeId,
-        oldPassword: '',
+        // oldPassword: '',
         password: '',
         private: this.user.private,
         searching: this.user.searching,
@@ -169,7 +157,7 @@ export default {
     async send() {
       this.locked = true;
       let _request = updateProfileModel(this.request);
-      await this.$store.dispatch("profile/updateProfile", _request).then(this.isActive = false).catch(err => {
+      await this.$store.dispatch("profile/updateProfile", _request).then(this.$emit('close')).catch(err => {
         alert(err)
       })
       this.locked = false;

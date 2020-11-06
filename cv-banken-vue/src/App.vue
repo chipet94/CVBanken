@@ -10,7 +10,7 @@
       <template slot="start">
         <b-navbar-item :to="{name: 'Home' }" tag="router-link">Start</b-navbar-item>
         <b-navbar-item :to="{ name: 'Utbildningar' }" tag="router-link">Utbildningar</b-navbar-item>
-<!--        <b-navbar-item :to="{ name: 'Educations' }" tag="router-link">Utbildningar2</b-navbar-item>-->
+        <!--        <b-navbar-item :to="{ name: 'Educations' }" tag="router-link">Utbildningar2</b-navbar-item>-->
       </template>
       <template slot="end">
 
@@ -65,6 +65,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
 }
 
 .ITHS-title {

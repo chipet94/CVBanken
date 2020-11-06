@@ -12,7 +12,7 @@ namespace CVBanken.Services.EducationServices
         Task<Programme> GetProgrammeByName(string name);
         Task<Category> GetCategoryByName(string name);
         Task<Category> GetCategoryById(int id);
-        Task<IEnumerable<User>> GetStudents(int id);
+        Task<IEnumerable<Student>> GetStudents(int id);
         Task<IEnumerable<Programme>> GetAllEducationsByCategory(int id);
         Task<Programme> GetProgrammeById(int id);
 
@@ -20,6 +20,7 @@ namespace CVBanken.Services.EducationServices
         Task Update(int id, Programme programme);
         Task Delete(int id);
         Task CreateCategory(Category category);
+        Task UpdateCategory(int id, Category category);
         Task DeleteCategory(int id);
     }
 }

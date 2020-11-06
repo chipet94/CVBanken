@@ -12,16 +12,14 @@ export default {
   components: {ProfileBase},
 
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
-    thisSession(){
+    thisSession() {
       return this.$store.getters["auth/getSession"];
     }
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 

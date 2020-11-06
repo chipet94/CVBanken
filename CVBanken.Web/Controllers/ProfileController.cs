@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using CVBanken.Data.Helpers;
+using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
+using CVBanken.Services.FileServices;
 using CVBanken.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,12 @@ namespace CVBanken.Web.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IUserService _context;
+        private readonly IFileManagerService _fileService;
 
-        public ProfileController(IUserService context)
+        public ProfileController(IUserService context, IFileManagerService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -51,18 +55,25 @@ namespace CVBanken.Web.Controllers
                 if (profile.Private)
                     if (!User.IsInRole(Role.Admin))
                         if (User.Identity.Name != profile.Id.ToString())
-                        {
                             return BadRequest();
-                        }
-                        
+
                 return Ok(profile.ToSafeResponse());
             }
             catch (Exception e)
             {
                 return NotFound();
             }
+        }
 
-
+        [HttpGet]
+        [Route("{id}/files")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserFiles(int id)
+        {
+            var user = await _context.GetById(id);
+            if (user == null) return NotFound();
+            if (user.Private && !User.IsInRole(Role.Admin)) return Unauthorized();
+            return Ok(user.Files.WithoutDatas());
         }
 
         [HttpGet]

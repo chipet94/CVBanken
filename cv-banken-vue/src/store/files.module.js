@@ -55,6 +55,17 @@ export const files = {
                 },
             )
         },
+        downloadCv({commit}, id) {
+            return UserFileService.downloadCv(id).then(
+                file => {
+                    commit("gotData")
+                    return Promise.resolve(file)
+                },
+                error => {
+                    return Promise.reject(error)
+                },
+            )
+        },
         removeById({commit}, id) {
             return UserFileService.removeFile(id).then(
                 file => {
@@ -69,7 +80,7 @@ export const files = {
         UploadFiles({commit}, files) {
             return UserFileService.uploadFile(files).then(
                 files => {
-                    commit("userFilesSuccess", files);
+                    commit("userFilesSuccess");
                     return Promise.resolve(files);
                 },
                 error => {
@@ -77,8 +88,8 @@ export const files = {
                 }
             )
         },
-        SetCV({commit}, id) {
-            return UserFileService.setCv(id).then(
+        SetCV({commit}, cv) {
+            return UserFileService.uploadCv(cv).then(
                 files => {
                     commit("userFileSuccess", files)
                     return Promise.resolve(files)
@@ -87,23 +98,31 @@ export const files = {
                     return Promise.reject(err)
                 }
             )
-        }
+        },
+        removeCv({commit}, id) {
+            return UserFileService.removeCv(id).then(
+                file => {
+                    commit("userFileRemovedSuccess", file)
+                    return Promise.resolve(file);
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            )
+        },
     },
     mutations: {
         userFilesSuccess(state, files) {
             state.files = files;
         },
-        userFileSuccess(state, file) {
-            state.files.map(sFile => sFile.id === file.id
-                ? {...sFile, file}
-                : sFile
-            );
+        userFileSuccess() {
+            console.log("uploaded...")
         },
         gotData(state) {
             console.log(state.files)
         },
-        userFileRemovedSuccess(state, file) {
-            state.files.slice(state.files.findIndex(z => z.id === file.id), 1);
+        userFileRemovedSuccess() {
+            // state.files.slice(state.files.findIndex(z => z.id === id), 1);
         },
     }
 }

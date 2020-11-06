@@ -8,6 +8,7 @@
 <script>
 
 import EducationTableModel from "@/components/Globals/EducationTableModel";
+
 export default {
   components: {EducationTableModel},
   created() {
@@ -26,12 +27,12 @@ export default {
       }).catch(err => alert(err))
       console.log(this.data)
     },
-    
+
     rowClicked(row) {
       alert(row.name)
     }
   },
-  
+
 }
 </script>
 

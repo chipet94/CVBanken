@@ -17,6 +17,12 @@ export class ProfileService {
         })
     }
 
+    getUserFiles(id) {
+        return axios.get(API_URL + "profile/" + id + "/files", {
+            headers: authHeader()
+        })
+    }
+
     getCurrentUserProfile() {
         return axios.get(API_URL + "profile/", {
             headers: authHeader(),

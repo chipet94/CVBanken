@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CVBanken.Web.Controllers
 {
-[ApiController]
+    [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
@@ -30,25 +30,27 @@ namespace CVBanken.Web.Controllers
             var categories = await _context.GetAllCategories();
             if (User.IsInRole(Role.Admin)) return categories.ToResponse();
 
-            return categories.Where(p => p.Name != "Default").ToResponse();
+            return categories.Where(p => !p.Hidden).ToResponse();
         }
+
         [HttpGet("{name}")]
         public async Task<CategoryResponse> GetByCategory(string name)
         {
             var category = await _context.GetCategoryByName(name);
             return category.ToResponse();
         }
+
         [HttpGet("{id:int}")]
         public async Task<CategoryResponse> GetCategory(int id)
         {
             var category = await _context.GetCategoryById(id);
             return category.ToResponse();
         }
+
         [HttpPost]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Create(CategoryRequest model)
         {
-
             if (model == null) return BadRequest();
             var category = model.ToCategory();
             try
@@ -59,7 +61,7 @@ namespace CVBanken.Web.Controllers
             {
                 return Conflict(e.Message);
             }
-            
+
             return NoContent();
         }
 
@@ -80,11 +82,11 @@ namespace CVBanken.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Programme programme)
+        public async Task<IActionResult> Update(int id, Category category)
         {
             try
             {
-                await _context.Update(id, programme);
+                await _context.UpdateCategory(id, category);
             }
             catch (Exception e)
             {

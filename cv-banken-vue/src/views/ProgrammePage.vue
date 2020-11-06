@@ -8,6 +8,7 @@
 
 <script>
 import ProgrammeViewModel from "@/components/common/ProgrammeViewModel";
+
 export default {
   name: "ProgrammePage",
   components: {ProgrammeViewModel}

@@ -28,6 +28,7 @@ namespace CVBanken.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<Context>(options =>
             {
                 //options.UseSqlServer(connectionString);
@@ -80,6 +81,12 @@ namespace CVBanken.Web
                 app.UseHsts();
 
             app.UseHttpsRedirection();
+            var scopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var dbInitializer = scope.ServiceProvider.GetService<Context>();
+                dbInitializer.ApplySeedData();
+            }
 
             app.UseRouting();
 

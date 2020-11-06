@@ -1,22 +1,23 @@
 <template>
   <section>
-    <div class="title is-6">Filer</div>
+    <div>
+      <UserCvBox :can-edit="canEdit" :user="user"></UserCvBox>
+    </div>
+    <br>
+    <div class="title is-6">Övriga filer</div>
     <b-table
-        :data="isEmpty ? [] : files"
+        :data="isEmpty ? [] : this.user.files"
+        :header-class="getRowClass"
         :hoverable=true
         :loading=false
         :mobile-cards=true
-        :header-class="getRowClass"
         title="Filer"
     >
-      <b-table-column v-slot="props" field="cv" width="80" class="">
+      <b-table-column v-slot="props" class="" field="cv" width="80">
         <span v-if="props.row.isCv" class="has-text-black has-text-weight-bold">CV</span>
         <span v-else class="has-text-black has-text-weight-bold">Övrigt</span>
-<!--        {{ props.row.isCv === true?-->
-<!--        '<b-icon icon="home"></b-icon>' : '<b-icon icon="close"></b-icon>' }}-->
-        <b-button v-if="canEdit && !props.row.isCv" @click="SetCv(props.row.id)" class="is-info">set cv</b-button>
       </b-table-column>
-      <b-table-column v-slot="props" field="name" class="fileTable">
+      <b-table-column v-slot="props" class="fileTable" field="name">
         <span :title="'storlek: ' +formatBytes(props.row.size)">
                   {{ props.row.name }}
         </span>
@@ -29,17 +30,21 @@
         </b-button>
       </b-table-column>
     </b-table>
-    <component-modal v-if="canEdit && userFiles.length < 5"></component-modal>
+    <!--    <component-modal v-if="canEdit && userFiles.length < 5"></component-modal>-->
+    <b-button v-if="canEdit && userFiles.length < 5" class="ITHS-button-small is-center" @click="openAddFile">
+      <b-icon icon="plus" style="color:white"></b-icon>
+    </b-button>
   </section>
 </template>
 
 <script>
 import ComponentModal from "@/components/UserFiles/ComponentModal";
+import UserCvBox from "@/components/UserFiles/UserCvBox";
 
 export default {
   name: "userFileList",
-  components: {ComponentModal},
-  props: {userId: Number, files: Array, canEdit: Boolean},
+  components: {UserCvBox},
+  props: {user: {}, canEdit: Boolean},
   data() {
     return {
       programme: {},
@@ -47,14 +52,28 @@ export default {
       userFiles: []
     };
   },
+  computed: {},
   async created() {
   },
   methods: {
-    getRowClass(){
+    getRowClass() {
       return 'has-text-centered'
     },
+    openAddFile() {
+      this.$buefy.modal.open({
+        parent: this.$parent,
+        component: ComponentModal,
+        props: {onUploadSuccess: this.onSuccess},
+        hasModalCard: true,
+        customClass: '',
+        trapFocus: true
+      })
+    },
+    async onSuccess() {
+      await this.$store.dispatch("profile/getUserFiles", this.user.id)
+    },
     async getFiles() {
-      await this.$store.dispatch("files/getAllByUserId", this.userId).then(
+      await this.$store.dispatch("profile/getUserFiles", this.user.id).then(
           res => {
             this.userFiles = res;
           }
@@ -63,8 +82,11 @@ export default {
     async handleDownload(id, name) {
       await this.$store.dispatch("files/downloadById", id).then(
           res => this.StartDownload(res, name)
-      ).catch(err => {
-        alert(err)
+      ).catch(() => {
+        this.$buefy.toast.open({
+          message: "Något gick fel, gick inte att hämta...",
+          type: 'is-danger'
+        })
       })
 
     },
@@ -88,9 +110,25 @@ export default {
     async Remove(id, name) {
       let confirmed = confirm("Remove file '" + name + "'?")
       if (confirmed) {
-        await this.$store.dispatch("files/removeById", id).then(() => {
-          this.getFiles();
-        }).catch(alert("something went wrong..."))
+        await this.$store.dispatch("files/removeById", id).then(
+            res => {
+              //this.getFiles();
+              let index = this.user.files.findIndex(file => {
+                if (file.id === id) {
+                  return true;
+                }
+              });
+              console.log(index)
+              this.user.files.splice(index, 1)
+              console.log(res)
+            }
+        ).catch(err => {
+          console.log(err)
+          this.$buefy.toast.open({
+            message: "Något gick fel, gick inte att hämta...",
+            type: 'is-danger'
+          })
+        })
       }
     },
     async SetCv(id) {
@@ -103,7 +141,13 @@ export default {
 </script>
 
 <style scoped>
-.fileTable{
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+}
+
+.fileTable {
   padding-left: 50px;
 }
 

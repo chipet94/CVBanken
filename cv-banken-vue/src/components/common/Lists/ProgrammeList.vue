@@ -2,7 +2,7 @@
   <ul>
     <template v-for="item in programmes">
       <li :key="item.id" class="ITHS-list">
-        <b-collapse v-if="item.totalStudents > 0" :open="false" animation="slide" aria-id="programmeName" class="card"
+        <b-collapse :open="false" animation="slide" aria-id="programmeName" class="card"
                     @open="programmeExpanded(item.id)">
           <div
               slot="trigger"
@@ -22,7 +22,8 @@
                   :icon="props.open ? 'menu-down' : 'menu-up'">
               </b-icon>
             </a>
-            <router-link class="card-header-icon ITHS-text"  :to="{ name: 'Klass', params: {name: item.name}}" title="Gå till klass">
+            <router-link :to="{ name: 'Klass', params: {name: item.name}}" class="card-header-icon ITHS-text"
+                         title="Gå till klass">
               <b-icon
                   icon="link">
               </b-icon>

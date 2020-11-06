@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Response;
 
 namespace CVBanken.Data.Helpers
 {
-    public static class UserExtentions
+    public static class StudentExtentions
     {
         public static IEnumerable<User> WithoutPasswords(this IEnumerable<User> users)
         {
@@ -24,14 +23,14 @@ namespace CVBanken.Data.Helpers
             return user;
         }
 
-        public static IEnumerable<UserResponse> ToSafeResponse(this IEnumerable<User> users)
+        public static IEnumerable<StudentResponse> ToSafeResponse(this IEnumerable<Student> users)
         {
             return users?.Select(x => x.ToSafeResponse());
         }
 
-        public static UserResponse ToSafeResponse(this User user)
+        public static StudentResponse ToSafeResponse(this Student user)
         {
-            return UserResponse.FromUser(user);
+            return StudentResponse.FromUser(user);
         }
 
         public static SessionResponse ToAuthResponse(this User user)

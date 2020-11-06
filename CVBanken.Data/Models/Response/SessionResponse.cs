@@ -15,8 +15,8 @@ namespace CVBanken.Data.Models.Response
             {
                 Role = user.Role,
                 Token = user.Token,
-                Name = user.FullName(),
-                Url = user.Url
+                Name = user.Student.FullName(),
+                Url = user.Student.Url
             };
         }
     }

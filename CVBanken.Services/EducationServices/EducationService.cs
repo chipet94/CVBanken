@@ -27,10 +27,12 @@ namespace CVBanken.Services.EducationServices
         {
             return await _context.Categories.ToListAsync();
         }
+
         public async Task<Category> GetCategoryByName(string name)
         {
             return await _context.Categories.FirstAsync(c => c.Name.ToUpper() == name.ToUpper());
         }
+
         public async Task<Category> GetCategoryById(int id)
         {
             return await _context.Categories.FindAsync(id);
@@ -40,6 +42,7 @@ namespace CVBanken.Services.EducationServices
         {
             return await _context.Programmes.FirstAsync(c => c.Name.ToUpper() == name.ToUpper());
         }
+
         public async Task<IEnumerable<Programme>> GetAllEducationsByCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -47,7 +50,7 @@ namespace CVBanken.Services.EducationServices
         }
 
 
-        public async Task<IEnumerable<User>> GetStudents(int id)
+        public async Task<IEnumerable<Student>> GetStudents(int id)
         {
             var programme = await _context.Programmes.FindAsync(id);
             return programme.Students;
@@ -62,10 +65,7 @@ namespace CVBanken.Services.EducationServices
         public async Task Create(Programme programme)
         {
             var exists = await _context.Programmes.AnyAsync(p => p.Name == programme.Name);
-            if (exists)
-            {
-                throw new Exception($"A programme with the name '{programme.Name}' already exists.");
-            }
+            if (exists) throw new Exception($"A programme with the name '{programme.Name}' already exists.");
             try
             {
                 await _context.AddAsync(programme);
@@ -75,8 +75,6 @@ namespace CVBanken.Services.EducationServices
             {
                 throw e;
             }
-
-  
         }
 
         public async Task Update(int id, Programme programme)
@@ -104,17 +102,15 @@ namespace CVBanken.Services.EducationServices
         {
             var toDelete = await _context.Programmes.FindAsync(id);
             if (toDelete == null) throw new Exception("not found.");
- 
+
             try
             {
                 if (toDelete.Students.Any())
                 {
-                    foreach (var student in toDelete.Students)
-                    {
-                        student.ProgrammeId = 1000;
-                    }
+                    foreach (var student in toDelete.Students) student.ProgrammeId = 1000;
                     _context.UpdateRange(toDelete.Students);
                 }
+
                 _context.Remove(toDelete);
                 await _context.SaveChangesAsync();
             }
@@ -122,19 +118,36 @@ namespace CVBanken.Services.EducationServices
             {
                 throw e;
             }
-
         }
 
         public async Task CreateCategory(Category category)
         {
             var exists = await _context.Categories.AnyAsync(p => p.Name == category.Name);
-            if (exists)
-            {
-                throw new Exception($"A category with the name '{category.Name}' already exists.");
-            }
+            if (exists) throw new Exception($"A category with the name '{category.Name}' already exists.");
             try
             {
                 await _context.AddAsync(category);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task UpdateCategory(int id, Category category)
+        {
+            var toUpdate = await _context.Categories.FindAsync(id);
+            foreach (var property in typeof(Category).GetProperties())
+            {
+                var sourceProp = property.GetValue(category);
+                var targetProp = property.GetValue(toUpdate);
+                if (sourceProp != null && targetProp != sourceProp) property.SetValue(toUpdate, sourceProp);
+            }
+
+            try
+            {
+                _context.Categories.Update(toUpdate);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -147,17 +160,15 @@ namespace CVBanken.Services.EducationServices
         {
             var toDelete = await _context.Categories.FindAsync(id);
             if (toDelete == null) throw new Exception("not found.");
- 
+
             try
             {
                 if (toDelete.Programmes.Any())
                 {
-                    foreach (var programme in toDelete.Programmes)
-                    {
-                        programme.CategoryId = 1;
-                    }
+                    foreach (var programme in toDelete.Programmes) programme.CategoryId = 1;
                     _context.UpdateRange(toDelete.Programmes);
                 }
+
                 _context.Remove(toDelete);
                 await _context.SaveChangesAsync();
             }

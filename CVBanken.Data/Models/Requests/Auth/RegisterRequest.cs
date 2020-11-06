@@ -22,7 +22,8 @@ namespace CVBanken.Data.Models.Requests.Auth
         public string Password { get; set; }
 
         [Required(ErrorMessage = "No programme Selected.")]
-        [Range(1000, 9999, ErrorMessage = "Please select a valid programme.")]
+        //todo böttre req
+        [Range(1000, 99999, ErrorMessage = "Please select a valid programme.")]
         public int ProgrammeId { get; set; }
 
         public User ToUser()

@@ -7,8 +7,11 @@
           </template>
           <b-skeleton :active="loading" size="is-large"></b-skeleton>
         </p>
-        <SettingsModal v-if="!loading && canEdit && thisUser !== undefined" :user="thisUser"
-                       class="is-pulled-right"></SettingsModal>
+        <!--        <SettingsModal v-if="!loading && canEdit && thisUser !== undefined" :user="thisUser"-->
+        <!--                       class="is-pulled-right"></SettingsModal>-->
+        <b-button v-if="!loading && canEdit && thisUser !== undefined" @click="openSettings">
+          <b-icon icon="cog" style="color:black"></b-icon>
+        </b-button>
       </div>
       <div class="card-content">
         <template v-if="!loading && thisUser !== null">
@@ -55,7 +58,7 @@
               <article class="tile is-child notification">
                 <div class="content">
                   <user-file-list v-if="thisUser.id !== undefined" :can-edit="canEdit"
-                                  :files="thisUser.files" :user-id="thisUser.id"></user-file-list>
+                                  v-bind:user="thisUser"></user-file-list>
                 </div>
               </article>
             </div>
@@ -76,7 +79,7 @@ import User from "@/models/User";
 
 export default {
   name: "profileBase",
-  components: {userFileList, ProfilePictureBox, SettingsModal},
+  components: {userFileList, ProfilePictureBox},
   props: {editable: Boolean, url: String},
   data() {
     return {
@@ -89,9 +92,9 @@ export default {
   },
   computed: {
     thisUser() {
-      return this.$store.getters["profile/getProfile"](this.url?? this.$route.params.url)
+      return this.$store.getters["profile/getProfile"](this.url ?? this.$route.params.url)
     },
-    thisSession(){
+    thisSession() {
       return this.$store.getters["auth/getSession"];
     },
     profilePicture() {
@@ -117,17 +120,28 @@ export default {
             alert(err)
           })
     },
+    openSettings() {
+      this.$buefy.modal.open({
+        parent: this.$parent,
+        component: SettingsModal,
+        props: {user: this.thisUser},
+        hasModalCard: true,
+        customClass: '',
+        trapFocus: true
+      })
+    },
+
     async onReloadPic() {
       await this.thisUser.getProfilePicture()
       // await this.LoadProfile()
     },
     async LoadProfile() {
       this.loading = true;
-      let profileUrl = this.$route.params.url?? this.url;
+      let profileUrl = this.$route.params.url ?? this.url;
       if (profileUrl) {
-        await this.$store.dispatch("profile/getByUrl", profileUrl).catch( err => {
+        await this.$store.dispatch("profile/getByUrl", profileUrl).catch(err => {
           console.log(err)
-          this.$router.push({name:"Error"})
+          this.$router.push({name: "Error"})
         });
       } else {
         console.log("nothing")
@@ -143,5 +157,10 @@ export default {
 </script>
 
 <style scoped>
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+}
 
 </style>

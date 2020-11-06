@@ -1,10 +1,10 @@
 <template>
   <section>
-      <b-loading v-model="loading" :can-cancel="true" :is-full-page="true"></b-loading>
-      <div v-for="category in categories" :key="category.id">
-        <category-container :category="category"></category-container>
-        <br>
-      </div>
+    <b-loading v-model="loading" :can-cancel="true" :is-full-page="true"></b-loading>
+    <div v-for="category in categories" :key="category.id">
+      <category-container :category="category"></category-container>
+      <br>
+    </div>
   </section>
 
 </template>

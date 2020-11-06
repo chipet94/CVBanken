@@ -16,6 +16,6 @@ export const ValidatePathRules = (to, from, next) => {
         else
             return next()
     else if (to.matched.some(record => record.meta.guest))   // om sidan är för gäster
-    //inga krav
-    return next()
+        //inga krav
+        return next()
 }

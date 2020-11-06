@@ -1,12 +1,12 @@
 <template>
-<div>
-  Not found...
-</div>
+  <div>
+    Not found...
+  </div>
 </template>
 
 <script>
 export default {
-name: "ErrorPage"
+  name: "ErrorPage"
 }
 </script>
 

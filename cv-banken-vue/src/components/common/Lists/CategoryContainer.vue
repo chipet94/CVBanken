@@ -1,6 +1,6 @@
 <template>
   <section>
-    <b-collapse animation="slide" aria-id="categoryName" class="card">
+    <b-collapse :open="false" animation="slide" aria-id="categoryName" class="card">
       <div
           slot="trigger"
           slot-scope="props"
@@ -15,7 +15,8 @@
               :icon="props.open ? 'menu-down' : 'menu-up'">
           </b-icon>
         </a>
-        <router-link class="card-header-icon ITHS-text"  :to="{ name: 'Kategori', params: {name: category.name}}" title="Gå till kategori">
+        <router-link :to="{ name: 'Kategori', params: {name: category.name}}" class="card-header-icon ITHS-text"
+                     title="Gå till kategori">
           <b-icon
               icon="link">
           </b-icon>

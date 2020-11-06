@@ -6,31 +6,28 @@ using Microsoft.AspNetCore.Http;
 
 namespace CVBanken.Data.Models
 {
-    public class UserFile
+    public class UserCv
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
         public string Ext { get; set; }
-
-        public bool IsCv { get; set; }
         public long Size { get; set; }
         public DateTime Uploaded { get; set; }
-        public int OwnerID { get; set; }
-        public virtual Student Owner { get; set; }
+        public int StudentId { get; set; }
+        public virtual Student Student { get; set; }
     }
 
-    public class UserFileBuilder
+    public class UserCvBuilder
     {
-        public static async Task<UserFile> NewUserFileAsync(Student owner, IFormFile formFile)
+        public static async Task<UserCv> NewCvAsync(Student student, IFormFile formFile)
         {
-            var file = new UserFile();
-            file.OwnerID = owner.Id;
-            file.Owner = owner;
-            file.Name = formFile.FileName;
+            var file = new UserCv();
+            file.StudentId = student.Id;
             file.Uploaded = DateTime.Now;
             file.Ext = Path.GetExtension(formFile.FileName);
-            file.Size = formFile.Length; //storlek i bytes tex: 1 000 000
+            file.Name = $"CV_{student.FullName()}" + file.Ext;
+            file.Size = formFile.Length;
             await using (var dataSource = new MemoryStream())
             {
                 formFile.CopyTo(dataSource);
@@ -40,15 +37,14 @@ namespace CVBanken.Data.Models
             return file;
         }
 
-        public static UserFile NewUserFile(Student owner, IFormFile formFile)
+        public static UserCv NewCv(Student student, IFormFile formFile)
         {
-            var file = new UserFile();
-            file.OwnerID = owner.Id;
-            file.Owner = owner;
-            file.Name = formFile.FileName;
+            var file = new UserCv();
+            file.StudentId = student.Id;
+            file.Name = $"CV_{student.FullName()}";
             file.Uploaded = DateTime.Now;
             file.Ext = Path.GetExtension(formFile.FileName);
-            file.Size = formFile.Length; //storlek i bytes tex: 1 000 000
+            file.Size = formFile.Length;
             using (var dataSource = new MemoryStream())
             {
                 formFile.CopyTo(dataSource);

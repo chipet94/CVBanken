@@ -13,8 +13,8 @@
             <b-input v-model="lastName" required type="text"></b-input>
           </b-field>
           <span class="has-text-danger">{{ errors.ProgrammeId }}</span>
-          <b-field class="" label="Utbildning" grouped>
-            <b-field label="Program" horizontal label-position="left">
+          <b-field class="" grouped label="Utbildning">
+            <b-field horizontal label="Program" label-position="left">
               <b-select v-model="category" placeholder="Utbildningskategori" @input="categoryChanged">
                 <option v-for="cat in categories"
                         :key="cat.name"
@@ -23,8 +23,8 @@
                 </option>
               </b-select>
               <div v-if="category">
-                <b-field label="klass" horizontal>
-                  <b-select v-model="programme" placeholder="Välj klass" :value="null">
+                <b-field horizontal label="klass">
+                  <b-select v-model="programme" :value="null" placeholder="Välj klass">
                     <option v-for="prog in category.programmes"
                             :key="prog.name"
                             :value="prog.id">
@@ -45,7 +45,7 @@
             <b-input v-model="password" password-reveal required type="password" value=""></b-input>
           </b-field>
           <b-field>
-            <b-button class="button ITHS-button" @click.native="signUp" :disabled="locked">Registrera</b-button>
+            <b-button :disabled="locked" class="button ITHS-button" @click.native="signUp">Registrera</b-button>
           </b-field>
         </div>
       </div>

@@ -49,6 +49,7 @@
 export default {
   name: "DragAndDropBox",
   components: {},
+  props: {onUploadSuccess: Function},
   data() {
     return {
       fileList: [],
@@ -71,15 +72,25 @@ export default {
           formData.append('files', files[i]);
         }
         await this.$store.dispatch("files/UploadFiles", formData).then(
-            () => {
+            res => {
+              console.log(res)
               this.fileList = [];
               this.loading = false;
-              alert("Success! Dina filer är nu uppladdade!")
+              this.$buefy.toast.open({
+                message: 'Dina filer har blivit uppladdade!',
+                type: 'is-success'
+              })
+              this.onUploadSuccess();
+
+              // alert("Success! Dina filer är nu uppladdade!")
             }
         ).catch(err => {
 
           this.loading = false;
-          alert(err.response.data)
+          this.$buefy.toast.open({
+            message: err.response.data,
+            type: 'is-danger'
+          })
           console.log(err)
         })
       }

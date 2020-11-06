@@ -17,7 +17,7 @@ namespace CVBanken.Data.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
 
-        public virtual ICollection<User> Students { get; set; }
+        public virtual ICollection<Student> Students { get; set; }
 
         public int TotalStudents()
         {

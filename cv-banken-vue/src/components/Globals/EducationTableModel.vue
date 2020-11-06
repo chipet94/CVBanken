@@ -3,13 +3,13 @@
     <b-table
         :data="isEmpty ? [] : categoryList"
         :opened-detailed="defaultOpenedDetails"
-        detailed
-        detail-key="id"
-        @details-open="(row) => $buefy.toast.open(`Expanded`)"
         :show-detail-icon="showDetailIcon"
+        detail-key="id"
+        detailed
+        @details-open="(row) => $buefy.toast.open(`Expanded`)"
     >
-      <b-table-column field="categoryName" label="Utbildningar" width="40" v-slot="props">
-        {{props.row.categoryName}}
+      <b-table-column v-slot="props" field="categoryName" label="Utbildningar" width="40">
+        {{ props.row.categoryName }}
       </b-table-column>
       <template slot="detail" slot-scope="props">
         <article class="media">
@@ -26,6 +26,7 @@
 
 <script>
 import ClassTable from "@/components/Globals/classTable";
+
 export default {
   name: "EducationTableModel",
   components: {ClassTable},
@@ -33,21 +34,21 @@ export default {
     console.log('EducationTableModal class')
     this.templist = this.classes
   },
-  props:{
+  props: {
     categoryList: Array
   },
-  data(){
+  data() {
     return {
       templist: [],
       defaultOpenedDetails: [1],
       showDetailIcon: true,
       isEmpty: false
     }
-    
+
   },
   showDetailIcon: true,
-  computed:{
-    classes(){
+  computed: {
+    classes() {
       return this.groupBy(this.categoryList, "category")
     }
   },

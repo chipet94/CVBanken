@@ -5,7 +5,7 @@
       <b-button class="ITHS-button" @click="openAddCategory">Skapa ny Kategori</b-button>
     </b-field>
 
-    <b-field label="Ladda kategori" position="is-centered">
+    <b-field class="is-inline-block" label="Välj kategori">
       <b-select v-model="selected_category" placeholder="Utbildningskategori">
         <option v-for="cat in categories"
                 :key="cat.name"
@@ -13,32 +13,42 @@
           {{ cat.name }}
         </option>
       </b-select>
-      <b-button v-if="this.category" class="is-info" @click="openEditCategory">Redigera</b-button>
+
+      <b-button v-if="this.category" class="ITHS-button-small" @click="openEditCategory">Redigera</b-button>
     </b-field>
-    <br>
-    <div v-if="category" class="container">
-      <b-field label="klasser">
+    <div v-if="selected_category" class="container">
+      <b-field :label="'Klasser i ' + category.name">
         <b-table
+            v-if="category"
             :data="category.programmes < 1? [] : category.programmes"
             :hoverable=true
             :mobile-cards=true
         >
           <b-table-column v-slot="props" field="id" label="Id">{{ props.row.id }}</b-table-column>
           <b-table-column v-slot="props" field="name" label="Namn">{{ props.row.name }}</b-table-column>
-          <b-table-column v-slot="props" field="category" label="Kategori">{{ props.row.categoryName }}</b-table-column>
+          <b-table-column v-slot="props" field="category" label="Kategori">{{
+              props.row.categoryName
+            }}
+          </b-table-column>
           <b-table-column v-slot="props" field="start" label="Start">{{ props.row.start }}</b-table-column>
           <b-table-column v-slot="props" field="end" label="Slut">{{ props.row.end }}</b-table-column>
           <b-table-column v-slot="props" field="students" label="Studenter">{{
               props.row.totalStudents
             }}
           </b-table-column>
+          <b-table-column v-slot="props" field="hidden" label="Gömd">{{
+              props.row.hidden ? "ja" : "nej"
+            }}
+          </b-table-column>
           <b-table-column v-slot="props" field="" label="">
-            <b-button class="is-warning" @click="openEditProgramme(category.programmes[props.index])">Edit</b-button>
+            <b-button class="ITHS-button-small" @click="openEditProgramme(category.programmes[props.index])">Redigera
+            </b-button>
           </b-table-column>
         </b-table>
       </b-field>
 
     </div>
+    <br>
   </div>
 </template>
 
@@ -65,10 +75,17 @@ export default {
       return this.$store.getters["edu/getCategories"]
     },
     category() {
-      return this.$store.getters["edu/getCategory"](this.selected_category)
+      if (this.selected_category) {
+        return this.$store.getters["edu/getCategory"](this.selected_category)
+      }
+      return undefined;
+
     }
   },
   methods: {
+    setSelectedCategory(index) {
+      this.selected_category = index.id;
+    },
     programmeDeleted(programme) {
       this.category.programmes.pop(p => p === programme)
     },
@@ -120,6 +137,12 @@ export default {
 </script>
 
 <style scoped>
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+}
+
 .ITHS-button {
   background-color: #693250;
   height: 5rem;

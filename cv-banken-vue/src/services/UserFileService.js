@@ -55,8 +55,17 @@ class UserFileService {
         })
     }
 
-    setCv(id) {
-        return axios.get(API_URL + "files/setcv/" + id, {
+    downloadCv(id = 0) {
+        return axios.get(API_URL + "files/cv/" + id, {
+            headers: authHeader(),
+            responseType: 'blob',
+        }).then(res => {
+            return res.data;
+        })
+    }
+
+    setCv(id, cv) {
+        return axios.post(API_URL + "files/user/" + id + "/cv", cv, {
             headers: authHeader(),
         }).then(res => {
             return res.data;
@@ -72,8 +81,26 @@ class UserFileService {
         })
     }
 
+    uploadCv(uploadfile) {
+        console.log("Toupload", uploadfile)
+        return axios.post(API_URL + "files/upload/cv", uploadfile, {
+            headers: authHeader("multipart/form-data"),
+        }).then(res => {
+            return res.data;
+        })
+    }
+
     removeFile(id) {
         return axios.delete(API_URL + "files/" + id, {
+            headers: authHeader(),
+            credentials: 'include'
+        }).then(res => {
+            return res;
+        })
+    }
+
+    removeCv(id) {
+        return axios.delete(API_URL + "files/cv/" + id, {
             headers: authHeader(),
             credentials: 'include'
         }).then(res => {

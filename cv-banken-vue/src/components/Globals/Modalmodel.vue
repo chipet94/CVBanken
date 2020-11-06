@@ -3,17 +3,17 @@
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          {{programme}}
+          {{ programme }}
           <br>
-        <span class="subtitle is-centered">{{className}}</span>
+          <span class="subtitle is-centered">{{ className }}</span>
         </p>
         <button
-            type="button"
             class="delete"
+            type="button"
             @click="$emit('close')"/>
       </header>
       <section class="modal-card-body">
-        <b-table :data="users" @click="handleClick" hoverable>
+        <b-table :data="users" hoverable @click="handleClick">
           <b-table-column v-slot="props" field="name" label="Namn">
             {{ props.row.firstName + " " + props.row.lastName }}
           </b-table-column>
@@ -39,37 +39,35 @@ export default {
     console.log(this.users)
     console.log('Modal create')
   },
-  data(){
-    return{
-      
-    }
+  data() {
+    return {}
   },
   props: {
     programmeId: Number,
     isActive: Boolean,
-    users:Array,
+    users: Array,
     className: String,
     programme: String
   },
-  methods:{
-    handleClick(index){
+  methods: {
+    handleClick(index) {
       console.log(index)
-      this.$router.push('profile/'+index.url)
+      this.$router.push('profile/' + index.url)
     }
   },
 }
 </script>
 <style>
 
-.modal-card-head{
+.modal-card-head {
   background-color: #693250;
 }
 
-.modal-card-title{
+.modal-card-title {
   color: white;
 }
 
-.subtitle{
+.subtitle {
   color: white;
 }
 </style>

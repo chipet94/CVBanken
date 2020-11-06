@@ -11,7 +11,9 @@
       <div class="content">
         <b-field label="Nedan finner du alla tillgängliga ITHS utbildningar.">
           <p>
-            Klicka på <b-icon icon="link"></b-icon> för att besöka klassen / kategorin. <br>
+            Klicka på
+            <b-icon icon="link"></b-icon>
+            för att besöka klassen / kategorin. <br>
             Eller klicka på Namnet för att expandera / minimera. <br>
             <span class="has-text-danger has-text-weight-bold">Endast studenter med publika profiler syns.</span> <br>
           </p>

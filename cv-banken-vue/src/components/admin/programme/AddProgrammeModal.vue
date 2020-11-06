@@ -2,9 +2,9 @@
   <section class="container">
     <div class="modal-card" style="">
       <header class="modal-card-head">
-        <p class="modal-card-title">Ny Klass</p>
+        <p class="modal-card-title">{{ editMode ? 'Redigera Klass' : "Ny Klass" }}</p>
         <button
-            class="delete"
+            class="delete is-danger"
             type="button"
             @click="$emit('close')"/>
       </header>
@@ -60,9 +60,8 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <b-button class="button is-success" @click="Create">Spara</b-button>
-        <b-button class="button is-warning is-pulled-right" type="button" @click="$emit('close')">Stäng</b-button>
-        <b-button v-if="editMode" class="is-danger" @click="Remove">Tabort</b-button>
+        <b-button class="button ITHS-button-small" @click="CreateProgramme">Spara</b-button>
+        <b-button v-if="editMode" class="is-danger" @click="RemoveProgramme">Tabort</b-button>
       </footer>
     </div>
   </section>
@@ -103,7 +102,7 @@ export default {
     }
   },
   methods: {
-    async Create() {
+    async CreateProgramme() {
       if (this.editMode === true) {
         await this.$store.dispatch("edu/updateProgramme", this.programme).then(
             res => {
@@ -121,7 +120,7 @@ export default {
       }
 
     },
-    async Remove() {
+    async RemoveProgramme() {
       if (confirm("Radera '" + this.programme.name + "'?")) {
         await this.$store.dispatch("edu/deleteProgramme", this.programme.id).then(
             res => {
@@ -137,5 +136,10 @@ export default {
 </script>
 
 <style scoped>
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+}
 
 </style>

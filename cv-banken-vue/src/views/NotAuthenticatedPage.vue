@@ -1,7 +1,7 @@
 <template>
-<div>
-  You're not authenticated.
-</div>
+  <div>
+    You're not authenticated.
+  </div>
 </template>
 
 <script>

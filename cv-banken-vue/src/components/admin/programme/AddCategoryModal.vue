@@ -2,7 +2,7 @@
   <section class="container">
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
-        <p class="modal-card-title">Ny Kategori</p>
+        <p class="modal-card-title">{{ editMode ? 'Redigera Kategori' : "Ny kategori" }}</p>
         <button
             class="delete"
             type="button"
@@ -13,7 +13,7 @@
           <b-input
               v-model="category.name"
               :value="category.name"
-              placeholder="Klass namn"
+              placeholder="Kategori namn"
               required
               type="text">
           </b-input>
@@ -27,9 +27,9 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success" @click="Create">Spara</button>
-        <button class="button is-warning is-pulled-right" type="button" @click="$emit('close')">Stäng</button>
-        <button class="button is-danger is-pulled-right" type="button" @click="Remove">Radera</button>
+        <button class="button ITHS-button-small" @click="SaveCategory">Spara</button>
+        <button v-if="editMode" class="button is-danger is-pulled-right" type="button" @click="RemoveCategory">Radera
+        </button>
       </footer>
     </div>
   </section>
@@ -64,28 +64,23 @@ export default {
     }
   },
   methods: {
-    async Create() {
+    async SaveCategory() {
       if (this.editMode === true) {
         await this.$store.dispatch("edu/updateCategory", this.category).then(
-            res => {
-              console.log(res)
+            () => {
               this.$emit("close")
             }
         ).catch(err => console.log(err))
       } else {
         await this.$store.dispatch("edu/createCategory", this.category).then(
-            res => {
-              console.log(res)
-              this.$emit("close")
-            }
+            () => this.$emit("close")
         ).catch(err => console.log(err))
       }
     },
-    async Remove() {
+    async RemoveCategory() {
       if (confirm("Radera " + this.category.name + "?")) {
         await this.$store.dispatch("edu/deleteCategory", this.category.id).then(
-            res => {
-              console.log(res)
+            () => {
               this.$emit("close")
             }
         ).catch(err => console.log(err))
@@ -97,5 +92,10 @@ export default {
 </script>
 
 <style scoped>
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+}
 
 </style>

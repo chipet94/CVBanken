@@ -7,7 +7,6 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using CVBanken.Data.Helpers;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
@@ -67,34 +66,28 @@ namespace CVBanken.Services.UserServices
         }
 
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<Student>> GetAll()
         {
-            return (await _context.Users.ToListAsync()).Where(u => u.Private != true);
+            return (await _context.Students.ToListAsync()).Where(u => u.Private != true);
         }
 
-        public async Task<IEnumerable<User>> AdminGetAll()
+        public async Task<IEnumerable<Student>> AdminGetAll()
         {
-            return (await _context.Users.ToListAsync());
+            return await _context.Students.ToListAsync();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<Student> GetById(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                throw new Exception("Not found...");
-            }
+            var user = await _context.Students.FindAsync(id);
+            if (user == null) throw new Exception("Not found...");
 
             return user;
         }
 
-        public async Task<User> GetByUrl(string url)
+        public async Task<Student> GetByUrl(string url)
         {
-            var user = await _context.Users.FirstAsync(u => u.Url == url);
-            if (user == null)
-            {
-                throw new Exception("Not found...");
-            }
+            var user = await _context.Students.FirstAsync(u => u.Url == url);
+            if (user == null) throw new Exception("Not found...");
 
             return user;
         }
@@ -115,40 +108,33 @@ namespace CVBanken.Services.UserServices
             }
         }
 
-        public async Task<bool> Update(int id, UpdateUserRequest userParam)
+        public async Task Update(int id, UpdateUserRequest userParam)
         {
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
+            if (!string.IsNullOrEmpty(userParam.Password))
+            {
+                CreatePasswordHash((string) userParam.Password, out var hash, out var salt);
+                user.PasswordHash = hash;
+                user.PasswordSalt = salt;
+            }
 
             foreach (var prop in userParam.GetType().GetProperties())
             {
                 var value = prop.GetValue(userParam, null);
 
-                if (prop.Name != "OldPassword" && prop.GetValue(userParam, null) != null)
+                if (prop.Name != "Password" && prop.GetValue(userParam, null) != null)
                 {
-                    var oldProp = user.GetType().GetProperty(prop.Name);
-                    if (oldProp != null && value != null)
-                    {
-                        if (prop.Name == "Password")
-                        {
-                            CreatePasswordHash((string) value, out var hash, out var salt);
-                            user.PasswordSalt = salt;
-                            user.PasswordHash = hash;
-                        }
-                        else
-                        {
-                            oldProp.SetValue(user, value);
-                        }
-                    }
+                    var oldProp = user.Student.GetType().GetProperty(prop.Name);
+                    if (oldProp != null && value != null) oldProp.SetValue(user.Student, value);
                 }
             }
 
-            _context.Users.Update(user);
+            _context.Update(user);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<bool> Delete(int id)
@@ -161,15 +147,15 @@ namespace CVBanken.Services.UserServices
             return true;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersInProgramme(int id)
+        public async Task<IEnumerable<Student>> GetAllUsersInProgramme(int id)
         {
-            var users = await _context.Users.Where(u => u.ProgrammeId == id && u.Private == false).ToArrayAsync();
+            var users = await _context.Students.Where(u => u.ProgrammeId == id && u.Private == false).ToArrayAsync();
             return users;
         }
 
-        public async Task<IEnumerable<User>> GetAllUserInCategory(int category)
+        public async Task<IEnumerable<Student>> GetAllUserInCategory(int category)
         {
-            var users = await _context.Users.Where(u => u.Programme.CategoryId == category && u.Private == false)
+            var users = await _context.Students.Where(u => u.Programme.CategoryId == category && u.Private == false)
                 .ToArrayAsync();
             return users;
         }
@@ -179,12 +165,10 @@ namespace CVBanken.Services.UserServices
         {
             var ext = Path.GetExtension(picture.FileName);
             if (!FilesSettings.SUPPORTED_IMAGES.Contains(ext)) throw new Exception($"'{ext}' Is not suppoted.");
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Students.FindAsync(id);
             if (user.ProfilePicture == null)
             {
                 user.ProfilePicture = new ProfilePicture();
-                user.ProfilePicture.User = user;
-                user.ProfilePicture.UserId = user.Id;
                 user.ProfilePicture.ImageTitle = "Profile Picture";
             }
 
@@ -202,7 +186,7 @@ namespace CVBanken.Services.UserServices
         {
             return Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
         }
-        
+
 
         // helper methods
         public async Task<string> GenerateJwtToken(User user)

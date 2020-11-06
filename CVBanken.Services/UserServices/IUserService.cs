@@ -9,17 +9,17 @@ namespace CVBanken.Services.UserServices
     public interface IUserService
     {
         Task<User> Authenticate(string username, string password);
-        Task<IEnumerable<User>> GetAll();
-        Task<IEnumerable<User>> AdminGetAll();
-        Task<User> GetById(int id);
-        Task<User> GetByUrl(string url);
+        Task<IEnumerable<Student>> GetAll();
+        Task<IEnumerable<Student>> AdminGetAll();
+        Task<Student> GetById(int id);
+        Task<Student> GetByUrl(string url);
         Task Create(RegisterRequest user);
-        Task<bool> Update(int id, UpdateUserRequest userParam);
+        Task Update(int id, UpdateUserRequest userParam);
         Task<bool> Delete(int id);
         Task<bool> ConfirmPassword(int id, string password);
         Task UpdatePicture(int id, IFormFile picture);
-        Task<IEnumerable<User>> GetAllUsersInProgramme(int id);
-        Task<IEnumerable<User>> GetAllUserInCategory(int category);
+        Task<IEnumerable<Student>> GetAllUsersInProgramme(int id);
+        Task<IEnumerable<Student>> GetAllUserInCategory(int category);
 
         byte[] GetKey();
     }

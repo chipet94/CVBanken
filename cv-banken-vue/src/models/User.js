@@ -2,7 +2,6 @@ import UserFileService from "@/services/UserFileService";
 import EducationService from "@/services/EducationService";
 
 
-
 export default class User {
     email;
     firstName;
@@ -19,6 +18,7 @@ export default class User {
     description;
     profilePicture;
     gotCv;
+    cv;
 
     constructor(data = {}) {
         this.id = data.id,
@@ -36,6 +36,7 @@ export default class User {
         this.profilePictureId = data.profilePictureId ?? '';
         this.profilePicture = data.profilePicture;
         this.files = data.files;
+        this.cv = data.studentCv;
     }
 
     static FromData(data) {
@@ -55,21 +56,22 @@ export default class User {
             console.log(res)
         });
     }
-    dataToProfilePicture(data){
-        if (data){
+
+    dataToProfilePicture(data) {
+        if (data) {
             let reader = new FileReader();
             //reader.readAsDataURL(res.data)
             reader.readAsDataURL(data);
             reader.onload = () => {
                 return reader.result;
             }
-        }
-        else
+        } else
             return null;
 
     }
-    async setProfilePicture(picdata){
-        if (picdata){
+
+    async setProfilePicture(picdata) {
+        if (picdata) {
             let reader = new FileReader();
             //reader.readAsDataURL(res.data)
             reader.readAsDataURL(picdata);
@@ -78,6 +80,7 @@ export default class User {
             }
         }
     }
+
     async getProfilePicture() {
         // await this.$store.dispatch("profile/getProfilePicture", this.id).then(res => {
         //     console.log(res)
@@ -89,7 +92,7 @@ export default class User {
         //             this.profilePicture = reader.result;
         //         }
         //     }
-            // this.profilePicture =  'data:image/jpg;base64,'.concat(this.profilePicture.concat(res.data));
+        // this.profilePicture =  'data:image/jpg;base64,'.concat(this.profilePicture.concat(res.data));
 
         // }).catch(err => {
         //     console.log(err)

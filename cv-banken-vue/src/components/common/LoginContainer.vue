@@ -65,8 +65,8 @@ export default {
       activeTab: 0
     }
   },
-  methods:{
-    registerSuccess(){
+  methods: {
+    registerSuccess() {
       this.activeTab = 0;
     }
   }
