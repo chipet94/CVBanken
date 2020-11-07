@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using CVBanken.Data.Models.Auth;
 
 namespace CVBanken.Data.Models.Response
@@ -41,7 +42,7 @@ namespace CVBanken.Data.Models.Response
                 Searching = user.Searching,
                 Files = user.Files.WithoutDatas(),
                 StudentCv = user.Cv != null
-                    ? new {user.Cv.Name, user.Cv.Id, uploaded = user.Cv.Uploaded.ToShortDateString(), user.Cv.Data}
+                    ? new {user.Cv.Name, user.Cv.Id, uploaded = user.Cv.Uploaded.ToString(CultureInfo.CurrentCulture), user.Cv.Data}
                     : null //todo Cv modell
             };
         }

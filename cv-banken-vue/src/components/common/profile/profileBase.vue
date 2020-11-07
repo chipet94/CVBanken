@@ -1,19 +1,16 @@
 <template>
   <section v-if="thisUser !== undefined" class="container is-size-10">
-    <div v-if="!loading" class="card is-centered">
-      <div class="card-header" role="button">
-        <p class="card-header-title is-centered">
+    <div v-if="!loading" class="">
+      <header class="modal-card-head ITHS-header" style="">
+        <p class="modal-card-title" style="color: white">
           <template v-if="!loading && thisUser !== null">Profile - {{ thisUser.firstName + " " + thisUser.lastName }}
           </template>
           <b-skeleton :active="loading" size="is-large"></b-skeleton>
         </p>
-        <!--        <SettingsModal v-if="!loading && canEdit && thisUser !== undefined" :user="thisUser"-->
-        <!--                       class="is-pulled-right"></SettingsModal>-->
-        <b-button v-if="!loading && canEdit && thisUser !== undefined" @click="openSettings">
-          <b-icon icon="cog" style="color:black"></b-icon>
-        </b-button>
-      </div>
-      <div class="card-content">
+        <b-button class="ITHS-button-small" v-if="!loading && canEdit && thisUser !== undefined" @click="openSettings">
+          <b-icon icon="cog"></b-icon> </b-button>
+      </header>
+      <div class="content ITHS-background">
         <template v-if="!loading && thisUser !== null">
           <div class="content tile is-vertical">
             <div class="tile">
@@ -41,15 +38,15 @@
               </div>
               <div class="tile is-parent">
                 <article class="tile is-child notification">
-                  <b-button v-if="canEdit" class="is-pulled-right" @click="editDescription = !editDescription">
-                    <b-icon :icon="editDescription? 'close' : 'cog'" style="color:black"></b-icon>
+                  <b-button v-if="canEdit" class="ITHS-button-small is-pulled-right" @click="editDescription = !editDescription">
+                    <b-icon :icon="editDescription? 'close' : 'cog'" style=""></b-icon>
                   </b-button>
                   <p class="subtitle">Om</p>
-                  <pre v-if="!editDescription" class="text has-text-left" style="white-space: pre-wrap;">{{
+                  <pre v-if="!editDescription" class="ITHS-description" style="white-space: pre-wrap;">{{
                       thisUser.description
                     }}</pre>
                   <textarea v-if="editDescription" v-model="thisUser.description" aria-label="Om"
-                            class="textarea"></textarea>
+                            class="ITHS-description textarea"></textarea>
                   <b-button v-if="editDescription" class="is-success" @click="updateDescription">Spara</b-button>
                 </article>
               </div>
@@ -157,10 +154,41 @@ export default {
 </script>
 
 <style scoped>
+.ITHS-background{
+  background-color: whitesmoke;
+}
+.ITHS-description{
+  text-align: left;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+}
 .ITHS-button-small {
   background-color: #693250;
   color: white;
   font-weight: bold;
+  border: none;
+}
+.ITHS-header {
+  background-color: rgba(105, 50, 80, 1);
+  width: 100%;
+  min-height: 3rem;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  padding: 10px;
+  text-align: center;
+  border-top: 1px solid whitesmoke;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+.ITHS-header p{
+  position: center;
+  display: block;
+  font-size: 1rem;
+}
+.ITHS-header.ITHS-button-small {
+  display: flex;
+  float: right;
 }
 
 </style>

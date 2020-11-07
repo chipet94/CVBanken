@@ -1,47 +1,50 @@
 <template>
-  <section class="container">
-    <div class="title is-6">CV</div>
-    <b-field v-if="!user.cv && canEdit" :class="{'has-name': !!file}" class="file is-primary">
-      <b-upload v-model="file" accept="" class="file-label">
-            <span class="file-cta">
-                <b-icon class="file-icon" icon="select"></b-icon>
-                <span class="file-label">Välj fil</span>
-            </span>
-        <span v-if="file" class="file-name">
-                {{ file.name }}
-          <button class="delete is-small has-background-danger"
-                  type="button"
-                  @click="file = null">
-          </button>
-            </span>
-      </b-upload>
-      <b-button v-if="file" class="ITHS-button-small" @click="UploadCv">
-        <span class="is-horizontal">
-
-          <b-icon class="file-icon" icon="upload"></b-icon>
-        </span>
-
-
-      </b-button>
-    </b-field>
-    <div v-if="user.cv" class="columns">
-      <div class="column">
-        {{ user.cv.name }}
+  <div class="container ITHS-content">
+      <div class="header ITHS-header">
+        <p class="">CV</p>
       </div>
-      <div class="column">
-        {{ user.cv.uploaded }}
-      </div>
-      <div class="column">
-        <b-button v-if="canEdit" class="is-danger" @click="Remove">
-          <b-icon class="file-icon" icon="delete"></b-icon>
-        </b-button>
-        <b-button class="ITHS-button-small" @click="handleDownload">
-          <b-icon class="file-icon" icon="download"></b-icon>
-        </b-button>
+      <div class="content">
+            <div v-if="!user.cv && canEdit">
+              <b-upload v-model="file" accept="" class="file-label">
+                    <span class="file-cta ITHS-button-small">
+                        <b-icon class="file-icon" icon="select"></b-icon>
+                        <span class="file-label">Välj fil</span>
+                    </span>
+                <span v-if="file" class="file-name">
+                        {{ file.name }}
+                  <button class="delete is-small has-background-danger"
+                          type="button"
+                          @click="file = null">
+                  </button>
+                    </span>
+              </b-upload>
+              <b-button v-if="file" class="ITHS-button-small" @click="UploadCv" title="Ladda upp">
+                <span class="is-horizontal">
 
+                  <b-icon class="file-icon" icon="upload"></b-icon>
+                </span>
+              </b-button>
+            </div>
+            <div v-if="user.cv" class="columns">
+              <div class="column">
+                {{ user.cv.name }}
+              </div>
+              <div class="column">
+                {{ user.cv.uploaded }}
+              </div>
+              <div class="column">
+                <b-button v-if="canEdit" class="is-danger" @click="Remove" title="Tabort">
+                  <b-icon class="file-icon" icon="delete"></b-icon>
+                </b-button>
+                <b-button class="ITHS-button-small" @click="handleDownload" title="Ladda ner">
+                  <b-icon class="file-icon" icon="download"></b-icon>
+                </b-button>
+
+              </div>
+            </div>
+        <span v-if="!user.cv && !canEdit" class="has-text-danger">Användaren har inget CV.</span>
       </div>
-    </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -126,6 +129,35 @@ export default {
   background-color: #693250;
   color: white;
   font-weight: bold;
+}
+.ITHS-button-small:hover {
+  background-color: rgba(105, 50, 80, 0.8);
+  color: whitesmoke;
+}
+.ITHS-header{
+  background-color: #693250;
+  width: 100%;
+  height: 3rem;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  padding: 10px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.columns{
+  font-weight: bold;
+  font-size: medium;
+}
+.columns:hover{
+  background-color: rgba(0,0,0,0.2);
+}
+.ITHS-content{
+  margin-bottom: 2rem;
+}
+.ITHS-header.p{
+  margin: auto;
 }
 
 </style>

@@ -1,39 +1,38 @@
 <template>
   <section>
-    <div>
       <UserCvBox :can-edit="canEdit" :user="user"></UserCvBox>
-    </div>
-    <br>
-    <div class="title is-6">Övriga filer</div>
-    <b-table
-        :data="isEmpty ? [] : this.user.files"
-        :header-class="getRowClass"
-        :hoverable=true
-        :loading=false
-        :mobile-cards=true
-        title="Filer"
-    >
-      <b-table-column v-slot="props" class="" field="cv" width="80">
-        <span v-if="props.row.isCv" class="has-text-black has-text-weight-bold">CV</span>
-        <span v-else class="has-text-black has-text-weight-bold">Övrigt</span>
-      </b-table-column>
-      <b-table-column v-slot="props" class="fileTable" field="name">
-        <span :title="'storlek: ' +formatBytes(props.row.size)">
-                  {{ props.row.name }}
-        </span>
+      <div class="container ITHS-content">
+            <div class="header ITHS-header">
+              <p class="">Övriga filer</p>
+            </div>
+          <div class="content">
+            <div v-if="this.user.files">
+              <div v-for="file in this.user.files" :key="file" class="columns">
+                <div class="column">
+                  {{ file.name }}
+                </div>
+                <div class="column">
+                  {{ file.uploaded }}
+                </div>
+                <div class="column">
+                  <b-button v-if="canEdit" class="is-danger" @click="Remove(file.id, file.name)" title="Tabort">
+                    <b-icon class="file-icon" icon="delete"></b-icon>
+                  </b-button>
+                  <b-button class="ITHS-button-small" @click="handleDownload(file.id, file.name)" title="Ladda ner">
+                    <b-icon class="file-icon" icon="download"></b-icon>
+                  </b-button>
+                </div>
+              </div>
+            </div>
+            <div class="pillow">
+              <b-button v-if="canEdit && user.files.length < 5" class="ITHS-button-small" @click="openAddFile" title="Ny fil">
+                <b-icon icon="plus" style="color:white"></b-icon>
+              </b-button>
+              <span v-if="!user.cv && !canEdit" class="has-text-danger">Användaren har inga övriga filer....</span>
+            </div>
 
-      </b-table-column>
-      <b-table-column v-slot="props">
-        <b-button v-if="canEdit" class="is-danger" @click="Remove(props.row.id, props.row.name)">X</b-button>
-        <b-button class="is-success" @click="handleDownload(props.row.id, props.row.name)">
-          <b-icon icon="menu-down"></b-icon>
-        </b-button>
-      </b-table-column>
-    </b-table>
-    <!--    <component-modal v-if="canEdit && userFiles.length < 5"></component-modal>-->
-    <b-button v-if="canEdit && userFiles.length < 5" class="ITHS-button-small is-center" @click="openAddFile">
-      <b-icon icon="plus" style="color:white"></b-icon>
-    </b-button>
+          </div>
+        </div>
   </section>
 </template>
 
@@ -131,22 +130,48 @@ export default {
         })
       }
     },
-    async SetCv(id) {
-      await this.$store.dispatch("files/SetCV", id).then(() => {
-        this.getFiles()
-      }).catch(() => alert("Something went wrong, unable to set cv."))
-    }
   }
 }
 </script>
 
 <style scoped>
+.pillow{
+ margin-top: 1rem;
+}
+
 .ITHS-button-small {
   background-color: #693250;
   color: white;
   font-weight: bold;
+  position: center;
+}
+.ITHS-header{
+  background-color: #693250;
+  width: 100%;
+  height: 3rem;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  padding: 10px;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.columns{
+  font-weight: bold;
+  font-size: medium;
+  border-bottom: 1px solid darkgray;
+}
+.columns:hover{
+  background-color: rgba(0,0,0,0.2);
 }
 
+.ITHS-header.p{
+  margin: auto;
+}
+.ITHS-content{
+  margin-bottom: 1rem;
+}
 .fileTable {
   padding-left: 50px;
 }

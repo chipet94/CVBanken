@@ -67,10 +67,6 @@
               <b-input id="email" v-model="request.email" required type="email"></b-input>
             </b-field>
             <span class="has-text-danger">{{ errors.Password }}</span>
-            <!--              <b-field label="Nuvarande lösenord">-->
-            <!--                <b-input v-model="request.oldPassword" :validation-message="errors.Password" password-reveal type="password"-->
-            <!--                         value=""></b-input>-->
-            <!--              </b-field>-->
             <b-field label="Nytt lösenord">
               <b-input v-model="request.password" :validation-message="errors.Password" password-reveal type="password"
                        value=""></b-input>

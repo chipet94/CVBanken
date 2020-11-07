@@ -127,7 +127,7 @@ namespace CVBanken.Data.Helpers.Database
                 {
                     Email = "admin@iths.se",
                     ProgrammeId = 1000,
-                    Description = "I am a God, aka admin",
+                    Description = "I'm an admin, i dont need your opinion",
                     FirstName = "Admin",
                     LastName = "Adminsson",
                     Private = true,
