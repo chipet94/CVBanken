@@ -11,8 +11,8 @@
           <div class="imageOverlay" @click="pictureClicked">
 
           </div>
-          <b-button v-if="canEdit" class="is-pulled-right editButton" @click="editPicture">
-            <b-icon id="editPictureIcon" icon="cog" style="color:black"></b-icon>
+          <b-button v-if="canEdit" class="is-pulled-right editButton ITHS-button-small" @click="editPicture">
+            <b-icon id="editPictureIcon" icon="cog" style=""></b-icon>
           </b-button>
         </div>
       </div>
@@ -89,7 +89,12 @@ export default {
   -ms-flex-align: center;
   align-items: center;
 }
-
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
 .profilePicture {
   position: relative;
   height: 100%;

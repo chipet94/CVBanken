@@ -29,7 +29,7 @@
                 </span>
             </div>
             <div class="column">
-              <b-button v-if="file.name" label="Ladda upp" @click="upload">
+              <b-button v-if="file.name" class="ITHS-button-small" label="Ladda upp" @click="upload">
               </b-button>
             </div>
           </div>
@@ -71,5 +71,11 @@ export default {
 </script>
 
 <style scoped>
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
 
 </style>

@@ -72,7 +72,7 @@
                        value=""></b-input>
             </b-field>
             <b-field>
-              <b-button :disabled="!hasChanged" class="is-success" @click="send">Spara</b-button>
+              <b-button :disabled="!hasChanged" class="ITHS-button-small" @click="send">Spara</b-button>
             </b-field>
           </div>
         </div>
@@ -166,5 +166,10 @@ export default {
 </script>
 
 <style scoped>
-
+.ITHS-button-small {
+  background-color: #693250;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
 </style>

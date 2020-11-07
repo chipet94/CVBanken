@@ -64,7 +64,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: gray();
 }
 
 .ITHS-button-small {
@@ -74,7 +74,6 @@ export default {
 }
 
 .ITHS-title {
-  color: #f1f1f1;
   font-size: 2rem;
   font-weight: 600;
   color: white;
@@ -113,7 +112,7 @@ export default {
 }
 
 a.navbar-burger.burger :hover {
-  background-color: #710642;
+  background-color: #93848b;
 }
 
 /*a.navbar-burger.burger{*/
@@ -143,9 +142,8 @@ a.navbar-burger.burger :hover {
 }
 
 .router-link-exact-active {
-  background-color: #68495c;
+  background-color: rgba(0,0,0, 0.2);
 }
-
 .ITHS-Nav div a {
   color: #f1f1f1;
   font-weight: bold;
