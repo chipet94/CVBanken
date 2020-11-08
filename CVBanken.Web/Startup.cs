@@ -67,7 +67,7 @@ namespace CVBanken.Web
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEducationService, EducationService>();
             services.AddScoped<IFileManagerService, FileManagerService>();
-            services.AddSingleton<ISiteService, SiteService>();
+            services.AddScoped<ISiteService, SiteService>();
             services.AddControllers();
         }
 

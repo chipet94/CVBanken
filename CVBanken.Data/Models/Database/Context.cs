@@ -1,6 +1,7 @@
 //using API_CVPortalen.Helpers.DataSeeding;
 
 using CVBanken.Data.Models.Auth;
+using CVBanken.Data.Models.Site;
 using Microsoft.EntityFrameworkCore;
 
 namespace CVBanken.Data.Models.Database
@@ -18,6 +19,7 @@ namespace CVBanken.Data.Models.Database
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserFile> Files { get; set; }
         public DbSet<UserCv> CvFiles { get; set; }
+        public DbSet<SiteMessage> SiteMessages { get; set; }
 
         public DbSet<ProfilePicture> ProfilePictures { get; set; }
 

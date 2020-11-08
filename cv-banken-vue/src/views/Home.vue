@@ -1,8 +1,6 @@
 <template>
   <div class="container">
     <image-slider-container :slides="thisHome.slides"></image-slider-container>
-    <div class="container">
-    </div>
     <div class="card">
       <div class="card-content">
         <div class="media">

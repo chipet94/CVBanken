@@ -48,8 +48,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout").then({})
-      window.location.replace("/")
+      this.$store.dispatch("auth/logout")
     }
   }
 }

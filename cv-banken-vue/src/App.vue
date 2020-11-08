@@ -23,6 +23,7 @@
       </template>
 
     </b-navbar>
+    <message-box></message-box>
     <router-view/>
     <br>
     <iths-footer></iths-footer>
@@ -33,27 +34,36 @@
 import LoginContainer from "@/components/common/LoginContainer";
 import UserMenu from "@/components/common/UserMenu";
 import IthsFooter from "@/components/IthsFooter";
+import MessageBox from "@/components/common/MessageBox";
 
 export default {
-  components: {IthsFooter, UserMenu, LoginContainer},
+  components: {MessageBox, IthsFooter, UserMenu, LoginContainer},
   data() {
     return {
-      currentUser: ""
+      currentUser: "",
+      polling: null
     }
+  },
+  created() {
+    this.polling = this.checkLoginLoop()
   },
   computed: {
     isLoggedIn() {
-      return this.$store.state.auth.status.loggedIn
+      return this.$store.getters["auth/isloggedIn"]
     },
     thisUser() {
       return this.$store.getters["auth/getSession"]
     }
   },
   methods: {
-    logout() {
-      this.$store.dispatch("auth/logout").then({})
-      window.location.replace("/")
-    }
+    checkLoginLoop () {
+      this.polling = setInterval(() => {
+        if (this.isLoggedIn){
+          this.$store.dispatch("auth/loggedIn")
+        }
+
+      }, 30000)
+    },
   }
 }
 </script>

@@ -116,14 +116,14 @@ export default {
         component: AddCategoryModal,
         hasModalCard: true,
         customClass: 'custom-class custom-class-2',
-        trapFocus: true
-      })
-    },
-    openEditCategory() {
-      this.$buefy.modal.open({
-        parent: this,
-        component: AddCategoryModal,
-        props: {defaultCategory: this.category, editMode: true},
+          trapFocus: true
+        })
+      },
+      openEditCategory() {
+        this.$buefy.modal.open({
+          parent: this,
+          component: AddCategoryModal,
+          props: {defaultCategory: this.category, editMode: true},
         hasModalCard: true,
         customClass: 'custom-class custom-class-2',
         trapFocus: true

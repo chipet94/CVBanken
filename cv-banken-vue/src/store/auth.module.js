@@ -16,6 +16,9 @@ export const auth = {
         },
         getUser: state => {
             return User.FromData(state.session);
+        },
+        isloggedIn: state => {
+            return state.status.loggedIn;
         }
     },
     actions: {
@@ -48,6 +51,17 @@ export const auth = {
                 }
             );
         },
+        loggedIn({commit}) {
+            return AuthService.loggedIn().then(
+                response => {
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('logout');
+                    return Promise.reject(error);
+                }
+            );
+        },
     },
     mutations: {
         loginSuccess(state, user) {
@@ -61,6 +75,7 @@ export const auth = {
         logout(state) {
             state.status.loggedIn = false;
             state.session = null;
+            window.location.replace("/")
         },
         registerSuccess(state) {
             state.status.loggedIn = false;

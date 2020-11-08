@@ -5,7 +5,8 @@
         <admin-programme-container>
         </admin-programme-container>
       </b-tab-item>
-      <b-tab-item label="Placeholder">
+      <b-tab-item label="Site">
+        <admin-site-home></admin-site-home>
       </b-tab-item>
       <b-tab-item label="Placeholder">
       </b-tab-item>
@@ -16,10 +17,11 @@
 <script>
 
 import AdminProgrammeContainer from "@/components/admin/programme/AdminProgrammeContainer";
+import AdminSiteHome from "@/components/admin/site/AdminSiteHome";
 
 export default {
   name: "AdminDashboard",
-  components: {AdminProgrammeContainer},
+  components: {AdminSiteHome, AdminProgrammeContainer},
   data() {
     return {
       activeTab: 0,

@@ -71,5 +71,7 @@ namespace CVBanken.Web.Controllers
             if (profile.ProfilePicture == null || profile.ProfilePicture.ImageData == null) return NoContent();
             return File(profile.ProfilePicture.ImageData, "image/jpeg");
         }
+        
+        
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
+using CVBanken.Data.Models.Site;
 
 namespace CVBanken.Data.Helpers.Database
 {
@@ -46,6 +47,16 @@ namespace CVBanken.Data.Helpers.Database
             if (!context.Users.Any())
             {
                 context.Users.AddRange(users);
+                context.SaveChanges();
+            }
+            if (!context.SiteMessages.Any())
+            {
+                context.SiteMessages.AddRange(new []
+                {
+                    new SiteMessage{Text = "Default Message...1"}, 
+                    new SiteMessage{Text = "Default Message...2"},
+                    new SiteMessage{Text = "Default Message...3"}
+                });
                 context.SaveChanges();
             }
 

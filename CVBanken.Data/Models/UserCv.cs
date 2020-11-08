@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using CVBanken.Data.Models.Auth;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Office.Interop.Word;
 
 namespace CVBanken.Data.Models
 {

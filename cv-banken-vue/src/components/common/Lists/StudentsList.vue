@@ -32,14 +32,16 @@
           <b-tag v-if="props.row.searching" class="is-success" rounded>ja</b-tag>
           <b-tag v-else class="is-danger" rounded>Nej</b-tag>
         </b-table-column>
-        <b-table-column v-if="isAdmin" v-slot="props" field="rank" label="Typ">
-          {{ props.row.role }}
-        </b-table-column>
         <b-table-column v-slot="props" field="cv" label="Har CV">
-          {{ props.row.gotCv ? "ja" : "nej" }}
+          <b-tag v-if="props.row.gotCv" class="is-success" rounded>ja</b-tag>
+          <b-tag v-else class="is-danger" rounded>Nej</b-tag>
         </b-table-column>
         <b-table-column v-slot="props" field="profile" label="Profil">
-          <router-link :to="{ name: 'Profile', params: { url: props.row.url }}">Öppna</router-link>
+          <router-link :to="{ name: 'Profile', params: { url: props.row.url }}">
+            <b-button class="ITHS-button-small" title="Gå till profil">
+            <b-icon icon="account"></b-icon>
+            </b-button>
+          </router-link>
         </b-table-column>
       </template>
     </b-table>
@@ -59,7 +61,6 @@ export default {
   computed: {
     thisStudents() {
       return this.$store.getters["edu/studentsInProgramme"](this.programmeId);
-      //return this.$store.getters["e"]
     },
     isAdmin() {
       return this.$store.getters["auth/getSession"].role === "Admin";
@@ -80,5 +81,11 @@ export default {
   background-color: #710642;
   color: red;
 }
+.ITHS-button-small {
+   background-color: #693250;
+   color: white;
+   font-weight: bold;
+   border: none;
+ }
 
 </style>

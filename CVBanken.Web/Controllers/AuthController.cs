@@ -150,9 +150,18 @@ namespace CVBanken.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("loggedin")]
-        public ActionResult IsLoggedIn()
+        public async Task<ActionResult> IsLoggedIn()
         {
-            return Ok();
+            if (string.IsNullOrEmpty(User.Identity.Name)) return Unauthorized();
+
+            var curr_id = int.Parse(User.Identity.Name);
+            var user = await _context.Users.FindAsync(curr_id);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(user.ToAuthResponse());
         }
     }
 }

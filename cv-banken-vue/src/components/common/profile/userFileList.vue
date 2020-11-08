@@ -7,7 +7,7 @@
             </div>
           <div class="content">
             <div v-if="this.user.files">
-              <div v-for="file in this.user.files" :key="file" class="columns">
+              <div v-for="file in this.user.files" :key="file.id" class="columns">
                 <div class="column">
                   {{ file.name }}
                 </div>

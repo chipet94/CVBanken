@@ -47,7 +47,7 @@
                     }}</pre>
                   <textarea v-if="editDescription" v-model="thisUser.description" aria-label="Om"
                             class="ITHS-description textarea"></textarea>
-                  <b-button v-if="editDescription" class="is-success" @click="updateDescription">Spara</b-button>
+                  <b-button v-if="editDescription" class="ITHS-button-small" @click="updateDescription">Spara</b-button>
                 </article>
               </div>
             </div>
