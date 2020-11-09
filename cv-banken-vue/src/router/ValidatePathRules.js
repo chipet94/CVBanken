@@ -1,10 +1,11 @@
 import store from '@/store'
+
 export const ValidatePathRules = (to, from, next) => {
-    let user = store.getters["auth/getUser"]
+    let user = store.getters["auth/getSession"]
     if (to.matched.some(record => record.meta.requireAuth)) // om sidan kräver auth.
         if (!user.token)                   //om ingen userData finns, skicka till lgoin.
             return next({
-                path: '/login',
+                path: '/unauthenticated',
                 params: {nextUrl: to.fullPath}
             })
         else if (to.matched.some(record => record.meta.requireAdmin)) // om sidan kräver admin      
@@ -15,11 +16,6 @@ export const ValidatePathRules = (to, from, next) => {
         else
             return next()
     else if (to.matched.some(record => record.meta.guest))   // om sidan är för gäster
-        if (!user.token)           // ingen userdata, gå vidare
-            next()
-        else
-            return next({name: 'UserProfile'})     //annars gå till profil.
-
-    //inga krav
-    return next()
+        //inga krav
+        return next()
 }

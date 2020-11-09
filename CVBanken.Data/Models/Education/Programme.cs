@@ -1,5 +1,7 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System.Linq;
+using CVBanken.Data.Models.Auth;
 
 namespace CVBanken.Data.Models
 {
@@ -7,23 +9,32 @@ namespace CVBanken.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ProgrammeCategory Category { get; set; }
+
+        public bool Hidden { get; set; } = false;
+
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-        
-        
-        public enum ProgrammeCategory
+
+        public virtual ICollection<Student> Students { get; set; }
+
+        public int TotalStudents()
         {
-            Empty,
-            Webbutvecklare,
-            AppUtvecklare,
-            JavaUtvecklare,
-            Net_Utvecklare,
-            Mjukvarutestare,
-            Frontendutvecklare,
-            IT_Projektledare,
-            JavaScriptutvecklare,
-            UX_designer,
+            return Students.Count;
         }
+
+        public int PublicStudents()
+        {
+            return Students.Count(s => s.Private == false);
+        }
+    }
+
+    public class Category
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool Hidden { get; set; } = false;
+        public virtual ICollection<Programme> Programmes { get; set; }
     }
 }

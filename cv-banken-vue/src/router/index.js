@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../views/Login.vue'
 import Profile from '../views/Profile'
+import UserProfile from '../views/UserProfile'
 import AdminPage from "@/views/AdminPage";
 import Home from "@/views/Home";
 import {ValidatePathRules} from "@/router/ValidatePathRules";
@@ -21,6 +22,22 @@ let router = new Router({
             }
         },
         {
+            path: '/error',
+            name: 'Error',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/ErrorPage'),
+        },
+        {
+            path: '/unauthenticated',
+            name: 'Unauthenticated',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/NotAuthenticatedPage'),
+        },
+        {
             path: '/login',
             name: 'Login',
             component: Login,
@@ -38,12 +55,56 @@ let router = new Router({
 
         },
         {
-            path: '/profile',
+            path: '/my_profile',
             name: 'UserProfile',
             meta: {
                 requireAuth: true,
             },
             component: Profile
+        },
+        {
+            path: '/educations',
+            name: 'Educations',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/EducationsList.vue')
+
+        },
+        {
+            path: '/utbildningar',
+            name: 'Utbildningar',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/CategoryView.vue')
+
+        },
+        {
+            path: '/utbildningar/:name',
+            name: 'Kategori',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/CategoryPage.vue')
+
+        },
+        {
+            path: '/klass/:name',
+            name: 'Klass',
+            meta: {
+                guest: true
+            },
+            component: () => import('@/views/ProgrammePage.vue')
+
+        },
+        {
+            path: '/profile/:url',
+            name: 'Profile',
+            component: UserProfile,
+            meta: {
+                guest: true
+            },
         },
         {
             path: '/admin_dashboard',

@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using CVBanken.Data.Helpers;
+using CVBanken.Data.Models;
 using CVBanken.Data.Models.Auth;
 using CVBanken.Data.Models.Database;
+using CVBanken.Data.Models.Requests.Auth;
+using CVBanken.Services.FileServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -20,127 +23,170 @@ namespace CVBanken.Services.UserServices
     {
         private readonly IConfiguration _config;
         private readonly Context _context;
-    
+
         public UserService(IConfiguration config, Context context)
         {
             _config = config;
             _context = context;
         }
-    
+
         public async Task<User> Authenticate(string email, string password)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
-    
-            // return null if user not found
-            if (user == null)
-            {
-                return null; 
-            }
 
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                return null;
-                
-            }
+            // return null if user not found
+            if (user == null) return null;
+
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)) return null;
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = GetKey();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] 
+                Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
             await _context.SaveChangesAsync();
-            return user.WithoutPassword();
+            return user;
         }
-    
-    
-        public async Task<IEnumerable<User>> GetAll()
+
+        public async Task<bool> ConfirmPassword(int id, string password)
         {
-            return (await _context.Users.ToListAsync()).WithoutPasswords();
+            var user = await _context.Users.FindAsync(id);
+            CreatePasswordHash(password, out var hash, out var salt);
+            return user.PasswordHash == hash && user.PasswordSalt == salt;
         }
-    
-        public async Task<User> GetById(int id)
+
+
+        public async Task<IEnumerable<Student>> GetAll()
         {
-            return (await _context.Users.FindAsync(id)).WithoutPassword();
+            return (await _context.Students.ToListAsync()).Where(u => u.Private != true);
         }
-        
-        public async Task<User> Create(User user, string password)
+
+        public async Task<IEnumerable<Student>> AdminGetAll()
         {
-            // validation
-            if (string.IsNullOrWhiteSpace(password))
-                throw new InvalidOperationException("Password is required");
+            return await _context.Students.ToListAsync();
+        }
 
-            if (await _context.Users.AnyAsync(x => x.Email == user.Email))
-                throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
-
-            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+        public async Task<Student> GetById(int id)
+        {
+            var user = await _context.Students.FindAsync(id);
+            if (user == null) throw new Exception("Not found...");
 
             return user;
         }
 
-        public async Task<bool> Update(User userParam, string password = null)
+        public async Task<Student> GetByUrl(string url)
         {
-            var user = await _context.Users.FindAsync(userParam.Id);
+            var user = await _context.Students.FirstAsync(u => u.Url == url);
+            if (user == null) throw new Exception("Not found...");
+
+            return user;
+        }
+
+        public async Task Create(RegisterRequest user)
+        {
+            // validation
+            if (await _context.Users.AnyAsync(x => x.Email == user.Email))
+                throw new InvalidOperationException("Email \"" + user.Email + "\" is already taken");
+            try
+            {
+                await _context.AddAsync(user.ToUser());
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task Update(int id, UpdateUserRequest userParam)
+        {
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // update username if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
+            if (!string.IsNullOrEmpty(userParam.Password))
             {
-                // throw error if the new username is already taken
-                if (_context.Users.Any(x => x.Email == userParam.Email))
-                    throw new InvalidOperationException("Email " + userParam.Email + " is already taken");
-
-                user.Email = userParam.Email;
+                CreatePasswordHash((string) userParam.Password, out var hash, out var salt);
+                user.PasswordHash = hash;
+                user.PasswordSalt = salt;
             }
 
-            // update user properties if provided
-            if (!string.IsNullOrWhiteSpace(userParam.FirstName))
-                user.FirstName = userParam.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(userParam.LastName))
-                user.LastName = userParam.LastName;
-            if (userParam.ProgrammeId != user.ProgrammeId)
-                user.ProgrammeId = userParam.ProgrammeId;
-
-            // update password if provided
-            if (!string.IsNullOrWhiteSpace(password))
+            foreach (var prop in userParam.GetType().GetProperties())
             {
-                CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
+                var value = prop.GetValue(userParam, null);
 
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+                if (prop.Name != "Password" && prop.GetValue(userParam, null) != null)
+                {
+                    var oldProp = user.Student.GetType().GetProperty(prop.Name);
+                    if (oldProp != null && value != null) oldProp.SetValue(user.Student, value);
+                }
             }
 
-            _context.Users.Update(user);
+            _context.Update(user);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<bool> Delete(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return false;
-            
+
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<Student>> GetAllUsersInProgramme(int id)
+        {
+            var users = await _context.Students.Where(u => u.ProgrammeId == id && u.Private == false).ToArrayAsync();
+            return users;
+        }
+
+        public async Task<IEnumerable<Student>> GetAllUserInCategory(int category)
+        {
+            var users = await _context.Students.Where(u => u.Programme.CategoryId == category && u.Private == false)
+                .ToArrayAsync();
+            return users;
+        }
+
+        //todo Krav för bilder
+        public async Task UpdatePicture(int id, IFormFile picture)
+        {
+            var ext = Path.GetExtension(picture.FileName);
+            if (!FilesSettings.SUPPORTED_IMAGES.Contains(ext)) throw new Exception($"'{ext}' Is not suppoted.");
+            var user = await _context.Students.FindAsync(id);
+            if (user.ProfilePicture == null)
+            {
+                user.ProfilePicture = new ProfilePicture();
+                user.ProfilePicture.ImageTitle = "Profile Picture";
+            }
+
+            await using (var dataSource = new MemoryStream())
+            {
+                await picture.CopyToAsync(dataSource);
+                user.ProfilePicture.ImageData = dataSource.ToArray();
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public byte[] GetKey()
+        {
+            return Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
+        }
+
 
         // helper methods
         public async Task<string> GenerateJwtToken(User user)
@@ -148,7 +194,7 @@ namespace CVBanken.Services.UserServices
             var token = await Task.Run(() => generateJwtToken(user));
             return token;
         }
-        
+
         private string generateJwtToken(User user)
         {
             // generate token that is valid for 7 days
@@ -156,48 +202,48 @@ namespace CVBanken.Services.UserServices
             var key = GetKey();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] 
+                Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
-        public byte[] GetKey()
-        {
-            return Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
-        }
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException(nameof(password));
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));
 
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
 
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));
-            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
-            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));
+            if (storedHash.Length != 64)
+                throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
+            if (storedSalt.Length != 128)
+                throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
 
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            using (var hmac = new HMACSHA512(storedSalt))
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != storedHash[i]) return false;
-                }
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                for (var i = 0; i < computedHash.Length; i++)
+                    if (computedHash[i] != storedHash[i])
+                        return false;
             }
 
             return true;

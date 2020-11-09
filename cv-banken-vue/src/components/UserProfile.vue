@@ -1,40 +1,23 @@
 <template>
   <div>
-    <h1 id="headline"></h1>
-    <div id="section" class="m-t-12">
-      <div class="columns is-centered">
-        <div class="column is-6">
-          <div class="box">
-            <div class="container">
-              <UserCard v-if="!loading" v-bind:user="user"></UserCard>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <profile-base :editable="true" :url="thisSession.url"></profile-base>
   </div>
 </template>
 <script>
-import UserCard from "@/components/UserCard";
+import ProfileBase from "@/components/common/profile/profileBase";
 
 
 export default {
   name: "UserProfile",
-  components: {UserCard},
-  created() {
-    this.user = this.thisUser;
-    this.loading = false;
-  },
+  components: {ProfileBase},
+
   data() {
-    return {
-      user: {},
-      loading: true
-    };
+    return {};
   },
   computed: {
-    thisUser() {
-      return this.$store.getters["auth/getUser"]
-    },
+    thisSession() {
+      return this.$store.getters["auth/getSession"];
+    }
   },
   methods: {}
 };

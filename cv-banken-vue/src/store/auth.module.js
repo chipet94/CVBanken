@@ -1,21 +1,28 @@
 import AuthService from '../services/AuthService';
+import {SessionData} from "@/models/SessionData";
 import User from "@/models/User";
 
-let user = JSON.parse(localStorage.getItem("userData"));
-const initialState = user
-    ? { status: { loggedIn: true }, user }
-    : { status: { loggedIn: false }, user: null };
+let session = JSON.parse(localStorage.getItem("sessionData"));
+const initialState = session
+    ? {status: {loggedIn: true}, session}
+    : {status: {loggedIn: false}, session: null};
 
 export const auth = {
     namespaced: true,
     state: initialState,
-    getters:{
-        getUser : state => {
-            return User.FromData(state.user)
+    getters: {
+        getSession: state => {
+            return SessionData.FromData(state.session)
+        },
+        getUser: state => {
+            return User.FromData(state.session);
+        },
+        isloggedIn: state => {
+            return state.status.loggedIn;
         }
     },
     actions: {
-        login({ commit }, request) {
+        login({commit}, request) {
             return AuthService.login(request).then(
                 user => {
                     commit('loginSuccess', user);
@@ -28,11 +35,11 @@ export const auth = {
                 }
             );
         },
-        logout({ commit }) {
+        logout({commit}) {
             AuthService.logout();
             commit('logout');
         },
-        register({ commit }, user) {
+        register({commit}, user) {
             return AuthService.register(user).then(
                 response => {
                     commit('registerSuccess');
@@ -43,20 +50,32 @@ export const auth = {
                     return Promise.reject(error);
                 }
             );
-        }
+        },
+        loggedIn({commit}) {
+            return AuthService.loggedIn().then(
+                response => {
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('logout');
+                    return Promise.reject(error);
+                }
+            );
+        },
     },
     mutations: {
         loginSuccess(state, user) {
             state.status.loggedIn = true;
-            state.user = user;
+            state.session = user;
         },
         loginFailure(state) {
             state.status.loggedIn = false;
-            state.user = null;
+            state.session = null;
         },
         logout(state) {
             state.status.loggedIn = false;
-            state.user = null;
+            state.session = null;
+            window.location.replace("/")
         },
         registerSuccess(state) {
             state.status.loggedIn = false;
