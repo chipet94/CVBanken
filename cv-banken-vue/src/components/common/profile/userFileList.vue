@@ -110,21 +110,17 @@ export default {
       let confirmed = confirm("Remove file '" + name + "'?")
       if (confirmed) {
         await this.$store.dispatch("files/removeById", id).then(
-            res => {
-              //this.getFiles();
+            () => {
               let index = this.user.files.findIndex(file => {
                 if (file.id === id) {
                   return true;
                 }
               });
-              console.log(index)
               this.user.files.splice(index, 1)
-              console.log(res)
             }
         ).catch(err => {
-          console.log(err)
           this.$buefy.toast.open({
-            message: "Något gick fel, gick inte att hämta...",
+            message: "Något gick fel, gick inte att hämta..." + err,
             type: 'is-danger'
           })
         })
