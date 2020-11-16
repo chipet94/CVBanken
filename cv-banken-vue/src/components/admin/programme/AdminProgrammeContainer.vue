@@ -2,6 +2,9 @@
   <div class="container is-centered">
     <b-field label="Skapa" position="is-centered">
       <b-button class="ITHS-button" @click="openAddProgramme">Skapa ny klass</b-button>
+      <br>
+    </b-field>
+    <b-field>
       <b-button class="ITHS-button" @click="openAddCategory">Skapa ny Kategori</b-button>
     </b-field>
 
@@ -137,18 +140,5 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-}
-
-.ITHS-button {
-  background-color: #693250;
-  height: 5rem;
-  color: white;
-  font-size: large;
-  font-weight: bold;
-}
 
 </style>

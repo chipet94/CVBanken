@@ -29,8 +29,8 @@
           Profil
         </router-link>
       </b-dropdown-item>
-      <hr aria-role="menuitem" class="dropdown-divider">
-      <b-dropdown-item aria-role="menuitem" value="logout" @click="logout">
+      <hr class="dropdown-divider">
+      <b-dropdown-item aria-role="menuitem" value="logout" class="has-text-danger" @click="logout">
         <b-icon icon="logout"></b-icon>
         Logout
       </b-dropdown-item>

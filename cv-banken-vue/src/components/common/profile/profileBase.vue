@@ -101,20 +101,19 @@ export default {
               : null
           : null
     },
-    descriptionMode() {
-      return this.editDescription ? "textarea" : "text"
-    }
   },
   async created() {
     await this.LoadProfile()
-    console.log("UserModel: ", this.thisUser)
   },
   methods: {
     async updateDescription() {
       await this.$store.dispatch("profile/updateProfile", {description: this.thisUser.description})
           .then(this.editDescription = false)
           .catch(err => {
-            alert(err)
+            this.$buefy.toast.open({
+              message: err,
+              type: 'is-danger'
+            })
           })
     },
     openSettings() {
@@ -130,18 +129,18 @@ export default {
 
     async onReloadPic() {
       await this.thisUser.getProfilePicture()
-      // await this.LoadProfile()
     },
     async LoadProfile() {
       this.loading = true;
       let profileUrl = this.$route.params.url ?? this.url;
       if (profileUrl) {
         await this.$store.dispatch("profile/getByUrl", profileUrl).catch(err => {
-          console.log(err)
+          this.$buefy.toast.open({
+            message: err,
+            type: 'is-danger'
+          })
           this.$router.push({name: "Error"})
         });
-      } else {
-        console.log("nothing")
       }
       if (this.thisUser.profilePicture === null) {
         await this.$store.dispatch("profile/getProfilePicture", profileUrl)
@@ -154,41 +153,5 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-background{
-  background-color: whitesmoke;
-}
-.ITHS-description{
-  text-align: left;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 1rem;
-}
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-  border: none;
-}
-.ITHS-header {
-  background-color: rgba(105, 50, 80, 1);
-  width: 100%;
-  min-height: 3rem;
-  color: white;
-  font-weight: bold;
-  display: flex;
-  padding: 10px;
-  text-align: center;
-  border-top: 1px solid whitesmoke;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-}
-.ITHS-header p{
-  position: center;
-  display: block;
-  font-size: 1rem;
-}
-.ITHS-header.ITHS-button-small {
-  display: flex;
-  float: right;
-}
 
 </style>

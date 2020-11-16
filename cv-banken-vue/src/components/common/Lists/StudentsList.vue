@@ -81,11 +81,4 @@ export default {
   background-color: #710642;
   color: red;
 }
-.ITHS-button-small {
-   background-color: #693250;
-   color: white;
-   font-weight: bold;
-   border: none;
- }
-
 </style>

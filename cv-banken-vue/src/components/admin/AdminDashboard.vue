@@ -1,5 +1,5 @@
 <template>
-  <div>Only admins belong here *WORK-IN-PROGRESS*.
+  <div class="container">Only admins belong here *WORK-IN-PROGRESS*.
     <b-tabs v-model="activeTab" @input="handleTabs">
       <b-tab-item label="Programmes">
         <admin-programme-container>
@@ -29,22 +29,9 @@ export default {
     }
   },
   computed: {
-    thisProgrammes() {
-      return this.$store.getters["edu/getAllProgrammes"];
-    },
-    thisAllUsers() {
-      return this.$store.getters["user/admin_GetAllUsers"]
-    },
-    thisAllUsersin() {
-      return this.$store.getters["user/AllCurrentUsers"]
-    },
-    thisUser() {
-      return this.$store.getters["auth/getSession"]
-    },
+
   },
   async created() {
-    console.log(this.thisProgrammes)
-    await this.loadPublicUsers();
   },
   methods: {
     async handleTabs(index) {
@@ -61,34 +48,6 @@ export default {
         console.log(3)
       }
     },
-
-    async loadAllUsers() {
-      await this.$store.dispatch("user/admin_all").then(
-          res => {
-            console.log(res)
-            return res;
-          }
-      )
-    },
-    async loadPublicUsers() {
-      await this.$store.dispatch("user/all").then(
-          res => {
-            return res;
-          }
-      )
-    },
-    async loadAllCurrent() {
-      await this.$store.dispatch("user/allInProgramme", 1001).then(
-          res => {
-            return res;
-          })
-    },
-    async loadAllCurrentCategory() {
-      await this.$store.dispatch("user/allInCategory", 3).then(
-          res => {
-            return res;
-          })
-    }
   }
 }
 </script>

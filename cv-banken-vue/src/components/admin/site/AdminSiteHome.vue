@@ -3,31 +3,28 @@
     <b-field label="Nytt Meddelande">
       <div class="ITHS-message-container">
         <header>
-          <span>{{messageRequest.text.length}}/ 125</span>
+          <span>{{ messageRequest.text.length }}/ 125</span>
         </header>
         <span class="ITHS-message-detail">
-                  <b-input
-                      v-model="messageRequest.text"
-                      :value="messageRequest.text"
-                      placeholder="Meddelande..."
-                      class="ITHS-message-input"
-                      required
-                      type="text"></b-input>
-                  <span class="right">
-              <b-button class="ITHS-button-small" title="Spara" @click="addMessage">
-              <span class="">
-                  <b-icon class="file-icon" icon="send"></b-icon>
-                </span>
-          </b-button>
-                  </span>
+          <b-input
+              v-model="messageRequest.text"
+              :value="messageRequest.text"
+              class="ITHS-message-input"
+              placeholder="Meddelande..."
+              required
+              type="text"></b-input>
+          <span class="right">
+            <b-button class="ITHS-button-small" title="Spara" @click="addMessage">
+            <span class="">
+                <b-icon class="file-icon" icon="send"></b-icon>
+              </span>
+            </b-button>
+          </span>
         </span>
-
-
       </div>
-
-
     </b-field>
     <br>
+
     <div class="container">
       <b-field label="Messages">
         <b-table
@@ -38,7 +35,7 @@
           <b-table-column v-slot="props" field="id" label="Id">{{ props.row.id }}</b-table-column>
           <b-table-column v-slot="props" field="name" label="Text">{{ props.row.text }}</b-table-column>
           <b-table-column v-slot="props" field="controllers">
-            <b-button class="is-danger" @click="removeMessage(props.row.id)" title="Tabort">
+            <b-button class="is-danger" title="Tabort" @click="removeMessage(props.row.id)">
               <b-icon class="file-icon" icon="delete"></b-icon>
             </b-button>
           </b-table-column>
@@ -137,17 +134,15 @@ export default {
   float: right;
 }
 
-.left {
-  float: left;
-}
-
 .ITHS-message-detail {
   display: inline-flex;
   width: 100%;
 }
+
 .ITHS-message-input {
   width: 100%;
 }
+
 .ITHS-button-small {
   position: relative;
   display: inline;

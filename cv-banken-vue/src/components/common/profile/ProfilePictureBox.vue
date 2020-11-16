@@ -7,12 +7,9 @@
                @click="pictureClicked">
         </div>
         <div class="column is-overlay">
-
-          <div class="imageOverlay" @click="pictureClicked">
-
-          </div>
+          <div class="imageOverlay" @click="pictureClicked"></div>
           <b-button v-if="canEdit" class="is-pulled-right editButton ITHS-button-small" @click="editPicture">
-            <b-icon id="editPictureIcon" icon="cog" style=""></b-icon>
+            <b-icon id="editPictureIcon" icon="cog" style=" "></b-icon>
           </b-button>
         </div>
       </div>
@@ -63,7 +60,6 @@ export default {
       })
     },
     previewImage(e) {
-      console.log(e)
       this.fileUrl = URL.createObjectURL(e);
     },
     async upload() {
@@ -75,7 +71,10 @@ export default {
             this.onReload()
         ).catch(err => {
           this.file = {}
-          alert(err.data)
+          this.$buefy.toast.open({
+            message: err.data,
+            type: 'is-danger'
+          })
         })
       }
     }
@@ -89,12 +88,7 @@ export default {
   -ms-flex-align: center;
   align-items: center;
 }
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-  border: none;
-}
+
 .profilePicture {
   position: relative;
   height: 100%;

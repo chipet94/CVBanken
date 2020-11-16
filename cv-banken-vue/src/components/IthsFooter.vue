@@ -167,10 +167,6 @@ export default {
   background-color: #794761;
 }
 
-.copyright-text {
-  margin: 0
-}
-
 @media (max-width: 991px) {
   .site-footer [class^=col-] {
     margin-bottom: 30px
@@ -250,9 +246,5 @@ export default {
   background-color: #ea4c89
 }
 
-.is-ITHS-purple {
-  background-color: #693250;
-  color: white;
-}
 
 </style>

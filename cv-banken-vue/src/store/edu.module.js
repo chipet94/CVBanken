@@ -21,7 +21,7 @@ export const edu = {
             state.categories.map(cat => {
                 state.programmes = [...state.programmes, ...cat.programmes]
             })
-            return state.programmes//[].concat(state.categories.map(category => {return category.programmes}))
+            return state.programmes
         },
         getCategories: state => {
             return state.categories

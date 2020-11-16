@@ -62,7 +62,10 @@ export default {
             this.$emit("close")
         ).catch(err => {
           this.file = {}
-          alert(err.data)
+          this.$buefy.toast.open({
+            message: err.data,
+            type: 'is-danger'
+          })
         })
       }
     }
@@ -71,11 +74,5 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-  border: none;
-}
 
 </style>
