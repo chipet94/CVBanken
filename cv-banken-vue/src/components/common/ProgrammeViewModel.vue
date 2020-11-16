@@ -55,12 +55,10 @@ export default {
         this.loading = true;
         await this.$store.dispatch("edu/getByName", this.$route.params.name).then(
             res => {
-              console.log(res.id)
               this.$store.dispatch("edu/getStudentsIn", res.id)
             }
         )
       }
-      console.log(this.thisProgramme)
     }
   },
 

@@ -1,6 +1,6 @@
 <template>
   <div class="container ITHS-content">
-      <div class="header ITHS-header">
+      <div class="header ITHS-list-header">
         <p class="">CV</p>
       </div>
       <div class="content">
@@ -68,8 +68,6 @@ export default {
               message: 'CV uppladdat!',
               type: 'is-success'
             })
-
-            // alert("Success! Dina filer är nu uppladdade!")
           }
       ).catch(err => {
 
@@ -78,7 +76,6 @@ export default {
           message: err.response.data,
           type: 'is-danger'
         })
-        console.log(err)
       })
     },
     StartDownload(response, filename) {
@@ -107,14 +104,12 @@ export default {
       if (confirmed) {
         await this.$store.dispatch("files/removeCv", this.user.cv.id).then(
             res => {
-              //this.getFiles();
               this.user.cv = null
               console.log(res)
             }
         ).catch(err => {
-          console.log(err)
           this.$buefy.toast.open({
-            message: "Något gick fel, gick inte att hämta...",
+            message: "Något gick fel, gick inte att hämta..." + err,
             type: 'is-danger'
           })
         })
@@ -125,27 +120,6 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-}
-.ITHS-button-small:hover {
-  background-color: rgba(105, 50, 80, 0.8);
-  color: whitesmoke;
-}
-.ITHS-header{
-  background-color: #693250;
-  width: 100%;
-  height: 3rem;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  display: block;
-  padding: 10px;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
 .columns{
   font-weight: bold;
   font-size: medium;
@@ -155,9 +129,6 @@ export default {
 }
 .ITHS-content{
   margin-bottom: 2rem;
-}
-.ITHS-header.p{
-  margin: auto;
 }
 
 </style>

@@ -1,22 +1,21 @@
 <template>
-  <div class="ITHS-noticebox">
+  <div class="ITHS-noticeBox">
     <template>
       <div class="ITHS-notice-content" @mouseover="paused = true" @mouseleave="paused = false">
         <div class="ITHS-notice-header left">Notiser</div>
-        <span class="ITHS-notice-message">
-          <p class="ITHS-notice-message-text">        > {{thisMessage? thisMessage.text : "none"}}</p>
-          <span class="right">
-                      <button class="mdi mdi-chevron-left mdi-10px is-small ITHS-notice-button"
-                              type="button"
-                              @click="previousMessage">
-            </button>
-            <button class="mdi mdi-chevron-right mdi-10px is-small ITHS-notice-button"
-                    type="button"
-                    @click="nextMessage">
-            </button>
-          </span>
-
-        </span>
+        <div class="ITHS-notice-message">
+          <p class="ITHS-notice-message-text">> {{thisMessage? thisMessage.text : "none"}}</p>
+        </div>
+        <div class="absoluteRight">
+          <button class="mdi mdi-chevron-left mdi-10px is-small ITHS-notice-button"
+                  type="button"
+                  @click="previousMessage">
+          </button>
+          <button class="mdi mdi-chevron-right mdi-10px is-small ITHS-notice-button"
+                  type="button"
+                  @click="nextMessage">
+          </button>
+        </div>
       </div>
       <br>
     </template>
@@ -72,36 +71,22 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-noticebox{
+.ITHS-noticeBox{
   display: inline;
   background-color: lightgray;
   position: relative;
   color: white;
+  margin-bottom: 10px;
 }
 .ITHS-notice-content{
+  position: relative;
   background-color: lightgray;
-  display: block;
+  display: inline-flex;
+  width: 100%;
   max-height: initial;
-}
-.columns{
-  margin: 0;
-}
-.column{
-  display: block;
-  padding: 12px;
-  vertical-align: center;
-  justify-content: center;
-  align-content: center;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-.ITHS-overlay{
-  display: inline;
-  position: absolute;
-  float: right;
+  margin-bottom: 1rem;
 }
 .ITHS-notice-button{
-  top: 0;
   opacity: 0.1;
   background-color: #693250;
   color: white;
@@ -116,6 +101,15 @@ export default {
 .left{
   float: left;
 }
+.absoluteRight{
+  position: absolute;
+  float: right;
+  justify-content: center;
+  text-align: right;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
 .ITHS-notice-header{
   padding: 6px 12px;
   display: block;
@@ -127,6 +121,9 @@ export default {
   margin-right: 12px;
 }
 .ITHS-notice-message{
+  position: relative;
+  width: 100%;
+  height: 100%;
   padding: 6px 12px;
   display: block;
   color: black;
@@ -141,5 +138,6 @@ export default {
   overflow-wrap: anywhere;
   word-wrap: anywhere;
   word-break: break-all;
+
 }
 </style>

@@ -92,10 +92,4 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-}
-
 </style>

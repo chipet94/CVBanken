@@ -51,7 +51,6 @@ export default {
             this.loading = false
         )
       }
-      console.log(this.thisCategory)
     }
   },
 

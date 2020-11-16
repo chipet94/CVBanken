@@ -1,21 +1,21 @@
 <template>
   <section>
-    <b-collapse :open="false" animation="slide" aria-id="categoryName" class="card">
+    <b-collapse :open="false" animation="slide" aria-id="categoryName" class="card ITHS-expandable">
       <div
           slot="trigger"
           slot-scope="props"
           aria-controls="categoryName"
-          class="card-header ITHS-header"
+          class="card-header ITHS-expandable-header"
           role="button">
         <p class="card-header-title is-centered ITHS-text">
           {{ category.name }}
         </p>
-        <a class="card-header-icon ITHS-text" title="Expandera">
+        <a class="ITHS-text card-header-icon " title="Expandera">
           <b-icon
               :icon="props.open ? 'menu-down' : 'menu-up'">
           </b-icon>
         </a>
-        <router-link :to="{ name: 'Kategori', params: {name: category.name}}" class="card-header-icon ITHS-text"
+        <router-link :to="{ name: 'Kategori', params: {name: category.name}}" class="card-header-icon"
                      title="Gå till kategori">
           <b-icon
               icon="link">
@@ -46,16 +46,5 @@ export default {
 </script>
 
 <style scoped>
-.ITHS-header {
-  background-color: #693250;
-  color: #f1f1f1;
-}
 
-.ITHS-header :hover {
-  background-color: #710642;
-}
-
-.ITHS-text {
-  color: #f1f1f1;
-}
 </style>

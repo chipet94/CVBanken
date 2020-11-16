@@ -21,6 +21,7 @@
 <script>
 export default {
   name: "SignIn",
+  props:{onSuccess: Function},
   data() {
     return {
       input: "",
@@ -38,6 +39,7 @@ export default {
       await this.$store.dispatch("auth/login",
           {email: this.input, password: this.password})
           .then(() => {
+            this.onSuccess();
             this.$router.push("/my_profile")
           })
           .catch(err => {
@@ -54,12 +56,4 @@ export default {
   font-size: 20px;
 }
 
-.ITHS-button {
-  background-color: #693250;
-  width: 100%;
-  height: 5rem;
-  color: white;
-  font-size: large;
-  font-weight: bold;
-}
 </style>

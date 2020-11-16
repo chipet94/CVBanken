@@ -28,24 +28,22 @@ export default {
     categories() {
       return this.$store.getters["edu/getCategories"]
     },
-    groupedProgrammes() {
-      return this.groupBy(this.$store.getters["edu/getAllLocal"] ?? this.$store.dispatch("edu/getAll"), "category")
-    }
   },
   methods: {
     async loadCategories() {
       this.loading = true;
       await this.$store.dispatch("edu/getAllCategories").then(this.loading = false)
     },
-    groupBy(arr, property) {
-      return arr.reduce(function (narr, x) {
-        if (!narr[x[property]]) {
-          narr[x[property]] = [];
-        }
-        narr[x[property]].push(x);
-        return narr;
-      }, {});
-    },
+    //Ta ej bort. Kan användas vid senare tillfälle.
+    // groupBy(arr, property) {
+    //   return arr.reduce(function (narr, x) {
+    //     if (!narr[x[property]]) {
+    //       narr[x[property]] = [];
+    //     }
+    //     narr[x[property]].push(x);
+    //     return narr;
+    //   }, {});
+    // },
   }
 }
 </script>

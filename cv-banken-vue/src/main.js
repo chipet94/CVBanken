@@ -4,9 +4,9 @@ import router from './router'
 import Buefy from 'buefy'
 import store from "@/store"
 import 'buefy/dist/buefy.css'
-import DisableAutocomplete from 'vue-disable-autocomplete';
 
-Vue.use(DisableAutocomplete);
+
+import "@/assets/style/ITHS-base.css"
 
 
 Vue.use(Buefy)

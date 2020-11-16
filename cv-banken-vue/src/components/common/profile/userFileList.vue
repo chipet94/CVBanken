@@ -2,7 +2,7 @@
   <section>
       <UserCvBox :can-edit="canEdit" :user="user"></UserCvBox>
       <div class="container ITHS-content">
-            <div class="header ITHS-header">
+            <div class="header ITHS-list-header">
               <p class="">Övriga filer</p>
             </div>
           <div class="content">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import ComponentModal from "@/components/UserFiles/ComponentModal";
+import FileUploadModal from "@/components/UserFiles/FileUploadModal";
 import UserCvBox from "@/components/UserFiles/UserCvBox";
 
 export default {
@@ -61,7 +61,7 @@ export default {
     openAddFile() {
       this.$buefy.modal.open({
         parent: this.$parent,
-        component: ComponentModal,
+        component: FileUploadModal,
         props: {onUploadSuccess: this.onSuccess},
         hasModalCard: true,
         customClass: '',
@@ -70,13 +70,6 @@ export default {
     },
     async onSuccess() {
       await this.$store.dispatch("profile/getUserFiles", this.user.id)
-    },
-    async getFiles() {
-      await this.$store.dispatch("profile/getUserFiles", this.user.id).then(
-          res => {
-            this.userFiles = res;
-          }
-      )
     },
     async handleDownload(id, name) {
       await this.$store.dispatch("files/downloadById", id).then(
@@ -89,6 +82,7 @@ export default {
       })
 
     },
+    //spara om vi behöver senare.
     formatBytes(bytes, decimals = 2) {
       if (bytes === 0) return "0 Bytes";
       const k = 1024;
@@ -110,21 +104,17 @@ export default {
       let confirmed = confirm("Remove file '" + name + "'?")
       if (confirmed) {
         await this.$store.dispatch("files/removeById", id).then(
-            res => {
-              //this.getFiles();
+            () => {
               let index = this.user.files.findIndex(file => {
                 if (file.id === id) {
                   return true;
                 }
               });
-              console.log(index)
               this.user.files.splice(index, 1)
-              console.log(res)
             }
         ).catch(err => {
-          console.log(err)
           this.$buefy.toast.open({
-            message: "Något gick fel, gick inte att hämta...",
+            message: "Något gick fel, gick inte att hämta..." + err,
             type: 'is-danger'
           })
         })
@@ -137,25 +127,6 @@ export default {
 <style scoped>
 .pillow{
  margin-top: 1rem;
-}
-
-.ITHS-button-small {
-  background-color: #693250;
-  color: white;
-  font-weight: bold;
-  position: center;
-}
-.ITHS-header{
-  background-color: #693250;
-  width: 100%;
-  height: 3rem;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  display: block;
-  padding: 10px;
-  justify-content: center;
-  margin-bottom: 1rem;
 }
 .columns{
   font-weight: bold;
@@ -171,9 +142,6 @@ export default {
 }
 .ITHS-content{
   margin-bottom: 1rem;
-}
-.fileTable {
-  padding-left: 50px;
 }
 
 </style>
