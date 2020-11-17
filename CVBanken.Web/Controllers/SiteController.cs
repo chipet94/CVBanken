@@ -22,9 +22,9 @@ namespace CVBanken.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<HomeInfo> GetHome()
+        public HomeInfo GetHome()
         {
-            return await _context.GetHome();
+            return _context.GetHome();
         }
         
         [HttpGet]

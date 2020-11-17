@@ -59,7 +59,7 @@ namespace CVBanken.Web.Controllers
 
                 return Ok(profile.ToSafeResponse());
             }
-            catch (Exception e)
+            catch
             {
                 return NotFound();
             }

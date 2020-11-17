@@ -71,9 +71,9 @@ namespace CVBanken.Services.EducationServices
                 await _context.AddAsync(programme);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -92,9 +92,9 @@ namespace CVBanken.Services.EducationServices
                 _context.Programmes.Update(toUpdate);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -114,9 +114,9 @@ namespace CVBanken.Services.EducationServices
                 _context.Remove(toDelete);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch 
             {
-                throw e;
+                throw;
             }
         }
 
@@ -129,9 +129,9 @@ namespace CVBanken.Services.EducationServices
                 await _context.AddAsync(category);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -150,9 +150,9 @@ namespace CVBanken.Services.EducationServices
                 _context.Categories.Update(toUpdate);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch 
             {
-                throw e;
+                throw;
             }
         }
 
@@ -172,9 +172,9 @@ namespace CVBanken.Services.EducationServices
                 _context.Remove(toDelete);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch 
             {
-                throw e;
+                throw;
             }
         }
     }

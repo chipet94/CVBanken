@@ -1,7 +1,10 @@
+
 namespace CVBanken.Data.Models.Requests.Auth
 {
+
     public class UpdateUserRequest
     {
+#nullable enable
         public bool? Private { get; set; }
         public bool? Searching { get; set; }
         public string? Description { get; set; }
