@@ -46,6 +46,10 @@ export default {
   },
   methods: {
     registerSuccess() {
+      this.$buefy.toast.open({
+        message: 'Konto skapat!',
+        type: 'is-success'
+      })
       this.activeTab = 0;
     },
     onLogin(){
