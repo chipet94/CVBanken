@@ -50,7 +50,7 @@ namespace CVBanken.Web.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new {errors = e.Message});
+                return BadRequest( new {Errors = new {Email = new []{e.Message}}});
             }
 
             return Ok("Success!");

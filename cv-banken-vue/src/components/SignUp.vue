@@ -37,6 +37,7 @@
             </b-field>
           </b-field>
           <span class="has-text-danger">{{ errors.Email }}</span>
+          <span class="has-text-danger">{{ errors.email }}</span>
           <b-field label="E-post">
             <b-input id="emailfield" v-model="email" required type="email"></b-input>
           </b-field>
@@ -95,11 +96,11 @@ export default {
             "password": this.password,
             "programmeId": this.programme
           })
-          .then(() => {
-            this.onSuccess();
-          })
+          .then(() =>
+            this.onSuccess())
           .catch(err => {
             this.errors = err.response.data.errors
+            console.log(this.errors)
             this.locked = false;
           })
     },
