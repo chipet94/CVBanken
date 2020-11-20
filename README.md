@@ -5,7 +5,7 @@ we decided to create a new repo due to huge changes in the project structure.
 REQ: .net core https://dotnet.microsoft.com/download
       Entityframework: dotnet tool install --global dotnet-ef
       node + npm
-!! Outdated the backend should now create a database based on seeded data once you run it. 
+>>!! Outdated the backend should now create a database based on seeded data once you run it. 
 (I leave this here incase above does not work.) 
 >>To setup the database: 
 >>go to folder CVBanken.data folder 
