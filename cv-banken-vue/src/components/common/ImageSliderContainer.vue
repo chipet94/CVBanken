@@ -1,17 +1,18 @@
 <template>
-  <b-carousel>
-    <b-carousel-item v-for="(carousel, i) in slides" :key="i">
-      <section :class="`hero is-medium is-${carousel.color}`">
-        <div class="hero-body ITHS-carousel">
-            <div class="ITHS-carousel-content">
-              <h1 class="title">{{ carousel.title }}</h1>
-              <p class="subtitle">{{ carousel.subtitle }}</p>
-              {{ carousel.text }}
-            </div>
-        </div>
-      </section>
-    </b-carousel-item>
-  </b-carousel>
+  <div class="ITHS-carousel">
+    <b-carousel >
+      <b-carousel-item style="height: 400px;" v-for="(carousel, i) in slides" :key="i">
+        <section style="height: 400px;" :class="`hero is-medium is-${carousel.color}`">
+          <div  class="hero-body has-text-centered">
+            <h1 class="title">{{carousel.title}}</h1>
+            <p class="subtitle">{{carousel.subtitle}}</p>
+            <span>{{carousel.text}}</span>
+          </div>
+        </section>
+      </b-carousel-item>
+    </b-carousel>
+  </div>
+
 </template>
 
 <script>
@@ -34,14 +35,17 @@ export default {
   filter: grayscale(0%);
 }
 .ITHS-carousel{
- display: inline-flex;
+  position: relative;
   justify-content: center;
   text-align: center;
+  height: 400px
 }
 .ITHS-carousel-content{
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0;
+  display: block;
+  position: relative;
+  margin: auto;
+  height: 100%;
 }
 
 .al img {

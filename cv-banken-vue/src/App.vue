@@ -20,8 +20,12 @@
       </template>
 
     </b-navbar>
-    <message-box></message-box>
-    <router-view/>
+    <message-wrapper></message-wrapper>
+    <br>
+    <div class="container">
+      <router-view/>
+    </div>
+
     <br>
     <iths-footer></iths-footer>
   </div>
@@ -31,10 +35,10 @@
 import LoginContainer from "@/components/common/LoginContainer";
 import UserMenu from "@/components/common/UserMenu";
 import IthsFooter from "@/components/IthsFooter";
-import MessageBox from "@/components/common/MessageBox";
+import MessageWrapper from "@/components/MessageWrapper";
 
 export default {
-  components: {MessageBox, IthsFooter, UserMenu, LoginContainer},
+  components: {MessageWrapper, IthsFooter, UserMenu, LoginContainer},
   data() {
     return {
       currentUser: "",
