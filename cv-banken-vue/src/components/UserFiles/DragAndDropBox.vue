@@ -82,7 +82,6 @@ export default {
               })
               this.onUploadSuccess();
 
-              // alert("Success! Dina filer är nu uppladdade!")
             }
         ).catch(err => {
 

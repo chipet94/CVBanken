@@ -18,7 +18,7 @@ namespace CVBanken.Services.SiteServices
         {
             _context = context;
         }
-        public async Task<HomeInfo> GetHome()
+        public HomeInfo GetHome()
         {
             //return (HomeInfo)Reader.Deserialize(file);
             return HomeInfoBuilder.Default();
@@ -64,8 +64,9 @@ namespace CVBanken.Services.SiteServices
             return await _context.SiteMessages.ToListAsync();
         }
 
-        public async Task SetHome()
+        public Task SetHome()
         {
+            throw new NotImplementedException();
         }
     }
 }

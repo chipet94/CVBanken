@@ -17,7 +17,6 @@ namespace CVBanken.Data.CustomValidaton
                 return false;
             try
             {
-                var ithsPrefix = "@ITHS.SE";
                 // Normalize the domain
                 email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
                     RegexOptions.None, TimeSpan.FromMilliseconds(200));
@@ -30,11 +29,11 @@ namespace CVBanken.Data.CustomValidaton
                     return match.Groups[1].Value + match.Groups[2];
                 }
             }
-            catch (RegexMatchTimeoutException e)
+            catch (RegexMatchTimeoutException)
             {
                 return false;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 return false;
             }

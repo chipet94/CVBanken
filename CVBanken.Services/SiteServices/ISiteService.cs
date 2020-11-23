@@ -7,7 +7,7 @@ namespace CVBanken.Services.SiteServices
 {
     public interface ISiteService
     {
-        Task<HomeInfo> GetHome();
+        HomeInfo GetHome();
 
         Task<SiteMessage> GetMessage(int id);
         Task RemoveMessage(int id);

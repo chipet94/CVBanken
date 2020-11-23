@@ -102,9 +102,9 @@ namespace CVBanken.Services.UserServices
                 await _context.AddAsync(user.ToUser());
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 

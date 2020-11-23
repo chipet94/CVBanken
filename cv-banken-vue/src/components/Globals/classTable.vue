@@ -1,10 +1,5 @@
 <template>
   <section>
-    <!--<div v-for="category in categoryList" :key="category.categoryName" @click="handleClick">
-      <div>
-        {{category.categoryName}}
-      </div>
-    </div>-->
     <b-table
         :data="categoryList"
         :hoverable=true
