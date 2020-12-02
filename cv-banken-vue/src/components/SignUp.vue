@@ -106,7 +106,6 @@ export default {
     },
     async getProgrammes() {
       await this.$store.dispatch("edu/getAllCategories").catch(err => alert(err))
-      console.log(this.programmes)
     },
   }
 }

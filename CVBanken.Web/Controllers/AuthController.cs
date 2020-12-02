@@ -102,13 +102,6 @@ namespace CVBanken.Web.Controllers
 
             if (curr_id != id && !User.IsInRole(Role.Admin))
                 return Unauthorized("Only Admins can edit other peoples profiles.");
-            // if (!string.IsNullOrEmpty(request.Password))
-            //     if (!User.IsInRole(Role.Admin))
-            //     {
-            //         var correct = await _userService.ConfirmPassword(curr_id, request.OldPassword);
-            //         if (!correct) throw new ValidationException("Invalid password.");
-            //     }
-
             try
             {
                 await _userService.Update(id, request);

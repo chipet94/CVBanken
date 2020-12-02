@@ -229,8 +229,7 @@ export const edu = {
         }
         ,
         educationSuccess(state, education) {
-            let category = state.categories.find(cat => cat.id === education.categoryId)
-            let programme = category.programmes.find(programme => {
+            let programme = state.programmes.find(programme => {
                 return education['id'] === programme['id']
             })
             programme ? Object.assign(programme, education) : state.programmes.push(education);

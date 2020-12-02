@@ -4,7 +4,7 @@
       <div class="card-image">
       </div>
       <div class="card-content">
-        <div class="media">
+        <div class="media" v-if="!loading">
           <div class="media-left">
           </div>
           <div class="media-content">
@@ -37,7 +37,8 @@ export default {
   },
   computed: {
     thisProgramme() {
-      return this.$store.getters["edu/getProgrammeFromName"](this.$route.params.name)
+      let prog = this.$store.getters["edu/getProgrammeFromName"](this.$route.params.name)
+      return prog?? undefined;
     },
     thisStudents() {
       if (this.thisProgramme !== undefined)
@@ -55,9 +56,14 @@ export default {
         this.loading = true;
         await this.$store.dispatch("edu/getByName", this.$route.params.name).then(
             res => {
+              console.log(res)
               this.$store.dispatch("edu/getStudentsIn", res.id)
             }
-        )
+        ).catch( err => {
+          console.log("eerr", err)
+          alert(err)
+        })
+        this.loading = false;
       }
     }
   },
