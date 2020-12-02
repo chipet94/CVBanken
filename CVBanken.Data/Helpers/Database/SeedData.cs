@@ -82,7 +82,12 @@ namespace CVBanken.Data.Helpers.Database
 
         private static IEnumerable<Programme> DefaultProgrammes(Category[] categories)
         {
-            var programmes = new List<Programme>();
+            var programmes = new List<Programme>(); 
+            string[] locations =
+                {
+                    "Göteborg", "Stockholm"
+                };
+            var random = new Random();
             var count = 1;
             for (var i = 2010; i < 2015; i++)
             {
@@ -95,6 +100,7 @@ namespace CVBanken.Data.Helpers.Database
                             Id = category.Id * 1000 + count,
                             Start = start,
                             End = start.AddYears(2),
+                            Location = locations[random.Next(locations.Length)],
                             Name = category.Name == "JavaScript utvecklare"
                                 ? "Js" + start.Year
                                 : category.Name.Substring(0, 4) + start.Year,
@@ -112,6 +118,7 @@ namespace CVBanken.Data.Helpers.Database
                 Start = DateTime.Now,
                 End = DateTime.Now.AddYears(2),
                 Name = "Default",
+                Location = locations[0],
                 Hidden = true,
                 //Category = category,
                 CategoryId = 1

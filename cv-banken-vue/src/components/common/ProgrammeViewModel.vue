@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-image">
       </div>
-      <div class="card-content">
+      <div v-if="thisProgramme !== undefined" class="card-content">
         <div class="media" v-if="!loading">
           <div class="media-left">
           </div>

@@ -32,7 +32,7 @@ export const edu = {
         getCategoryFromName: state => (name) => {
             return state.categories.find(category => category.name.toUpperCase() === name.toUpperCase())
         },
-        getProgrammeFromName: state => name => {
+        getProgrammeFromName: (state) => (name) => {
             return state.programmes.find(p => p.name === name)
         }
 

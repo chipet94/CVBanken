@@ -9,6 +9,7 @@ namespace CVBanken.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Location { get; set; }
 
         public bool Hidden { get; set; } = false;
 
@@ -17,6 +18,7 @@ namespace CVBanken.Data.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
 
+        public virtual ICollection<Lia> Lias { get; set; }
         public virtual ICollection<Student> Students { get; set; }
 
         public int TotalStudents()

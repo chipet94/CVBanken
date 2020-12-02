@@ -15,7 +15,7 @@ namespace CVBanken.Data.Models.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Programme> Programmes { get; set; }
-
+        public DbSet<Lia> Lias { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserFile> Files { get; set; }
         public DbSet<UserCv> CvFiles { get; set; }

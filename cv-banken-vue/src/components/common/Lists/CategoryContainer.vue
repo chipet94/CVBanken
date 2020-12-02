@@ -1,6 +1,6 @@
 <template>
   <section>
-    <b-collapse :open="false" animation="slide" aria-id="categoryName" class="card ITHS-expandable">
+    <b-collapse :open="false" animation="slide" aria-id="categoryName" class="card ITHS-expandable" :hidden="filteredProgrammes.length < 1">
       <div
           slot="trigger"
           slot-scope="props"
@@ -24,7 +24,7 @@
       </div>
       <div class="card-content">
         <div class="content">
-          <programme-list :programmes="category.programmes"></programme-list>
+          <programme-list :programmes="filteredProgrammes"></programme-list>
         </div>
       </div>
     </b-collapse>
@@ -38,9 +38,29 @@ import ProgrammeList from "@/components/common/Lists/ProgrammeList";
 export default {
   name: "CategoryContainer",
   components: {ProgrammeList},
-  props: {category: {}},
+  props: {category: {}, filters: {}},
   data() {
     return {}
+  },
+  computed:{
+    filteredProgrammes(){
+      if (this.filters){
+        if ( this.filters.gbg && this.filters.sthlm)
+        {
+          return this.category.programmes
+        }
+        else if(this.filters.gbg)
+        {
+          return this.category.programmes.filter(prog => prog.location === "Göteborg");
+        }
+        else if (this.filters.sthlm){
+          return this.category.programmes.filter(prog => prog.location === "Stockholm");
+        }
+        return []
+      }
+      return this.category.programmes
+
+    }
   }
 }
 </script>

@@ -97,7 +97,6 @@ namespace CVBanken.Web.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
         {
             if (string.IsNullOrEmpty(User.Identity.Name)) return Unauthorized();
-
             var curr_id = int.Parse(User.Identity.Name);
 
             if (curr_id != id && !User.IsInRole(Role.Admin))
@@ -113,6 +112,7 @@ namespace CVBanken.Web.Controllers
             }
 
             return Ok();
+
         }
 
         [HttpPut]

@@ -18,7 +18,15 @@
               type="text">
           </b-input>
         </b-field>
-
+        <b-field label="Ort">
+          <b-select v-model="programme.location" placeholder="Ort">
+            <option v-for="loc in locations"
+                    :key="loc"
+                    :value="loc">
+              {{ loc }}
+            </option>
+          </b-select>
+        </b-field>
         <b-field label="Kategori">
           <b-select v-model="programme.categoryId" placeholder="Utbildningskategori">
             <option v-for="cat in categories"
@@ -77,11 +85,13 @@ export default {
       programme: {
         id: null,
         categoryId: null,
+        location: null,
         name: null,
         start: null,
         end: null,
         hidden: false
       },
+      locations: ["Stockholm", "Göteborg"]
     }
   },
   created() {
@@ -89,6 +99,7 @@ export default {
       this.programme = {
         id: this.defaultProgramme.id,
         categoryId: this.defaultProgramme.categoryId,
+        location: this.defaultProgramme.location,
         name: this.defaultProgramme.name,
         start: new Date(this.defaultProgramme.start),
         end: new Date(this.defaultProgramme.end),
